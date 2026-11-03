@@ -24,7 +24,8 @@
     "formatear": "prettier --write .",
     "formato:verificar": "prettier --check .",
     "verificar:paquetes": "node scripts/verificar-antiguedad-paquetes.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "seed": "nest start --entryFile semillas"
   },
   "dependencies": {
     "@nestjs/common": "12.3.2",
