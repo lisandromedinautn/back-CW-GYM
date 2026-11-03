@@ -27,12 +27,14 @@ Estado: **vigente** se puede testear e implementar. **A confirmar** no se toca h
 | RN-IDE-11 | Un código inexistente o invalidado por regeneración no vincula y devuelve un error | US05, ZG-02 | Vigente |
 | RN-IDE-12 | El dataset de alumnos trae email y contraseña inicial de cada alumno; la contraseña se guarda hasheada. La carga es idempotente: un alumno cuyo documento ya existe no se duplica | T01, ZG-01, ZG-13 | Vigente |
 | RN-IDE-13 | El email es único entre todos los usuarios, porque es el identificador de ingreso | Derivada de ZG-13 | Vigente |
+| RN-IDE-14 | El Admin inicial se crea con un seed que toma el email y la contraseña de las variables de entorno `ADMIN_EMAIL` y `ADMIN_PASSWORD`. La contraseña se guarda hasheada. El seed es idempotente: si ya existe un usuario con ese email, no lo duplica ni lo modifica. Si faltan las variables, falla con un mensaje claro | ZG-14, decisión 40 | Vigente |
 
 ## Casos de uso planificados
 
 | Archivo (`aplicacion/`) | US | RN |
 | :-- | :-- | :-- |
 | `ingresar-al-sistema.caso-uso.ts` | US00 | 01, 02 |
+| `sembrar-admin.caso-uso.ts` | US00 | 02, 13, 14 |
 | `dar-alta-profesor.caso-uso.ts` | US02 | 04, 06, 13 |
 | `generar-codigo-profesor.caso-uso.ts` | US04 | 08 |
 | `vincular-alumno.caso-uso.ts` | US05 | 09, 10, 11 |
@@ -55,3 +57,4 @@ RN-IDE-03 se implementa en `src/compartido` (guard de roles) y se prueba con e2e
 | :-- | :-- | :-- | :-- |
 | 01/11/2026 | Todas | Versión inicial | Lisandro |
 | 01/11/2026 | RN-IDE-01, 04, 06, 08, 11, 12; nueva RN-IDE-13 | Se cierran ZG-01, ZG-02 y ZG-13: ingreso con email, legajo y documento únicos, código reutilizable sin vencimiento que se invalida al regenerarlo, dataset con contraseña inicial | Lisandro |
+| 02/11/2026 | Nueva RN-IDE-14 | Se cierra ZG-14: el Admin inicial se crea con un seed tomado de variables de entorno | Lisandro |

@@ -2,13 +2,13 @@
 
 Une cada historia de usuario con sus reglas de negocio, el caso de uso del back, la pantalla del front y los tests que la validan. Existe igual en los dos repos. **Se actualiza en el mismo commit que agrega o cambia un test.**
 
-Estados: ⬜ sin empezar · 🟥 test en rojo (TDD) · 🟩 test en verde · ⚠ RN a confirmar (no se testea; hoy no hay ninguna).
+Estados: ⬜ sin empezar · 🟥 test en rojo (TDD; solo en el working tree, nunca se commitea, decisión 37) · 🟩 test en verde · ⚠ RN a confirmar (no se testea; hoy no hay ninguna).
 
 ## Historia → regla → implementación
 
 | US | RN | Caso de uso (back) | Pantalla (front) | Unit | Int | e2e API | Front (Vitest / Playwright) | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| US00 | RN-IDE-01, 02, 03 | ingresar-al-sistema | PaginaIngreso | — | — | — | — | ⬜ |
+| US00 | RN-IDE-01, 02, 03, 14 | ingresar-al-sistema, sembrar-admin | PaginaIngreso | — | — | — | — | ⬜ |
 | US01 | RN-CAT-01…07 | registrar-ejercicio | PaginaRegistrarEjercicio | — | — | — | — | ⬜ |
 | US02 | RN-IDE-04, 06, 13 | dar-alta-profesor | PaginaAltaProfesor | — | — | — | — | ⬜ |
 | US04 | RN-IDE-08 | generar-codigo-profesor | PaginaCodigoProfesor | — | — | — | — | ⬜ |
@@ -37,7 +37,7 @@ Toda RN vigente tiene que tener al menos un test. Una RN sin test es una brecha 
 
 | RN | Tests que la validan | Estado |
 | :-- | :-- | :-- |
-| RN-IDE-01 … RN-IDE-13 | — | ⬜ |
+| RN-IDE-01 … RN-IDE-14 | — | ⬜ |
 | RN-CAT-01 … RN-CAT-07 | — | ⬜ |
 | RN-PLAN-01 … RN-PLAN-19 | — | ⬜ |
 | RN-ENT-01 … RN-ENT-20 | — | ⬜ |
