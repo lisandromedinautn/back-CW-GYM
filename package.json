@@ -22,7 +22,8 @@
     "test:cov": "vitest run --coverage --passWithNoTests",
     "lint": "eslint . --max-warnings=0",
     "formatear": "prettier --write .",
-    "formato:verificar": "prettier --check ."
+    "formato:verificar": "prettier --check .",
+    "verificar:paquetes": "node scripts/verificar-antiguedad-paquetes.mjs"
   },
   "dependencies": {
     "@nestjs/common": "12.3.2",
