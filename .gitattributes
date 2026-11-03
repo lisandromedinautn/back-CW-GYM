@@ -1,0 +1,5 @@
+# Fin de línea LF en el repositorio y en la copia de trabajo, también en Windows.
+# Prettier usa endOfLine "lf": sin esto, core.autocrlf convertiría a CRLF y el lint fallaría.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
