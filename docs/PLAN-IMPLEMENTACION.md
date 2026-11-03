@@ -63,7 +63,7 @@ Si lo real queda por debajo de la línea pesimista, se le consulta al desarrolla
 
 | Fase | Versión | Puntos | Acumulado | Fin ideal | Fin pesimista | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| 0. Base técnica | 1.0.0 | 4 | 4 | lun 03/11 | lun 03/11 | 🔄 (T03 ✅) |
+| 0. Base técnica | 1.0.0 | 4 | 4 | lun 03/11 | lun 03/11 | ✅ |
 | 1. Ingreso, catálogo y vínculo | 1.1.0 | 29 | 33 | vie 07/11 | dom 08/11 | ⬜ |
 | 2. Planificación básica | 1.2.0 | 28 | 61 | mar 11/11 | jue 13/11 | ⬜ |
 | 3. Más rutinas e inicio del entrenamiento | 1.3.0 | 36 | 97 | dom 16/11 | jue 20/11 | ⬜ |
@@ -82,29 +82,29 @@ Las fechas suponen un ritmo parejo de 6,5 pts/día en el ideal y 5,3 pts/día en
 | Orden | Tarjeta | Tarea | Repo | Pts | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- |
 | 1 | T03 | Glosario, atlas y `CLAUDE.md` por módulo | ambos | 1 | ✅ |
-| 2 | T02 | Setup del proyecto y baseline de tests | ambos | 3 | ⬜ |
+| 2 | T02 | Setup del proyecto y baseline de tests | ambos | 3 | ✅ |
 
 **Checklist de T02 (back)**
 
-* [ ] Proyecto NestJS con la estructura `src/modulos/<modulo>/{dominio,aplicacion,infraestructura,presentacion}` y `src/compartido`.
-* [ ] TypeORM con PostgreSQL en Docker: una base de desarrollo y otra de test, separadas (`docker-compose`).
-* [ ] Jest con tres configuraciones (unit, int, e2e) y umbrales de cobertura: `dominio` 80%, resto 70%.
-* [ ] Comandos `yarn test`, `yarn test:int`, `yarn test:e2e`, `yarn test:cov`, `yarn lint`.
-* [ ] ESLint + Prettier.
-* [ ] husky + lint-staged: `pre-commit` corre lint y los tests afectados.
-* [ ] Hook `commit-msg` que valida el formato de la decisión 37: tipo, módulo, `[ID]` al final (commitlint o un script propio).
-* [ ] Script de verificación de antigüedad de paquetes (24 h), que corre en `preinstall` o en el hook.
-* [ ] Infraestructura de seeds: comando `yarn seed` idempotente, que lee `.env` (`ADMIN_EMAIL`, `ADMIN_PASSWORD`), y `.env.example` sin valores reales. El seed del Admin en sí se escribe con TDD en US00, porque necesita la entidad de usuario (RN-IDE-14).
-* [ ] `package.json` con `"version": "1.0.0"` y `CHANGELOG.md` con la sección 1.0.0.
+* [x] Proyecto NestJS 12 (ESM) con la estructura `src/modulos/<modulo>/{dominio,aplicacion,infraestructura,presentacion}` y `src/compartido`.
+* [x] TypeORM con PostgreSQL 18 en Docker: una base de desarrollo (5442) y otra de test (5443), separadas (`docker-compose`).
+* [x] Vitest con tres configuraciones (unit, int, e2e) y umbrales de cobertura: `dominio` 80%, resto 70% (decisión 21: Vitest en lugar de Jest).
+* [x] Comandos `yarn test`, `yarn test:int`, `yarn test:e2e`, `yarn test:cov`, `yarn lint`.
+* [x] ESLint + Prettier, con las reglas de capas del `CLAUDE.md` como errores de lint.
+* [x] husky + lint-staged: `pre-commit` corre lint y los tests afectados.
+* [x] Hook `commit-msg` que valida el formato de la decisión 37: tipo, módulo, `[ID]` al final (script propio, `scripts/validar-mensaje-commit.mjs`).
+* [x] Script de verificación de antigüedad de paquetes (24 h), que corre en el pre-commit (directas y transitivas nuevas).
+* [x] Infraestructura de seeds: comando `yarn seed` idempotente, que lee `.env` (`ADMIN_EMAIL`, `ADMIN_PASSWORD`), y `.env.example` sin valores reales. El seed del Admin en sí se escribe con TDD en US00, porque necesita la entidad de usuario (RN-IDE-14).
+* [x] `package.json` con `"version": "1.0.0"` y `CHANGELOG.md` con la sección 1.0.0.
 
 **Checklist de T02 (front)**
 
-* [ ] Proyecto React + Vite con la estructura `src/modulos` y `src/compartido`.
-* [ ] Vitest + Testing Library con umbrales de cobertura. Playwright configurado, con un smoke test.
-* [ ] Comandos `yarn test`, `yarn test:cov`, `yarn lint` y el script de Playwright.
-* [ ] ESLint + Prettier, husky + lint-staged y el hook `commit-msg` igual al del back.
-* [ ] Script de antigüedad de paquetes.
-* [ ] `package.json` con `"version": "1.0.0"` y `CHANGELOG.md`.
+* [x] Proyecto React 19 + Vite 8 con la estructura `src/modulos` y `src/compartido`.
+* [x] Vitest + Testing Library + MSW con umbrales de cobertura. Playwright configurado (sin tests todavía: un test sin regla de negocio no se escribe).
+* [x] Comandos `yarn test`, `yarn test:cov`, `yarn lint` y el script de Playwright.
+* [x] ESLint + Prettier, husky + lint-staged y el hook `commit-msg` igual al del back.
+* [x] Script de antigüedad de paquetes.
+* [x] `package.json` con `"version": "1.0.0"` y `CHANGELOG.md`.
 
 **Criterio de cierre:** en los dos repos, `yarn test:cov` y `yarn lint` pasan sobre el esqueleto vacío, un commit con mal formato o con un test en rojo se rechaza, y el tag `v1.0.0` está en `develop`.
 
@@ -112,7 +112,7 @@ Las fechas suponen un ritmo parejo de 6,5 pts/día en el ideal y 5,3 pts/día en
 
 | Inicio real | Fin real | Puntos terminados | Horas reales | Desvío | Notas |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| | | | | | |
+| 01/11 | 02/11 | 4 | (a completar) | (a completar) | En T02 el back pasó de Jest a Vitest (Nest 12 es solo ESM) y Node de 22 a 24. Siete transitivas con menos de 24 h se fijaron con `resolutions` |
 
 ---
 
