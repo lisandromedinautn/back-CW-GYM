@@ -1,6 +1,6 @@
 {
   "name": "back-cw-gym",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "API del Sistema de Entrenamiento de Gimnasio (NestJS + TypeORM + PostgreSQL)",
   "private": true,
   "license": "UNLICENSED",
