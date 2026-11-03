@@ -14,7 +14,12 @@
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main.js",
     "bd:levantar": "docker compose up -d --wait",
-    "bd:bajar": "docker compose down"
+    "bd:bajar": "docker compose down",
+    "test": "vitest run --passWithNoTests",
+    "test:vigilar": "vitest",
+    "test:int": "vitest run -c vitest.int.config.ts --passWithNoTests",
+    "test:e2e": "vitest run -c vitest.e2e.config.ts --passWithNoTests",
+    "test:cov": "vitest run --coverage --passWithNoTests"
   },
   "dependencies": {
     "@nestjs/common": "12.3.2",
@@ -32,6 +37,11 @@
     "@nestjs/testing": "12.3.2",
     "@types/express": "5.0.6",
     "@types/node": "24.19.2",
-    "typescript": "6.0.3"
+    "@types/supertest": "7.2.1",
+    "@vitest/coverage-v8": "5.0.5",
+    "supertest": "7.3.1",
+    "typescript": "6.0.3",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
   }
 }
