@@ -76,7 +76,9 @@ Reglas de dependencia (se revisan en cada code review):
 3. Se instala fijando la versión exacta: `yarn add <paquete>@<versión> --exact`.
 4. Se commitea `yarn.lock`. En CI y en los hooks se usa `yarn install --frozen-lockfile`.
 
-Los comandos `yarn add`, `yarn upgrade` y `npx` piden confirmación (`.claude/settings.json`). En T02 se agrega un script de verificación automática.
+Los comandos `yarn add`, `yarn upgrade` y `npx` piden confirmación (`.claude/settings.json`). El pre-commit corre `scripts/verificar-antiguedad-paquetes.mjs`: si cambia `package.json` controla las dependencias directas, y si cambia `yarn.lock` controla también las transitivas nuevas. A mano: `yarn verificar:paquetes`. Si una transitiva tiene menos de 24 h, se fija la versión anterior con `resolutions` en `package.json` (en Yarn 1, `"<dependencia-directa>/**/<paquete>"` para apuntar a una rama del árbol).
+
+Node: **24 LTS** (`.nvmrc`). Varias herramientas piden 24.15 o más.
 
 ## Testing: reglas que no se negocian
 
@@ -90,7 +92,7 @@ El protocolo completo está en [docs/TESTING.md](docs/TESTING.md). Resumen:
 6. PROHIBIDO debilitar aserciones: nada de `skip`, `only`, `todo`, aflojar valores ni borrar asserts que sigan valiendo.
 7. Cobertura: dominio al 80% como mínimo (apuntar a más), resto al 70%. Lint sin errores.
 
-Comandos (se definen en T02): `yarn test`, `yarn test:int`, `yarn test:e2e`, `yarn test:cov`, `yarn lint`.
+Comandos: `yarn test` (unitarios), `yarn test:int` y `yarn test:e2e` (necesitan `yarn bd:levantar`), `yarn test:cov`, `yarn lint`, `yarn formatear`. Runner: Vitest (decisión 21).
 
 ## Git y Trello
 

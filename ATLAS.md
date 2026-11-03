@@ -16,6 +16,16 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `.claude/settings.json` | Permisos: confirmación al editar tests e instalar paquetes |
 | `.claude/skills/tdd`, `.claude/skills/coverage` | Skills de TDD y cobertura |
 | `test/datasets/` | Dataset de alumnos (T01) 📄 |
+| `package.json`, `yarn.lock` | Dependencias exactas, scripts y `resolutions` (regla de las 24 h) ✅ |
+| `docker-compose.yml` | Postgres 18 de desarrollo (5442) y de test (5443, en memoria) ✅ |
+| `.env.example`, `.env.test` | Variables de entorno: plantilla de desarrollo y valores de test ✅ |
+| `vitest.config.ts`, `vitest.int.config.ts`, `vitest.e2e.config.ts` | Unitarios con umbrales de cobertura, integración y e2e ✅ |
+| `test/preparar-vitest.ts` | Se carga antes de cada test (`reflect-metadata`) ✅ |
+| `eslint.config.js`, `.prettierrc.json` | Lint con las reglas de capas del `CLAUDE.md` y formato ✅ |
+| `.husky/`, `scripts/` | Hooks (pre-commit y commit-msg), validador de mensajes y verificación de antigüedad de paquetes ✅ |
+| `src/main.ts`, `src/modulo-raiz.module.ts` | Arranque de la API y módulo raíz (configuración y conexión a Postgres) ✅ |
+| `src/semillas.ts` | Punto de entrada de `yarn seed`: lista ordenada de semillas ✅ |
+| `CHANGELOG.md` | Cambios por versión (decisión 38) ✅ |
 
 ## Módulos
 
