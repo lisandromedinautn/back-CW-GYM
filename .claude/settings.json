@@ -5,7 +5,7 @@
       "Edit(**/*.int-spec.ts)",
       "Edit(**/*.e2e-spec.ts)",
       "Edit(**/FICHAS-TEST.md)",
-      "Edit(**/jest.config*)",
+      "Edit(**/vitest*.config*)",
       "Bash(yarn add:*)",
       "Bash(yarn upgrade:*)",
       "Bash(yarn global add:*)",

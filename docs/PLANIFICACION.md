@@ -3,7 +3,7 @@
 Versión 3 · 02/11/2026 · Lisandro (Licha)
 Original: Google Doc "Sistema de Entrenamiento de Gimnasio — Lenguaje ubicuo, US y modelo DDD" (31/10/2026). Este archivo es la copia versionada; existe igual en `back-CW-GYM` y `front-CW-GYM`. Si cambia, se actualizan los dos repos y el Google Doc.
 
-**Cambios respecto de la versión 2:** se agregaron la regla de microcommits (decisión 37), el versionado semántico del sistema (decisión 38) y el calendario con dos escenarios: ideal al 22/11 y pesimista al 01/12 (decisión 39). Se cerró ZG-14: el Admin inicial se crea con un seed (decisión 40). El orden de trabajo y el checklist de cada fase están en [`docs/PLAN-IMPLEMENTACION.md`](PLAN-IMPLEMENTACION.md).
+**Cambios respecto de la versión 2:** en T02 el back pasó de Jest a Vitest (decisión 21) y se fijaron las versiones del stack (decisión 17). Se agregaron la regla de microcommits (decisión 37), el versionado semántico del sistema (decisión 38) y el calendario con dos escenarios: ideal al 22/11 y pesimista al 01/12 (decisión 39). Se cerró ZG-14: el Admin inicial se crea con un seed (decisión 40). El orden de trabajo y el checklist de cada fase están en [`docs/PLAN-IMPLEMENTACION.md`](PLAN-IMPLEMENTACION.md).
 
 **Cambios respecto de la versión 1:** se cerraron los cuatro pendientes (bloqueo de rutinas, stack y arquitectura, formato del informe, escala de sensación de fuerza). Se agregaron las convenciones técnicas, el catálogo de reglas de negocio con IDs y la matriz de trazabilidad obligatoria. Se detectaron y cerraron 13 zonas grises (decisiones 24 a 36). Se quitó US19: un plan no se puede finalizar antes de tiempo.
 
@@ -33,11 +33,11 @@ Hay tres roles: **Profesor**, **Alumno** y **Admin**.
 | 14 | Bloqueo de rutinas | **No hay bloqueo**: la rutina se puede editar siempre. La decisión 6 ya protege lo realizado |
 | 15 | Sensación de fuerza | Escala entera de **1 a 5** |
 | 16 | Informe | La **matriz de trazabilidad es obligatoria** (`docs/TRAZABILIDAD.md`) |
-| 17 | Stack | NestJS + TypeORM + PostgreSQL en el back. React + Vite en el front. Gestor de paquetes: Yarn 1 (classic) |
+| 17 | Stack | NestJS 12 (ESM) + TypeORM + PostgreSQL 18 en el back. React 19 + Vite 8 en el front. TypeScript 6. Node 24 LTS. Gestor de paquetes: Yarn 1 (classic) |
 | 18 | Arquitectura | Modular. Cada módulo tiene las capas dominio / aplicación / infraestructura / presentación. Sin services: un caso de uso por archivo. Entidades ricas. Repositorios como puertos |
 | 19 | Autenticación | JWT con guard por rol |
 | 20 | Idioma | Todo en español: dominio, código, archivos, carpetas, tests y commits |
-| 21 | Testing | Back: Jest (unitarios, integración y e2e de API). Front: Vitest + Testing Library (unitarios e integración) y Playwright (e2e de navegador, se configura al crear la suite de tests). La base de datos de test es independiente y dockerizada |
+| 21 | Testing | Back: Vitest (unitarios, integración y e2e de API; hasta el 02/11/2026 decía Jest, se cambió porque Nest 12 es solo ESM y su base oficial usa Vitest). Front: Vitest + Testing Library (unitarios e integración) y Playwright (e2e de navegador, se configura al crear la suite de tests). La base de datos de test es independiente y dockerizada |
 | 22 | Cobertura | Capa de dominio: 80% como mínimo, con la intención de superarlo. Resto del código: 70% |
 | 23 | Ramas | `main` y `develop`. Se puede commitear directo a `develop`; lo protegen las reglas de testing y lint. Cada commit referencia una tarjeta de Trello |
 | 24 | Ingreso al sistema | Con email y contraseña. El email es único. El dataset trae la contraseña inicial de cada alumno (ZG-13) |
@@ -265,7 +265,7 @@ El backlog suma 136 puntos (US19 se quitó por la decisión 31). Escala: L = 5, 
 | US04 | Como **Profesor** quiero generar un código de profesor para que mis alumnos puedan vincularse conmigo | Modelar S, Backend S, Frontend S | 3 |
 | US05 | Como **Alumno** quiero ingresar el código de mi profesor para quedar vinculado y recibir sus planes | Backend M, Frontend S | 4 |
 | T01 | Carga de dataset de alumnos | M | 3 |
-| T02 | Setup del proyecto y baseline de tests: Nest + TypeORM, React + Vite, Jest/Vitest con umbrales de cobertura, Playwright para e2e del front, ESLint + Prettier, husky + lint-staged, Postgres dockerizado (desarrollo y test por separado), verificación de antigüedad de paquetes | M | 3 |
+| T02 | Setup del proyecto y baseline de tests: Nest + TypeORM, React + Vite, Vitest con umbrales de cobertura, Playwright para e2e del front, ESLint + Prettier, husky + lint-staged, Postgres dockerizado (desarrollo y test por separado), verificación de antigüedad de paquetes | M | 3 |
 | T03 | Glosario de lenguaje ubicuo, atlas y `CLAUDE.md` por módulo en los repositorios | S | 1 |
 
 Criterio adicional de US05: no se puede vincular un alumno que ya tiene profesor.
