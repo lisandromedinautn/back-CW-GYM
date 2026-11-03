@@ -1,7 +1,9 @@
 # Sistema de Entrenamiento de Gimnasio — Planificación, lenguaje ubicuo, US y modelo DDD
 
-Versión 2 · 01/11/2026 · Lisandro (Licha)
+Versión 3 · 02/11/2026 · Lisandro (Licha)
 Original: Google Doc "Sistema de Entrenamiento de Gimnasio — Lenguaje ubicuo, US y modelo DDD" (31/10/2026). Este archivo es la copia versionada; existe igual en `back-CW-GYM` y `front-CW-GYM`. Si cambia, se actualizan los dos repos y el Google Doc.
+
+**Cambios respecto de la versión 2:** se agregaron la regla de microcommits (decisión 37), el versionado semántico del sistema (decisión 38) y el calendario con dos escenarios: ideal al 22/11 y pesimista al 01/12 (decisión 39). Se cerró ZG-14: el Admin inicial se crea con un seed (decisión 40). El orden de trabajo y el checklist de cada fase están en [`docs/PLAN-IMPLEMENTACION.md`](PLAN-IMPLEMENTACION.md).
 
 **Cambios respecto de la versión 1:** se cerraron los cuatro pendientes (bloqueo de rutinas, stack y arquitectura, formato del informe, escala de sensación de fuerza). Se agregaron las convenciones técnicas, el catálogo de reglas de negocio con IDs y la matriz de trazabilidad obligatoria. Se detectaron y cerraron 13 zonas grises (decisiones 24 a 36). Se quitó US19: un plan no se puede finalizar antes de tiempo.
 
@@ -51,6 +53,10 @@ Hay tres roles: **Profesor**, **Alumno** y **Admin**.
 | 34 | Récord batido | Solo si la marca es estrictamente mayor. La primera marca se guarda pero no se anuncia (ZG-10) |
 | 35 | RPE y sensación de fuerza | Opcionales. Se pueden cargar después de finalizar (ZG-11) |
 | 36 | Circuito y alumnos del plan | Un circuito tiene 2 o más ejercicios. El plan se crea con alumnos, pero mientras está vigente puede quedar sin ninguno |
+| 37 | Microcommits | Cada commit es un único cambio lógico que compila y pasa lint y tests. En TDD, el test y la implementación mínima de una regla van juntos y el refactor va aparte. Así cada acción queda trazable y se puede revertir sola |
+| 38 | Versionado | SemVer `MAJOR.MINOR.PATCH`, con front y back sincronizados. Se queda en 1.x mientras dure el MVP. La minor sube al cerrar cada hito funcional (una fase del plan) y el patch sube con los arreglos. Los tags van en `develop` |
+| 39 | Calendario | Escenario ideal: MVP completo el **22/11/2026**. Escenario pesimista: **01/12/2026**. **`main` no se toca hasta el 22/11.** Según la velocity histórica, el escenario ideal no se alcanza (ver "Métricas y estimación") |
+| 40 | Admin inicial | Se crea con un seed idempotente que toma el email y la contraseña de variables de entorno (ZG-14) |
 
 ## Glosario de lenguaje ubicuo
 
@@ -169,9 +175,85 @@ Están detalladas en el `CLAUDE.md` de cada repo y en `docs/TESTING.md`.
 * **Auditoría de IA**: `DECISIONES-IA.md` en cada repo.
 * **Modelos de IA**: ver `docs/MODELOS-IA.md`.
 
+## Microcommits y trazabilidad
+
+Cada acción del desarrollo queda registrada en su propio commit. Así, desde una regla de negocio se llega al commit que la implementó, y desde un commit se llega a su tarjeta (decisión 37).
+
+**Qué es un microcommit**
+
+* Tiene **un único cambio lógico**: una regla de negocio, un caso de uso, una pantalla, un refactor o una dependencia. Si el mensaje necesita un "y", son dos commits.
+* **Se sostiene solo**: compila y pasa lint y tests. Los hooks de husky lo verifican y **nunca se saltean** (`--no-verify` está prohibido).
+* **Es chico**: como referencia, menos de 150 líneas de código cambiadas, sin contar `yarn.lock` ni archivos generados. Si es más grande, casi siempre se puede dividir.
+* **No mezcla tipos**: un `feat` no trae refactors ni cambios de formato de otros archivos. Una dependencia nueva va en su propio `chore(deps)` con su `yarn.lock`.
+
+**Ciclo TDD en commits.** El hook exige los tests en verde, así que el rojo no se commitea:
+
+1. Se escribe el test de la regla y se ve fallar (🟥 en la matriz, solo en el working tree).
+2. Se escribe la implementación mínima hasta el verde. **Commit 1**: test e implementación juntos, `feat(...)` si es comportamiento nuevo o `test(...)` si la implementación ya existía.
+3. Si hace falta refactorizar, **commit 2**: `refactor(...)`, sin cambiar comportamiento ni tests.
+
+En el mismo commit se actualiza `docs/TRAZABILIDAD.md` (decisión 16), así la matriz y el código nunca se desfasan.
+
+**Formato del mensaje**
+
+```
+tipo(módulo): verbo en primera persona y en presente [ID-TARJETA]
+
+Cuerpo opcional: por qué se hizo, no qué se hizo.
+
+Reglas: RN-PLAN-09, RN-PLAN-10
+```
+
+* Tipos: `feat`, `fix`, `test`, `refactor`, `docs`, `chore`. Ejemplo: `feat(planificacion): calculo la fecha de fin del plan [US07]`.
+* El pie `Reglas:` es obligatorio cuando el commit agrega o cambia el test de una RN. Permite buscar con `git log --grep "RN-PLAN-09"`.
+* Los commits de cierre de versión llevan la versión en lugar de la tarjeta: `chore(release): publico la versión 1.2.0 [v1.2.0]`.
+
+**Ramas.** Cada tarjeta se trabaja en una subrama que sale de `develop` (`feat/US07-crear-plan`, `fix/BUG-03-volumen-negativo`, `docs/T03-glosario`). Se integra con `merge --no-ff` y el mensaje `US07 — Crear plan de 28 días`. Así, en el historial cada tarjeta queda como un grupo de microcommits. Después del merge se borra la subrama. No se hace squash, y no se reescribe historia ya pusheada (nada de `amend` ni `rebase` sobre commits publicados).
+
+## Versionado del sistema
+
+Se usa versionado semántico `MAJOR.MINOR.PATCH` (decisión 38). Como el sistema es un MVP, la versión se queda en 1.x.
+
+| Parte | Cuándo sube | Ejemplo |
+| :-- | :-- | :-- |
+| **MAJOR** | Solo por decisión explícita del desarrollador, cuando el MVP termina o cuando se rompe el contrato de la API (por ejemplo, al pagar DT-04, más de un profesor por alumno). No está previsto que suba en este cuatrimestre | 2.0.0 |
+| **MINOR** | Al cerrar un hito funcional, es decir, una fase de `docs/PLAN-IMPLEMENTACION.md`. Las fases no coinciden con los sprints: en una semana se pueden cerrar dos. Una US terminada no sube la versión por sí sola: se acumula en la minor del hito | 1.2.0 |
+| **PATCH** | Al publicar arreglos sobre una versión ya publicada (bugs encontrados en la demo, en la revisión o en uso). Los bugs que se corrigen antes del cierre del hito son parte de esa minor y no suben patch | 1.2.1 |
+
+**Hoja de ruta de versiones**
+
+| Versión | Hito | Fase | Fin ideal | Fin pesimista |
+| :-- | :-- | :-- | :-- | :-- |
+| 1.0.0 | Base técnica: proyecto arrancable, baseline de tests, hooks y seed (T02) | 0 | 03/11 | 03/11 |
+| 1.1.0 | Ingreso al sistema, catálogo de ejercicios, alta de profesores, dataset y vínculo alumno-profesor | 1 | 07/11 | 08/11 |
+| 1.2.0 | Rutina por bloques, plan de 28 días y rutina del día | 2 | 11/11 | 13/11 |
+| 1.3.0 | Circuitos, rutina mixta, importar rutina, plan del alumno e inicio del entrenamiento | 3 | 16/11 | 20/11 |
+| 1.4.0 | Series realizadas, resumen, récords, RPE y alumnos del plan vigente | 4 | 21/11 | 26/11 |
+| 1.5.0 | Seguimiento del profesor y cierre del MVP | 5 | 22/11 | 27/11 (margen hasta 01/12) |
+
+**Front y back sincronizados.** Los dos repos publican la misma `MAJOR.MINOR` en cada hito: el front 1.2.x funciona con el back 1.2.x. El patch puede diferir entre los dos, porque un arreglo que toca un solo repo sube el patch solo en ese repo.
+
+**Dónde vive la versión**
+
+* En el campo `version` del `package.json` de cada repo.
+* En un **tag anotado** `v1.2.0` sobre el commit de release en `develop` (decisión 39: `main` no se toca hasta el 22/11).
+* En `CHANGELOG.md` en la raíz de cada repo. Tiene una sección por versión con las categorías Agregado, Cambiado, Corregido y Eliminado, y cada entrada cita su tarjeta (`US07`, `BUG-03`). Mientras se trabaja, los cambios se anotan en la sección "Sin publicar".
+
+**Cómo se publica una minor (cierre de fase)**
+
+1. En `develop`: se mueven las entradas de "Sin publicar" a la nueva versión en `CHANGELOG.md`, se actualiza `version` en `package.json` y se commitea `chore(release): publico la versión 1.2.0 [v1.2.0]`.
+2. Se pone el tag anotado `v1.2.0` sobre ese commit y se pushean `develop` y el tag.
+3. Se repite en el otro repo con la misma versión.
+
+**Cómo se publica un patch.** El arreglo se trabaja en `fix/BUG-xx-...` desde `develop`, con su test de regresión en el mismo microcommit. Se mergea a `develop` y se publica como `v1.2.1` con el mismo procedimiento. La entrada va en la sección Corregido del `CHANGELOG.md`.
+
+**`main`** (decisión 39). No se toca hasta el 22/11. Ese día, con el permiso del desarrollador, se hace merge `--no-ff` de `develop` a `main` con la última versión publicada (en el escenario ideal, 1.5.0). Si se da el escenario pesimista, hay un segundo merge al cerrar, como tarde el 01/12. Después de la entrega, cada versión nueva pasa por `main`.
+
 ## Historias de usuario
 
-El backlog suma 136 puntos en cinco sprints de una semana (US19 se quitó por la decisión 31). Escala: L = 5, M = 3, S = 1. Cada historia suma sus tareas Modelar, Backend y Frontend.
+El backlog suma 136 puntos (US19 se quitó por la decisión 31). Escala: L = 5, M = 3, S = 1. Cada historia suma sus tareas Modelar, Backend y Frontend.
+
+**Nota de calendario (decisión 39).** Los cinco "sprints" de abajo son agrupaciones funcionales y coinciden con las fases 1 a 5 del plan de implementación. El calendario real es de 3 sprints de una semana (escenario ideal, hasta el 22/11) o de 4 (escenario pesimista, hasta el 01/12). Las fechas de cada fase están en `docs/PLAN-IMPLEMENTACION.md`.
 
 ### Sprint 1: base del sistema (33 pts)
 
@@ -226,7 +308,7 @@ Criterio adicional de US13: al iniciar se copian la rutina y el peso corporal de
 | :-- | :-- | :-- | :-- |
 | US18 | Como **Profesor** quiero consultar los entrenamientos de mis alumnos para ajustar sus planes según lo que realmente hicieron | Backend M, Frontend M | 6 |
 
-US19 (finalizar un plan antes de sus 28 días) se eliminó del backlog: un plan no se puede finalizar antes de tiempo (decisión 31). El sprint 5 deja capacidad libre para tests e2e (API y Playwright), ajustes y deuda técnica.
+US19 (finalizar un plan antes de sus 28 días) se eliminó del backlog: un plan no se puede finalizar antes de tiempo (decisión 31). En el escenario ideal no queda capacidad libre: los e2e de API se escriben dentro de cada US, y los de Playwright, los ajustes y el informe usan el margen del escenario pesimista.
 
 ## Deuda técnica
 
@@ -252,6 +334,24 @@ La velocity del proyecto anterior fue de 37 puntos por semana: el promedio de tr
 | 28 de septiembre (cierre) | 9 |
 
 En total se terminaron 48 tarjetas y 120 puntos. Hay tres alertas para el nuevo tablero: 13 tarjetas no tenían estimación (8 de ellas terminadas, que no sumaron), el pico de 53 coincide con movimientos en bloque y hay IDs duplicados (dos PA-046).
+
+**Calendario frente a velocity (decisión 39)**
+
+| Escenario | Fin | Semanas | Velocity necesaria | Frente a la histórica (37) |
+| :-- | :-- | :-- | :-- | :-- |
+| Ideal | 22/11/2026 | 3 | 45,3 pts/semana | **22% por encima: con los datos históricos no se alcanza** |
+| Pesimista | 01/12/2026 | 4 + 2 días | 37 pts/semana alcanzan para terminar cerca del 27/11 | Viable, con unos 4 días (~21 pts) de margen |
+
+El ideal se deja como objetivo porque la semana de 53 puntos muestra que el equipo puede superar los 45. Pero ese pico coincide con movimientos en bloque en el tablero, así que **no se toma como base**. La planificación realista es la pesimista. Al cierre de cada sprint se compara lo acumulado con las dos líneas:
+
+| Corte | Acumulado ideal | Acumulado pesimista |
+| :-- | :-- | :-- |
+| 08/11 | 45 | 37 |
+| 15/11 | 91 | 74 |
+| 22/11 | 136 | 111 |
+| 01/12 | — | 136 |
+
+Si en un corte lo acumulado queda por debajo de la línea pesimista, se le consulta al desarrollador un recorte de alcance. Las candidatas, en este orden, son US20, US10, US18 y US12: nada depende de ellas.
 
 **Reglas para el nuevo tablero:** misma escala y misma división en tareas, para que la velocity sea comparable. Ninguna tarjeta entra a READY sin estimación. Las tarjetas se mueven a DONE cuando se terminan. Ninguna tarea supera L; si parece mayor, se divide. Cada commit referencia el ID de su tarjeta.
 
@@ -313,3 +413,4 @@ Surgieron al escribir el catálogo de reglas y las decidió Lisandro. Si aparece
 | ZG-11 | ¿RPE y sensación obligatorios? | Opcionales, cargables después de finalizar | RN-ENT-16 |
 | ZG-12 | ¿Entrenamiento nunca finalizado? | Se retoma el mismo día; a la medianoche queda abandonado | RN-ENT-20 |
 | ZG-13 | ¿Credenciales de ingreso? | Email + contraseña; el dataset trae la contraseña inicial | RN-IDE-01, 12, 13 |
+| ZG-14 | ¿Cómo se crea el Admin? (cerrada el 02/11/2026) | Seed idempotente con email y contraseña tomados de variables de entorno | RN-IDE-14 |
