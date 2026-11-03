@@ -10,8 +10,8 @@ El objetivo principal del proyecto es una base de tests sólida. Un test vale si
 | Integración | Caso de uso + repositorio TypeORM real | `test/integracion/<modulo>/` | `*.int-spec.ts` | Postgres de test dockerizado |
 | e2e (solo API) | HTTP → guard → controlador → caso de uso → base | `test/e2e/<modulo>/` | `*.e2e-spec.ts` | Postgres de test dockerizado |
 
-* Herramientas: Jest, ts-jest y supertest. Lint con ESLint + Prettier.
-* La base de test es un contenedor separado del de desarrollo. Cada proceso de Jest usa su propio esquema o base, para poder correr en paralelo. Se limpia entre tests.
+* Herramientas: Vitest y supertest (decisión 21: Nest 12 es solo ESM y su proyecto base oficial usa Vitest). Lint con ESLint + Prettier. Configuraciones: `vitest.config.ts` (unitarios y cobertura), `vitest.int.config.ts` y `vitest.e2e.config.ts`.
+* La base de test es un contenedor separado del de desarrollo (`docker compose`, servicio `bd-test`, puerto 5443, en memoria). Por ahora los archivos de integración y e2e corren de a uno (`fileParallelism: false`) porque comparten la base; si se vuelven lentos, se pasa a un esquema por proceso. Cada test limpia lo que crea.
 * Se mockea solo en los bordes del sistema: base de datos (en unitarios), reloj y JWT. Nunca se mockean entidades ni objetos de valor propios.
 * El tiempo siempre entra por el puerto `Reloj`. Ningún test depende de la fecha real.
 
@@ -22,7 +22,7 @@ El objetivo principal del proyecto es una base de tests sólida. Un test vale si
 | `src/modulos/*/dominio/**` | 80% en líneas, ramas, funciones y sentencias | Superar el 80% |
 | Resto de `src/` | 70% | — |
 
-Los umbrales se configuran en `jest.config` (T02). Si no se alcanzan, `yarn test:cov` falla y el hook bloquea el commit. Para buscar brechas se usa la skill `coverage` (ver más abajo).
+Los umbrales están en `vitest.config.ts`. Si no se alcanzan, `yarn test:cov` falla y el hook bloquea el commit. Para buscar brechas se usa la skill `coverage` (ver más abajo).
 
 ## Ciclo para escribir un test (TDD)
 

@@ -1,0 +1,76 @@
+{
+  "name": "back-cw-gym",
+  "version": "0.0.0",
+  "description": "API del Sistema de Entrenamiento de Gimnasio (NestJS + TypeORM + PostgreSQL)",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=24.15.0"
+  },
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:prod": "node dist/main.js",
+    "bd:levantar": "docker compose up -d --wait",
+    "bd:bajar": "docker compose down",
+    "test": "vitest run --passWithNoTests",
+    "test:vigilar": "vitest",
+    "test:int": "vitest run -c vitest.int.config.ts --passWithNoTests",
+    "test:e2e": "vitest run -c vitest.e2e.config.ts --passWithNoTests",
+    "test:cov": "vitest run --coverage --passWithNoTests",
+    "lint": "eslint . --max-warnings=0",
+    "formatear": "prettier --write .",
+    "formato:verificar": "prettier --check .",
+    "verificar:paquetes": "node scripts/verificar-antiguedad-paquetes.mjs",
+    "prepare": "husky",
+    "seed": "nest start --entryFile semillas"
+  },
+  "dependencies": {
+    "@nestjs/common": "12.3.2",
+    "@nestjs/config": "12.0.1",
+    "@nestjs/core": "12.3.2",
+    "@nestjs/platform-express": "12.3.2",
+    "@nestjs/typeorm": "12.0.2",
+    "pg": "8.23.1",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "typeorm": "1.1.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@nestjs/cli": "12.0.11",
+    "@nestjs/testing": "12.3.2",
+    "@types/express": "5.0.6",
+    "@types/node": "24.19.2",
+    "@types/supertest": "7.2.1",
+    "@vitest/coverage-v8": "5.0.5",
+    "eslint": "10.14.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.14.0",
+    "husky": "9.1.7",
+    "lint-staged": "17.6.0",
+    "prettier": "3.9.10",
+    "supertest": "7.3.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  },
+  "resolutions": {
+    "semver": "7.8.5",
+    "strtok3": "10.6.3",
+    "token-types": "6.1.2"
+  },
+  "lint-staged": {
+    "*.{ts,js,mjs}": [
+      "eslint --max-warnings=0 --fix",
+      "prettier --write"
+    ],
+    "src/**/*.ts": "vitest related --run --passWithNoTests",
+    "*.{json,yml,yaml}": "prettier --write",
+    "package.json": "node scripts/verificar-antiguedad-paquetes.mjs",
+    "yarn.lock": "node scripts/verificar-antiguedad-paquetes.mjs --lock"
+  }
+}
