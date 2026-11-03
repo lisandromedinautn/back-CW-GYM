@@ -1,0 +1,23 @@
+# Dependencias y compilación
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Cobertura y reportes
+coverage/
+
+# Variables de entorno locales (las de test y el ejemplo sí se versionan)
+.env
+.env.local
+
+# Logs y sistema
+*.log
+npm-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/*
+!.vscode/extensions.json
+.idea/
