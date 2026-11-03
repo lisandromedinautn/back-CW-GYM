@@ -23,7 +23,8 @@
     "lint": "eslint . --max-warnings=0",
     "formatear": "prettier --write .",
     "formato:verificar": "prettier --check .",
-    "verificar:paquetes": "node scripts/verificar-antiguedad-paquetes.mjs"
+    "verificar:paquetes": "node scripts/verificar-antiguedad-paquetes.mjs",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nestjs/common": "12.3.2",
@@ -47,6 +48,8 @@
     "eslint": "10.14.0",
     "eslint-config-prettier": "10.1.8",
     "globals": "17.14.0",
+    "husky": "9.1.7",
+    "lint-staged": "17.6.0",
     "prettier": "3.9.10",
     "supertest": "7.3.1",
     "typescript": "6.0.3",
@@ -58,5 +61,15 @@
     "semver": "7.8.5",
     "strtok3": "10.6.3",
     "token-types": "6.1.2"
+  },
+  "lint-staged": {
+    "*.{ts,js,mjs}": [
+      "eslint --max-warnings=0 --fix",
+      "prettier --write"
+    ],
+    "src/**/*.ts": "vitest related --run --passWithNoTests",
+    "*.{json,yml,yaml}": "prettier --write",
+    "package.json": "node scripts/verificar-antiguedad-paquetes.mjs",
+    "yarn.lock": "node scripts/verificar-antiguedad-paquetes.mjs --lock"
   }
 }
