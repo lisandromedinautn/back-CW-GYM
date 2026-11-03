@@ -94,9 +94,11 @@ Comandos (se definen en T02): `yarn test`, `yarn test:int`, `yarn test:e2e`, `ya
 
 ## Git y Trello
 
-* Ramas `main` y `develop`. Se trabaja sobre `develop` (se permite commitear directo). Lo que bloquea son los hooks: lint y tests tienen que pasar.
-* `develop` → `main` al cierre de cada sprint, con el permiso del desarrollador.
-* Todo commit referencia su tarjeta de Trello. Formato (conventional commits en español): `feat(planificacion): crear plan de 28 días [US07]`. Tipos: `feat`, `fix`, `test`, `refactor`, `docs`, `chore`.
+* Ramas `main` y `develop`. Cada tarjeta se trabaja en una subrama que sale de `develop` (`feat/US07-crear-plan`) y se integra con `merge --no-ff` y el mensaje `US07 — Título`. Lo que bloquea son los hooks: lint y tests tienen que pasar, y `--no-verify` está prohibido.
+* **Microcommits** (decisión 37): un único cambio lógico por commit, que compila y pasa los tests. Test e implementación mínima de una regla van juntos y el refactor va aparte. Sin squash, y sin reescribir commits ya pusheados. Detalle en `docs/PLANIFICACION.md`, sección "Microcommits y trazabilidad".
+* Todo commit referencia su tarjeta de Trello. Formato (conventional commits en español, verbo en primera persona): `feat(planificacion): calculo la fecha de fin del plan [US07]`, con el pie `Reglas: RN-...` si toca el test de una regla. Tipos: `feat`, `fix`, `test`, `refactor`, `docs`, `chore`.
+* **Versionado** (decisión 38): SemVer 1.x, sincronizado con el front. La minor sube al cerrar cada fase (hito funcional) y el patch con los arreglos sobre una versión publicada. Cada versión se publica en `develop` con `CHANGELOG.md`, `package.json` y el tag anotado `v1.x.y`.
+* **PROHIBIDO tocar `main` hasta el 22/11/2026** (decisión 39). Ese día, con el permiso del desarrollador, se mergea `develop`. En el escenario pesimista hay un segundo merge, como tarde el 01/12. Orden de las fases: `docs/PLAN-IMPLEMENTACION.md`.
 * El agente no commitea ni pushea sin que el desarrollador se lo pida.
 
 ## Trabajo con IA

@@ -83,4 +83,4 @@ Cada módulo tiene su `FICHAS-TEST.md`:
 
 * ESLint (flat config) + Prettier.
 * Pre-commit (husky + lint-staged): lint de los archivos staged y tests relacionados.
-* Antes de un merge `develop` → `main`: `yarn lint`, `yarn test:cov`, `yarn test:int` y `yarn test:e2e`, todos en verde.
+* Antes de publicar una versión (tag en `develop`) o de un merge `develop` → `main`: `yarn lint`, `yarn test:cov`, `yarn test:int` y `yarn test:e2e`, todos en verde.

@@ -34,6 +34,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/`. Tests de integración: `t
 | Módulo | Caso de uso | Endpoint | US | Estado |
 | :-- | :-- | :-- | :-- | :-- |
 | identidad | `ingresar-al-sistema.caso-uso.ts` | `POST /identidad/ingreso` | US00 | 📄 |
+| identidad | `sembrar-admin.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | US00 | 📄 |
 | identidad | `dar-alta-profesor.caso-uso.ts` | `POST /identidad/profesores` | US02 | 📄 |
 | identidad | `generar-codigo-profesor.caso-uso.ts` | `POST /identidad/profesores/codigo` | US04 | 📄 |
 | identidad | `vincular-alumno.caso-uso.ts` | `POST /identidad/alumnos/vinculo` | US05 | 📄 |
