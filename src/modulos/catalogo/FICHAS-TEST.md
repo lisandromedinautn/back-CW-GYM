@@ -23,3 +23,5 @@ Una fila por caso de test. La entrada y el esperado los **confirma el desarrolla
 | `dominio/musculo.spec.ts` › Serrato pertenece al grupo Pecho | RN-CAT-05 | Unitario | `Musculo.desde('Serrato')` | grupo `Pecho` | grupo `Pecho` | 08/11/2026 |
 | `dominio/musculo.spec.ts` › Elevador de la escápula pertenece al grupo Espalda | RN-CAT-05 | Unitario | `Musculo.desde('Elevador de la escápula')` | grupo `Espalda` | grupo `Espalda` | 08/11/2026 |
 | `dominio/musculo.spec.ts` › "Cuello" se rechaza con RN-CAT-05 | RN-CAT-05 | Unitario | `Musculo.desde('Cuello')` | `ErrorDominio` código `RN-CAT-05` | `ErrorDominio` código `RN-CAT-05` | 08/11/2026 |
+| `dominio/ejercicio.spec.ts` › con nombre vacío se rechaza con RN-CAT-01 | RN-CAT-01 | Unitario | `Ejercicio.crear({ ..., nombre: '' })` | `ErrorDominio` código `RN-CAT-01` | `ErrorDominio` código `RN-CAT-01` | 08/11/2026 |
+| `dominio/ejercicio.spec.ts` › sin músculo secundario se crea bien | RN-CAT-01 | Unitario | `Ejercicio.crear` sin `musculoSecundario` | `musculoSecundario` es `null` | `musculoSecundario` es `null` | 08/11/2026 |
