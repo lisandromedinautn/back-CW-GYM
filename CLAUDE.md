@@ -28,6 +28,7 @@ src/
   modulos/<modulo>/
     dominio/          entidades ricas, objetos de valor, eventos, puertos (interfaces de repositorio)
     aplicacion/       un caso de uso por archivo (<accion>.caso-uso.ts) y sus DTO
+    (dentro de dominio/ y aplicacion/, una carpeta por concepto o caso de uso, con su spec: ver ATLAS.md, "Carpetas por concepto")
     infraestructura/  repositorios TypeORM, entidades de persistencia, mappers, adaptadores
     presentacion/     controladores, guards específicos, validación de entrada
     CLAUDE.md         reglas de negocio del módulo (RN-<MOD>-nn)

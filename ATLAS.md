@@ -46,7 +46,7 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 
 ## Casos de uso → endpoint → tests
 
-Base de cada ruta: `src/modulos/<modulo>/aplicacion/`. Tests de integración: `test/integracion/<modulo>/`. Tests e2e: `test/e2e/<modulo>/`.
+Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta por caso de uso, con su spec; ver "Carpetas por concepto"). Tests de integración: `test/integracion/<modulo>/`. Tests e2e: `test/e2e/<modulo>/`.
 
 | Módulo | Caso de uso | Endpoint | US | Estado |
 | :-- | :-- | :-- | :-- | :-- |
@@ -84,6 +84,16 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/`. Tests de integración: `t
 | entrenamiento | Fachada de planificacion | Copiar la rutina del día (RN-ENT-01, 02) |
 | entrenamiento | Fachada de identidad | Peso actual del alumno y su profesor (RN-ENT-02, 18) |
 | entrenamiento | Fachada de catalogo | Tipo, tipo de carga, factor y grupo de cada ejercicio (RN-ENT-07, 09, 10) |
+
+## Carpetas por concepto
+
+Decidido por Lisandro el 08/11/2026: dentro de `dominio/` y `aplicacion/` cada concepto tiene su carpeta, con el código y su spec juntos, para que la vista no quede con decenas de archivos sueltos.
+
+* `dominio/<concepto>/`: la entidad o el objeto de valor y su spec. Los puertos y eventos van en la carpeta del agregado al que pertenecen (por ejemplo, `identidad/dominio/profesor/` tiene `profesor.entidad.ts`, su spec, `repositorio-profesores.puerto.ts` y `generador-codigos.puerto.ts`).
+* `aplicacion/<caso-de-uso>/`: el caso de uso, su spec y sus ayudantes. Los casos de uso muy relacionados comparten carpeta (`identidad/aplicacion/codigo-profesor/` tiene generar, consultar y `buscar-profesor.ts`).
+* `infraestructura/` y `presentacion/` siguen planas mientras tengan pocos archivos.
+
+Hoy: catálogo `dominio/{ejercicio, factor-peso-corporal, musculo, tipo-carga, tipo-ejercicio, dataset}` y `aplicacion/{cargar-dataset-ejercicios, listar-ejercicios}`; identidad `dominio/{usuario, rol, documento, profesor, alumno}` y `aplicacion/{ingresar-al-sistema, sembrar-admin, sembrar-usuarios, dar-alta-profesor, codigo-profesor, vincular-alumno}`.
 
 ## Nombres de archivo
 

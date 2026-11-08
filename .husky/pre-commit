@@ -1,1 +1,3 @@
-yarn lint-staged
+# --max-arg-length: en Windows cmd corta las líneas de más de 8191 caracteres; con muchos archivos
+# staged (por ejemplo, un refactor que mueve carpetas) lint-staged parte la lista en tandas.
+yarn lint-staged --max-arg-length 6000

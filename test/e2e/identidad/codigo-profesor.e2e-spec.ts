@@ -4,8 +4,8 @@ import request from 'supertest';
 import { DataSource } from 'typeorm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { configurarAplicacion } from '../../../src/configurar-aplicacion.js';
-import { SembrarAdmin } from '../../../src/modulos/identidad/aplicacion/sembrar-admin.caso-uso.js';
-import { SembrarUsuarios } from '../../../src/modulos/identidad/aplicacion/sembrar-usuarios.caso-uso.js';
+import { SembrarAdmin } from '../../../src/modulos/identidad/aplicacion/sembrar-admin/sembrar-admin.caso-uso.js';
+import { SembrarUsuarios } from '../../../src/modulos/identidad/aplicacion/sembrar-usuarios/sembrar-usuarios.caso-uso.js';
 import { ModuloRaiz } from '../../../src/modulo-raiz.module.js';
 
 // .env.test: admin@test.local / clave-de-test; semilla: profesor01@cwgym.test y alumno01@cwgym.test con clave-de-semilla

@@ -4,11 +4,17 @@ import {
   UsuarioActual,
   type UsuarioAutenticado,
 } from '../../../compartido/presentacion/guard-roles.js';
-import { ConsultarCodigoProfesor } from '../aplicacion/consultar-codigo-profesor.caso-uso.js';
-import { DarAltaProfesor } from '../aplicacion/dar-alta-profesor.caso-uso.js';
-import { GenerarCodigoProfesor } from '../aplicacion/generar-codigo-profesor.caso-uso.js';
-import { IngresarAlSistema, type Ingreso } from '../aplicacion/ingresar-al-sistema.caso-uso.js';
-import { VincularAlumno, type Vinculo } from '../aplicacion/vincular-alumno.caso-uso.js';
+import { ConsultarCodigoProfesor } from '../aplicacion/codigo-profesor/consultar-codigo-profesor.caso-uso.js';
+import { DarAltaProfesor } from '../aplicacion/dar-alta-profesor/dar-alta-profesor.caso-uso.js';
+import { GenerarCodigoProfesor } from '../aplicacion/codigo-profesor/generar-codigo-profesor.caso-uso.js';
+import {
+  IngresarAlSistema,
+  type Ingreso,
+} from '../aplicacion/ingresar-al-sistema/ingresar-al-sistema.caso-uso.js';
+import {
+  VincularAlumno,
+  type Vinculo,
+} from '../aplicacion/vincular-alumno/vincular-alumno.caso-uso.js';
 import { AltaProfesorDto } from './alta-profesor.dto.js';
 import { IngresoDto } from './ingreso.dto.js';
 import { VinculoDto } from './vinculo.dto.js';
