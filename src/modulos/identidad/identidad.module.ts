@@ -1,4 +1,8 @@
 import { Module } from '@nestjs/common';
+import {
+  PUBLICADOR_EVENTOS,
+  type PublicadorEventos,
+} from '../../compartido/dominio/publicador-eventos.puerto.js';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
@@ -6,6 +10,7 @@ import type { Repository } from 'typeorm';
 import { ConsultarCodigoProfesor } from './aplicacion/consultar-codigo-profesor.caso-uso.js';
 import { DarAltaProfesor } from './aplicacion/dar-alta-profesor.caso-uso.js';
 import { GenerarCodigoProfesor } from './aplicacion/generar-codigo-profesor.caso-uso.js';
+import { VincularAlumno } from './aplicacion/vincular-alumno.caso-uso.js';
 import { IngresarAlSistema } from './aplicacion/ingresar-al-sistema.caso-uso.js';
 import { SembrarAdmin } from './aplicacion/sembrar-admin.caso-uso.js';
 import { SembrarUsuarios } from './aplicacion/sembrar-usuarios.caso-uso.js';
@@ -96,6 +101,12 @@ import { IdentidadControlador } from './presentacion/identidad.controlador.js';
       provide: ConsultarCodigoProfesor,
       inject: [REPOSITORIO_PROFESORES],
       useFactory: (p: RepositorioProfesores) => new ConsultarCodigoProfesor(p),
+    },
+    {
+      provide: VincularAlumno,
+      inject: [REPOSITORIO_ALUMNOS, REPOSITORIO_PROFESORES, PUBLICADOR_EVENTOS],
+      useFactory: (a: RepositorioAlumnos, p: RepositorioProfesores, e: PublicadorEventos) =>
+        new VincularAlumno(a, p, e),
     },
     {
       provide: SembrarAdmin,
