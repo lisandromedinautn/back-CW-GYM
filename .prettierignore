@@ -1,0 +1,8 @@
+dist/
+coverage/
+node_modules/
+yarn.lock
+# La documentación tiene tablas alineadas a mano: Prettier no la toca.
+*.md
+.claude/
+datos/
