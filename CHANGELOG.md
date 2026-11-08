@@ -6,6 +6,10 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ## [Sin publicar]
 
+## [1.1.0] — 2026-11-08
+
+Ingreso al sistema con roles, catálogo de ejercicios por dataset, alta de profesores, semilla de usuarios, código de profesor y vínculo alumno-profesor (fase 1: US00, T01, US02, US04, US05; T04 y T05 de planificación).
+
 ### Agregado
 
 - `POST /identidad/ingreso` (público): con email y contraseña correctos devuelve un JWT con el rol del usuario; con datos incorrectos responde 401 con RN-IDE-01 sin decir qué dato falló (US00).
