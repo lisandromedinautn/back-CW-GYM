@@ -7,6 +7,12 @@ export type CategoriaError =
   'validacion' | 'credenciales' | 'prohibido' | 'no-encontrado' | 'conflicto';
 
 /**
+ * Código técnico para un recurso que no existe y no corresponde a ninguna regla de negocio
+ * (por ejemplo, un token válido de un usuario sin profesor o alumno asociado). Responde 404.
+ */
+export const CODIGO_NO_ENCONTRADO = 'NO-ENCONTRADO';
+
+/**
  * Error que lanza el dominio cuando se viola una regla de negocio.
  * Contrato con el front (src/compartido/CLAUDE.md): `{ codigo: 'RN-XXX-nn', mensaje }`.
  */
