@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import {
   PUBLICADOR_EVENTOS,
   type PublicadorEventos,
-} from '../../compartido/dominio/publicador-eventos.puerto.js';
+} from '../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
@@ -35,16 +35,16 @@ import {
   REPOSITORIO_USUARIOS,
   type RepositorioUsuarios,
 } from './dominio/usuario/repositorio-usuarios.puerto.js';
-import { AlumnoEsquema } from './infraestructura/alumno.esquema.js';
-import { RepositorioAlumnosTypeorm } from './infraestructura/alumno.repositorio-typeorm.js';
-import { EmisorTokensJwt } from './infraestructura/emisor-tokens-jwt.js';
-import { GeneradorCodigosAleatorio } from './infraestructura/generador-codigos-aleatorio.js';
-import { HasheadorBcrypt } from './infraestructura/hasheador-bcrypt.js';
-import { ProfesorEsquema } from './infraestructura/profesor.esquema.js';
-import { RepositorioProfesoresTypeorm } from './infraestructura/profesor.repositorio-typeorm.js';
-import { UsuarioEsquema } from './infraestructura/usuario.esquema.js';
-import { RepositorioUsuariosTypeorm } from './infraestructura/usuario.repositorio-typeorm.js';
-import { IdentidadControlador } from './presentacion/identidad.controlador.js';
+import { AlumnoEsquema } from './infraestructura/alumno/alumno.esquema.js';
+import { RepositorioAlumnosTypeorm } from './infraestructura/alumno/alumno.repositorio-typeorm.js';
+import { EmisorTokensJwt } from './infraestructura/usuario/emisor-tokens-jwt.js';
+import { GeneradorCodigosAleatorio } from './infraestructura/profesor/generador-codigos-aleatorio.js';
+import { HasheadorBcrypt } from './infraestructura/usuario/hasheador-bcrypt.js';
+import { ProfesorEsquema } from './infraestructura/profesor/profesor.esquema.js';
+import { RepositorioProfesoresTypeorm } from './infraestructura/profesor/profesor.repositorio-typeorm.js';
+import { UsuarioEsquema } from './infraestructura/usuario/usuario.esquema.js';
+import { RepositorioUsuariosTypeorm } from './infraestructura/usuario/usuario.repositorio-typeorm.js';
+import { IdentidadControlador } from './presentacion/controlador/identidad.controlador.js';
 
 /** Identidad y Vínculos. Los casos de uso no conocen Nest: se arman acá con fábricas. */
 @Module({

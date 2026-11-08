@@ -1,8 +1,8 @@
-import { Ejercicio } from '../dominio/ejercicio/ejercicio.entidad.js';
-import { FactorPesoCorporal } from '../dominio/factor-peso-corporal/factor-peso-corporal.valor.js';
-import { Musculo } from '../dominio/musculo/musculo.valor.js';
-import { TipoCarga } from '../dominio/tipo-carga/tipo-carga.valor.js';
-import { TipoEjercicio } from '../dominio/tipo-ejercicio/tipo-ejercicio.valor.js';
+import { Ejercicio } from '../../dominio/ejercicio/ejercicio.entidad.js';
+import { FactorPesoCorporal } from '../../dominio/factor-peso-corporal/factor-peso-corporal.valor.js';
+import { Musculo } from '../../dominio/musculo/musculo.valor.js';
+import { TipoCarga } from '../../dominio/tipo-carga/tipo-carga.valor.js';
+import { TipoEjercicio } from '../../dominio/tipo-ejercicio/tipo-ejercicio.valor.js';
 import { EjercicioEsquema } from './ejercicio.esquema.js';
 
 export const EjercicioMapper = {

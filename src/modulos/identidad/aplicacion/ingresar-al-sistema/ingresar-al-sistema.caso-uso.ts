@@ -1,4 +1,4 @@
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import type { EmisorTokens } from '../../dominio/usuario/emisor-tokens.puerto.js';
 import type { HasheadorContrasenias } from '../../dominio/usuario/hasheador-contrasenias.puerto.js';
 import type { NombreRol } from '../../dominio/rol/rol.valor.js';

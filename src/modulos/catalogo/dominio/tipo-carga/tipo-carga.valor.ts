@@ -1,4 +1,4 @@
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 
 /** RN-CAT-03: el tipo de carga es uno de los cuatro del glosario y no admite otro valor. */
 export class TipoCarga {

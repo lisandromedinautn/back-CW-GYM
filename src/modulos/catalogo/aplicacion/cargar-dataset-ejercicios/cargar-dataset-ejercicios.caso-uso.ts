@@ -1,4 +1,4 @@
-import type { Semilla } from '../../../../compartido/aplicacion/semilla.js';
+import type { Semilla } from '../../../../compartido/aplicacion/semilla/semilla.js';
 import { FuenteDatasetEjercicios } from '../../dominio/dataset/fuente-dataset-ejercicios.puerto.js';
 import { mapearRegistroDataset } from '../../dominio/dataset/mapear-registro-dataset.js';
 import { RepositorioEjercicios } from '../../dominio/ejercicio/repositorio-ejercicios.puerto.js';

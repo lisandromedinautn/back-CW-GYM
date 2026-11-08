@@ -9,7 +9,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import type { Request } from 'express';
-import { ErrorDominio } from '../dominio/error-dominio.js';
+import { ErrorDominio } from '../../dominio/error-dominio/error-dominio.js';
 
 export const CLAVE_ROLES = 'roles';
 

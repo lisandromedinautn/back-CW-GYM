@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import { FactorPesoCorporal } from '../factor-peso-corporal/factor-peso-corporal.valor.js';
 import type { Musculo } from '../musculo/musculo.valor.js';
 import type { TipoCarga } from '../tipo-carga/tipo-carga.valor.js';

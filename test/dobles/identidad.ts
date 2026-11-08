@@ -3,7 +3,7 @@
 import type {
   EventoDominio,
   PublicadorEventos,
-} from '../../src/compartido/dominio/publicador-eventos.puerto.js';
+} from '../../src/compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
 import type {
   EmisorTokens,
   DatosToken,

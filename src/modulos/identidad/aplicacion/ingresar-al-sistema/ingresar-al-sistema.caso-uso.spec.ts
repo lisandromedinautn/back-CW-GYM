@@ -4,7 +4,7 @@ import {
   HasheadorFalso,
   RepositorioUsuariosEnMemoria,
 } from '../../../../../test/dobles/identidad.js';
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import { Rol } from '../../dominio/rol/rol.valor.js';
 import { Usuario } from '../../dominio/usuario/usuario.entidad.js';
 import { IngresarAlSistema } from './ingresar-al-sistema.caso-uso.js';

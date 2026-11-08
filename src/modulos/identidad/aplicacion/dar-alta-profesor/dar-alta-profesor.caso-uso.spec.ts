@@ -5,7 +5,7 @@ import {
   RepositorioProfesoresEnMemoria,
   RepositorioUsuariosEnMemoria,
 } from '../../../../../test/dobles/identidad.js';
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import { Alumno } from '../../dominio/alumno/alumno.entidad.js';
 import { Documento } from '../../dominio/documento/documento.valor.js';
 import { Rol } from '../../dominio/rol/rol.valor.js';

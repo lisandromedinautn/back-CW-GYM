@@ -1,4 +1,4 @@
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 
 /** RN-CAT-02: el tipo de ejercicio es "por tiempo" o "por repeticiones" y no admite otro valor. */
 export class TipoEjercicio {

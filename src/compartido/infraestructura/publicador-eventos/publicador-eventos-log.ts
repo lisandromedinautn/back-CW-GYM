@@ -1,5 +1,8 @@
 import { Logger } from '@nestjs/common';
-import type { EventoDominio, PublicadorEventos } from '../dominio/publicador-eventos.puerto.js';
+import type {
+  EventoDominio,
+  PublicadorEventos,
+} from '../../dominio/publicador-eventos/publicador-eventos.puerto.js';
 
 /**
  * Por ahora ningún módulo escucha eventos: se registran en el log. Cuando haya un suscriptor

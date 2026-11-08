@@ -4,10 +4,10 @@ import { CargarDatasetEjercicios } from './aplicacion/cargar-dataset-ejercicios/
 import { ListarEjercicios } from './aplicacion/listar-ejercicios/listar-ejercicios.caso-uso.js';
 import { FuenteDatasetEjercicios } from './dominio/dataset/fuente-dataset-ejercicios.puerto.js';
 import { RepositorioEjercicios } from './dominio/ejercicio/repositorio-ejercicios.puerto.js';
-import { EjercicioEsquema } from './infraestructura/ejercicio.esquema.js';
-import { FuenteDatasetEjerciciosArchivo } from './infraestructura/fuente-dataset-ejercicios.archivo.js';
-import { RepositorioEjerciciosTypeorm } from './infraestructura/ejercicio.repositorio-typeorm.js';
-import { CatalogoControlador } from './presentacion/catalogo.controlador.js';
+import { EjercicioEsquema } from './infraestructura/ejercicio/ejercicio.esquema.js';
+import { FuenteDatasetEjerciciosArchivo } from './infraestructura/dataset/fuente-dataset-ejercicios.archivo.js';
+import { RepositorioEjerciciosTypeorm } from './infraestructura/ejercicio/ejercicio.repositorio-typeorm.js';
+import { CatalogoControlador } from './presentacion/controlador/catalogo.controlador.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([EjercicioEsquema])],

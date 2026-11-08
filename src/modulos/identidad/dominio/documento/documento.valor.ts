@@ -1,4 +1,4 @@
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 
 export const TIPOS_DOCUMENTO = ['DNI', 'LC', 'LE', 'Pasaporte'] as const;
 export type TipoDocumento = (typeof TIPOS_DOCUMENTO)[number];

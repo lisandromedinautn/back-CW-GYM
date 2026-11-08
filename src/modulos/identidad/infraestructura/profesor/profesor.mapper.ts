@@ -1,5 +1,5 @@
-import { Documento } from '../dominio/documento/documento.valor.js';
-import { Profesor } from '../dominio/profesor/profesor.entidad.js';
+import { Documento } from '../../dominio/documento/documento.valor.js';
+import { Profesor } from '../../dominio/profesor/profesor.entidad.js';
 import { ProfesorEsquema } from './profesor.esquema.js';
 
 export const ProfesorMapper = {

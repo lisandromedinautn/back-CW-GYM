@@ -4,7 +4,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { FiltroErrorDominio } from './filtro-error-dominio.js';
+import { FiltroErrorDominio } from '../filtro-error-dominio/filtro-error-dominio.js';
 import { GuardRoles, Roles } from './guard-roles.js';
 
 @Controller('prueba')

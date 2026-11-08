@@ -3,21 +3,21 @@ import {
   Roles,
   UsuarioActual,
   type UsuarioAutenticado,
-} from '../../../compartido/presentacion/guard-roles.js';
-import { ConsultarCodigoProfesor } from '../aplicacion/codigo-profesor/consultar-codigo-profesor.caso-uso.js';
-import { DarAltaProfesor } from '../aplicacion/dar-alta-profesor/dar-alta-profesor.caso-uso.js';
-import { GenerarCodigoProfesor } from '../aplicacion/codigo-profesor/generar-codigo-profesor.caso-uso.js';
+} from '../../../../compartido/presentacion/guard-roles/guard-roles.js';
+import { ConsultarCodigoProfesor } from '../../aplicacion/codigo-profesor/consultar-codigo-profesor.caso-uso.js';
+import { DarAltaProfesor } from '../../aplicacion/dar-alta-profesor/dar-alta-profesor.caso-uso.js';
+import { GenerarCodigoProfesor } from '../../aplicacion/codigo-profesor/generar-codigo-profesor.caso-uso.js';
 import {
   IngresarAlSistema,
   type Ingreso,
-} from '../aplicacion/ingresar-al-sistema/ingresar-al-sistema.caso-uso.js';
+} from '../../aplicacion/ingresar-al-sistema/ingresar-al-sistema.caso-uso.js';
 import {
   VincularAlumno,
   type Vinculo,
-} from '../aplicacion/vincular-alumno/vincular-alumno.caso-uso.js';
-import { AltaProfesorDto } from './alta-profesor.dto.js';
-import { IngresoDto } from './ingreso.dto.js';
-import { VinculoDto } from './vinculo.dto.js';
+} from '../../aplicacion/vincular-alumno/vincular-alumno.caso-uso.js';
+import { AltaProfesorDto } from '../alta-profesor/alta-profesor.dto.js';
+import { IngresoDto } from '../ingreso/ingreso.dto.js';
+import { VinculoDto } from '../vinculo/vinculo.dto.js';
 
 @Controller('identidad')
 export class IdentidadControlador {

@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import type { Documento } from '../documento/documento.valor.js';
 
 export interface DatosProfesor {

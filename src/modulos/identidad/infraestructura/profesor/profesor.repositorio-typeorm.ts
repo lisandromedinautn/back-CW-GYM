@@ -1,7 +1,7 @@
 import type { Repository } from 'typeorm';
-import type { Documento } from '../dominio/documento/documento.valor.js';
-import type { Profesor } from '../dominio/profesor/profesor.entidad.js';
-import type { RepositorioProfesores } from '../dominio/profesor/repositorio-profesores.puerto.js';
+import type { Documento } from '../../dominio/documento/documento.valor.js';
+import type { Profesor } from '../../dominio/profesor/profesor.entidad.js';
+import type { RepositorioProfesores } from '../../dominio/profesor/repositorio-profesores.puerto.js';
 import type { ProfesorEsquema } from './profesor.esquema.js';
 import { ProfesorMapper } from './profesor.mapper.js';
 

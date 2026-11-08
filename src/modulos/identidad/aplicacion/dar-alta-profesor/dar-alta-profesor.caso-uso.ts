@@ -1,4 +1,4 @@
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import { Documento } from '../../dominio/documento/documento.valor.js';
 import type { HasheadorContrasenias } from '../../dominio/usuario/hasheador-contrasenias.puerto.js';
 import { Profesor } from '../../dominio/profesor/profesor.entidad.js';

@@ -1,8 +1,8 @@
 import {
   CODIGO_NO_ENCONTRADO,
   ErrorDominio,
-} from '../../../../compartido/dominio/error-dominio.js';
-import type { PublicadorEventos } from '../../../../compartido/dominio/publicador-eventos.puerto.js';
+} from '../../../../compartido/dominio/error-dominio/error-dominio.js';
+import type { PublicadorEventos } from '../../../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
 import type { RepositorioAlumnos } from '../../dominio/alumno/repositorio-alumnos.puerto.js';
 import type { RepositorioProfesores } from '../../dominio/profesor/repositorio-profesores.puerto.js';
 

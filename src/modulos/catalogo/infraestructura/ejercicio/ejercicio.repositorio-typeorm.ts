@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import type { Ejercicio } from '../dominio/ejercicio/ejercicio.entidad.js';
-import { RepositorioEjercicios } from '../dominio/ejercicio/repositorio-ejercicios.puerto.js';
+import type { Ejercicio } from '../../dominio/ejercicio/ejercicio.entidad.js';
+import { RepositorioEjercicios } from '../../dominio/ejercicio/repositorio-ejercicios.puerto.js';
 import { EjercicioEsquema } from './ejercicio.esquema.js';
 import { EjercicioMapper } from './ejercicio.mapper.js';
 

@@ -1,4 +1,4 @@
-import type { Semilla } from '../../../../compartido/aplicacion/semilla.js';
+import type { Semilla } from '../../../../compartido/aplicacion/semilla/semilla.js';
 import type { HasheadorContrasenias } from '../../dominio/usuario/hasheador-contrasenias.puerto.js';
 import type { RepositorioUsuarios } from '../../dominio/usuario/repositorio-usuarios.puerto.js';
 import { Rol } from '../../dominio/rol/rol.valor.js';
