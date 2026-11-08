@@ -30,8 +30,8 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `src/semillas.ts` | Punto de entrada de `yarn seed`: lista ordenada de semillas ✅ |
 | `src/configurar-aplicacion.ts` | Configuración HTTP común a `main.ts` y a los e2e (`ValidationPipe` con `whitelist`) ✅ |
 | `src/compartido/compartido.module.ts` | Kernel compartido: JWT global, `GuardRoles` y `FiltroErrorDominio` registrados como `APP_GUARD` y `APP_FILTER` ✅ |
-| `src/compartido/dominio/publicador-eventos.puerto.ts` | Puerto `PublicadorEventos` (publica un `EventoDominio`) y su símbolo de inyección ✅ |
-| `src/compartido/infraestructura/publicador-eventos-log.ts` | `PublicadorEventosLog`: implementación del puerto que solo registra el evento en el log, hasta que haya un suscriptor ✅ |
+| `src/compartido/dominio/publicador-eventos/publicador-eventos.puerto.ts` | Puerto `PublicadorEventos` (publica un `EventoDominio`) y su símbolo de inyección ✅ |
+| `src/compartido/infraestructura/publicador-eventos/publicador-eventos-log.ts` | `PublicadorEventosLog`: implementación del puerto que solo registra el evento en el log, hasta que haya un suscriptor ✅ |
 | `CHANGELOG.md` | Cambios por versión (decisión 38) ✅ |
 
 ## Módulos
@@ -87,13 +87,26 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 
 ## Carpetas por concepto
 
-Decidido por Lisandro el 08/11/2026: dentro de `dominio/` y `aplicacion/` cada concepto tiene su carpeta, con el código y su spec juntos, para que la vista no quede con decenas de archivos sueltos.
+Decidido por Lisandro el 08/11/2026: en **todas las capas** (`dominio/`, `aplicacion/`, `infraestructura/`, `presentacion/`) y en `src/compartido/`, cada concepto tiene su carpeta con el código y su spec juntos, para que la vista no quede con archivos sueltos.
 
-* `dominio/<concepto>/`: la entidad o el objeto de valor y su spec. Los puertos y eventos van en la carpeta del agregado al que pertenecen (por ejemplo, `identidad/dominio/profesor/` tiene `profesor.entidad.ts`, su spec, `repositorio-profesores.puerto.ts` y `generador-codigos.puerto.ts`).
-* `aplicacion/<caso-de-uso>/`: el caso de uso, su spec y sus ayudantes. Los casos de uso muy relacionados comparten carpeta (`identidad/aplicacion/codigo-profesor/` tiene generar, consultar y `buscar-profesor.ts`).
-* `infraestructura/` y `presentacion/` siguen planas mientras tengan pocos archivos.
+* `dominio/<concepto>/`: la entidad o el objeto de valor y su spec. Los puertos y eventos van en la carpeta del agregado al que pertenecen (`identidad/dominio/profesor/` tiene la entidad, su spec, `repositorio-profesores.puerto.ts` y `generador-codigos.puerto.ts`).
+* `aplicacion/<caso-de-uso>/`: el caso de uso, su spec y sus ayudantes. Los muy relacionados comparten carpeta (`identidad/aplicacion/codigo-profesor/`).
+* `infraestructura/<concepto>/`: espeja las carpetas de `dominio/` (esquema, mapper, repositorio TypeORM y adaptadores de ese agregado).
+* `presentacion/controlador/` tiene el controlador del módulo, y `presentacion/<endpoint>/` el DTO de cada endpoint.
 
-Hoy: catálogo `dominio/{ejercicio, factor-peso-corporal, musculo, tipo-carga, tipo-ejercicio, dataset}` y `aplicacion/{cargar-dataset-ejercicios, listar-ejercicios}`; identidad `dominio/{usuario, rol, documento, profesor, alumno}` y `aplicacion/{ingresar-al-sistema, sembrar-admin, sembrar-usuarios, dar-alta-profesor, codigo-profesor, vincular-alumno}`.
+Hoy:
+
+| Módulo | Capa | Carpetas |
+| :-- | :-- | :-- |
+| catalogo | dominio | ejercicio, factor-peso-corporal, musculo, tipo-carga, tipo-ejercicio, dataset |
+| catalogo | aplicacion | cargar-dataset-ejercicios, listar-ejercicios |
+| catalogo | infraestructura | ejercicio, dataset |
+| catalogo | presentacion | controlador |
+| identidad | dominio | usuario, rol, documento, profesor, alumno |
+| identidad | aplicacion | ingresar-al-sistema, sembrar-admin, sembrar-usuarios, dar-alta-profesor, codigo-profesor, vincular-alumno |
+| identidad | infraestructura | usuario, profesor, alumno |
+| identidad | presentacion | controlador, ingreso, alta-profesor, vinculo |
+| compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio |
 
 ## Nombres de archivo
 
