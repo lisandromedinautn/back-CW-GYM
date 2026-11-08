@@ -26,6 +26,11 @@ export class RepositorioEjerciciosTypeorm extends RepositorioEjercicios {
     return this.repositorio.existsBy({ nombre });
   }
 
+  async buscarPorId(id: string): Promise<Ejercicio | null> {
+    const esquema = await this.repositorio.findOneBy({ id });
+    return esquema ? EjercicioMapper.aDominio(esquema) : null;
+  }
+
   async listar(): Promise<Ejercicio[]> {
     const esquemas = await this.repositorio.find();
     return esquemas.map((esquema) => EjercicioMapper.aDominio(esquema));

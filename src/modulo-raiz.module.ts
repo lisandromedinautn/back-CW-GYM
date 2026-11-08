@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CatalogoModule } from './modulos/catalogo/catalogo.module.js';
 import { ModuloCompartido } from './compartido/compartido.module.js';
 import { ModuloIdentidad } from './modulos/identidad/identidad.module.js';
+import { PlanificacionModule } from './modulos/planificacion/planificacion.module.js';
 
 /**
  * Módulo raíz: carga las variables de entorno y abre la conexión a PostgreSQL.
@@ -34,6 +35,7 @@ import { ModuloIdentidad } from './modulos/identidad/identidad.module.js';
     ModuloCompartido,
     ModuloIdentidad,
     CatalogoModule,
+    PlanificacionModule,
   ],
 })
 export class ModuloRaiz {}

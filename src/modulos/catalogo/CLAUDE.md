@@ -5,7 +5,7 @@ Contexto central. Contiene los ejercicios como materia prima. En el MVP el catá
 * **Agregados:** Ejercicio.
 * **Objetos de valor:** TipoEjercicio, TipoCarga, FactorPesoCorporal, Musculo, GrupoMuscular.
 * **Eventos que emite:** ninguno por ahora.
-* **Fachada que expone a otros módulos:** obtener un ejercicio por id con su tipo, tipo de carga, factor y grupo muscular. Planificación la usa para validar referencias y Entrenamiento para calcular carga, grupos y récords.
+* **Fachada que expone a otros módulos:** obtener un ejercicio por id con su tipo, tipo de carga, factor y grupo muscular. Planificación la usa para validar referencias y Entrenamiento para calcular carga, grupos y récords. ✅ `fachada-catalogo.ts` (raíz del módulo, US06): `obtenerEjercicio(id)` devuelve id, nombre, tipo y tipo de carga como texto, o null. Factor y grupo muscular se suman cuando los necesite Entrenamiento.
 * **Puertos (repositorios):** RepositorioEjercicios. Puerto técnico: FuenteDatasetEjercicios (lee el archivo del dataset).
 
 ## Reglas de negocio
