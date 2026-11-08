@@ -19,7 +19,7 @@
     "test:vigilar": "vitest",
     "test:int": "vitest run -c vitest.int.config.ts --passWithNoTests",
     "test:e2e": "vitest run -c vitest.e2e.config.ts --passWithNoTests",
-    "test:cov": "vitest run --coverage --passWithNoTests",
+    "test:cov": "vitest run -c vitest.cov.config.ts --coverage --passWithNoTests",
     "lint": "eslint . --max-warnings=0",
     "formatear": "prettier --write .",
     "formato:verificar": "prettier --check .",
