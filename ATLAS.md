@@ -30,6 +30,8 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `src/semillas.ts` | Punto de entrada de `yarn seed`: lista ordenada de semillas ✅ |
 | `src/configurar-aplicacion.ts` | Configuración HTTP común a `main.ts` y a los e2e (`ValidationPipe` con `whitelist`) ✅ |
 | `src/compartido/compartido.module.ts` | Kernel compartido: JWT global, `GuardRoles` y `FiltroErrorDominio` registrados como `APP_GUARD` y `APP_FILTER` ✅ |
+| `src/compartido/dominio/publicador-eventos.puerto.ts` | Puerto `PublicadorEventos` (publica un `EventoDominio`) y su símbolo de inyección ✅ |
+| `src/compartido/infraestructura/publicador-eventos-log.ts` | `PublicadorEventosLog`: implementación del puerto que solo registra el evento en el log, hasta que haya un suscriptor ✅ |
 | `CHANGELOG.md` | Cambios por versión (decisión 38) ✅ |
 
 ## Módulos
@@ -51,12 +53,13 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/`. Tests de integración: `t
 | identidad | `ingresar-al-sistema.caso-uso.ts` | `POST /identidad/ingreso` | US00 | ✅ |
 | identidad | `sembrar-admin.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | US00 | ✅ |
 | identidad | `sembrar-usuarios.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | US00 | ✅ |
-| identidad | `dar-alta-profesor.caso-uso.ts` | `POST /identidad/profesores` | US02 | 📄 |
-| identidad | `generar-codigo-profesor.caso-uso.ts` | `POST /identidad/profesores/codigo` | US04 | 📄 |
-| identidad | `vincular-alumno.caso-uso.ts` | `POST /identidad/alumnos/vinculo` | US05 | 📄 |
+| identidad | `dar-alta-profesor.caso-uso.ts` | `POST /identidad/profesores` | US02 | ✅ |
+| identidad | `generar-codigo-profesor.caso-uso.ts` | `POST /identidad/profesores/codigo` | US04 | ✅ |
+| identidad | `consultar-codigo-profesor.caso-uso.ts` | `GET /identidad/profesores/codigo` | US04 | ✅ |
+| identidad | `vincular-alumno.caso-uso.ts` | `POST /identidad/alumnos/vinculo` | US05 | ✅ |
 | catalogo | `cargar-dataset-ejercicios.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | T01 | ✅ |
 | catalogo | ~~`registrar-ejercicio.caso-uso.ts`~~ | ~~`POST /catalogo/ejercicios`~~ | US01 (fuera del MVP, DT-06) | — |
-| catalogo | `listar-ejercicios.caso-uso.ts` | `GET /catalogo/ejercicios` (todavía sin endpoint: el caso de uso existe, falta el controlador) | T01, US06 | ✅ |
+| catalogo | `listar-ejercicios.caso-uso.ts` | `GET /catalogo/ejercicios` | T01, US06 | ✅ |
 | planificacion | `crear-rutina.caso-uso.ts` | `POST /planificacion/rutinas` | US06, US09, US10 | 📄 |
 | planificacion | `editar-rutina.caso-uso.ts` | `PUT /planificacion/rutinas/:id` | US06 | 📄 |
 | planificacion | `importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | 📄 |

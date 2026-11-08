@@ -5,9 +5,9 @@ Lo mínimo que comparten todos los módulos. **Acá no va lógica de negocio de 
 | Capa | Contenido planificado |
 | :-- | :-- |
 | `aplicacion/` | ✅ `semilla.ts`: puerto `Semilla` de las semillas de `yarn seed` (idempotentes). Cada semilla concreta es un caso de uso de su módulo y se registra en `src/semillas.ts` |
-| `dominio/` | ✅ `error-dominio.ts`: `ErrorDominio` (código de regla, mensaje y categoría). Pendiente: clase base de entidad (identidad e igualdad), clase base de evento de dominio, puerto `Reloj`, puerto `PublicadorEventos` |
-| `infraestructura/` | Pendiente: configuración de TypeORM y de la base de datos (desarrollo / test), `RelojSistema`, publicador de eventos sobre el EventEmitter de Nest, emisión y validación de JWT. (Hoy la emisión del JWT está en `identidad/infraestructura/emisor-tokens-jwt.ts`) |
-| `presentacion/` | ✅ `guard-roles.ts`: `GuardRoles` y el decorador `@Roles(...)` (RN-IDE-03). Verifica el JWT y el rol; no hay un `GuardJwt` separado. ✅ `filtro-error-dominio.ts`: `FiltroErrorDominio` traduce `ErrorDominio` a una respuesta HTTP con `{ codigo, mensaje }` |
+| `dominio/` | ✅ `error-dominio.ts`: `ErrorDominio` (código de regla, mensaje y categoría). ✅ `publicador-eventos.puerto.ts`: puerto `PublicadorEventos` y la interfaz `EventoDominio`. Pendiente: clase base de entidad (identidad e igualdad), clase base de evento de dominio, puerto `Reloj` |
+| `infraestructura/` | ✅ `publicador-eventos-log.ts`: `PublicadorEventosLog`, que solo registra los eventos en el log hasta que haya un suscriptor. Pendiente: configuración de TypeORM y de la base de datos (desarrollo / test), `RelojSistema`, publicador sobre el EventEmitter de Nest (reemplazará al de log), emisión y validación de JWT. (Hoy la emisión del JWT está en `identidad/infraestructura/emisor-tokens-jwt.ts`) |
+| `presentacion/` | ✅ `guard-roles.ts`: `GuardRoles` y el decorador `@Roles(...)` (RN-IDE-03). Verifica el JWT y el rol; no hay un `GuardJwt` separado. ✅ El decorador `@UsuarioActual()` da al controlador el usuario del token (`sub`, `rol`). ✅ `filtro-error-dominio.ts`: `FiltroErrorDominio` traduce `ErrorDominio` a una respuesta HTTP con `{ codigo, mensaje }` |
 | Raíz del kernel | ✅ `compartido.module.ts`: JWT global, `GuardRoles` y `FiltroErrorDominio` registrados como `APP_GUARD` y `APP_FILTER` |
 
 ## Categoría de error → código HTTP

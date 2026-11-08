@@ -51,7 +51,7 @@ Contexto central. Contiene los ejercicios como materia prima. En el MVP el catá
 | `listar-ejercicios.caso-uso.ts` | T01, US06 (soporte) | — |
 | ~~`registrar-ejercicio.caso-uso.ts`~~ | US01 (fuera del MVP, DT-06) | — |
 
-## Endpoints tentativos
+## Endpoints
 
 | Método y ruta | Rol | Caso de uso |
 | :-- | :-- | :-- |
