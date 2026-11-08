@@ -5,5 +5,6 @@ export const REPOSITORIO_ALUMNOS = Symbol('RepositorioAlumnos');
 
 export interface RepositorioAlumnos {
   existePorDocumento(documento: Documento): Promise<boolean>;
+  buscarPorUsuarioId(usuarioId: string): Promise<Alumno | null>;
   guardar(alumno: Alumno): Promise<void>;
 }

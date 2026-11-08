@@ -1,6 +1,10 @@
 // Dobles de los puertos de identidad para los tests unitarios (docs/TESTING.md: se mockea
 // solo en los bordes: base de datos, hasheo y JWT). Viven fuera de src/ para no contar en la cobertura.
 import type {
+  EventoDominio,
+  PublicadorEventos,
+} from '../../src/compartido/dominio/publicador-eventos.puerto.js';
+import type {
   EmisorTokens,
   DatosToken,
 } from '../../src/modulos/identidad/dominio/emisor-tokens.puerto.js';
@@ -75,6 +79,10 @@ export class RepositorioProfesoresEnMemoria implements RepositorioProfesores {
 export class RepositorioAlumnosEnMemoria implements RepositorioAlumnos {
   readonly alumnos: Alumno[] = [];
 
+  async buscarPorUsuarioId(usuarioId: string): Promise<Alumno | null> {
+    return this.alumnos.find((alumno) => alumno.usuarioId === usuarioId) ?? null;
+  }
+
   async existePorDocumento(documento: Documento): Promise<boolean> {
     return this.alumnos.some((alumno) => alumno.documento.igualA(documento));
   }
@@ -96,5 +104,14 @@ export class GeneradorCodigosFalso implements GeneradorCodigos {
     const codigo = this.codigos[this.indice++];
     if (!codigo) throw new Error('GeneradorCodigosFalso: no quedan códigos');
     return codigo;
+  }
+}
+
+/** Guarda los eventos publicados para verificarlos (patrón Observador). */
+export class PublicadorEventosFalso implements PublicadorEventos {
+  readonly eventos: EventoDominio[] = [];
+
+  async publicar(evento: EventoDominio): Promise<void> {
+    this.eventos.push({ ...evento });
   }
 }
