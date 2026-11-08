@@ -42,12 +42,13 @@ Estado: **vigente** se puede testear e implementar. **A confirmar** no se toca h
 
 RN-IDE-03 se implementa en `src/compartido` (guard de roles) y se prueba con e2e de cada módulo.
 
-## Endpoints tentativos
+## Endpoints
 
 | Método y ruta | Rol | Caso de uso |
 | :-- | :-- | :-- |
 | `POST /identidad/ingreso` | Público | ingresar-al-sistema |
 | `POST /identidad/profesores` | Admin | dar-alta-profesor |
+| `GET /identidad/profesores/codigo` | Profesor | consultar-codigo-profesor |
 | `POST /identidad/profesores/codigo` | Profesor | generar-codigo-profesor |
 | `POST /identidad/alumnos/vinculo` | Alumno | vincular-alumno |
 

@@ -14,6 +14,7 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 - `POST /identidad/profesores` (Admin): da de alta un profesor con su legajo y su usuario de rol Profesor. Responde 201 con `{ id, legajo }`; con un legajo, un documento o un email repetidos responde 409 con RN-IDE-04, 06 o 13 (US02).
 - `GET /identidad/profesores/codigo` (Profesor): devuelve su Código de Profesor vigente, o `null` si todavía no generó uno (RN-IDE-08) (US04).
 - `POST /identidad/profesores/codigo` (Profesor): genera un código nuevo de 6 caracteres que reemplaza al anterior, que deja de vincular alumnos. Responde 201 con `{ codigo }` (RN-IDE-08) (US04).
+- `POST /identidad/alumnos/vinculo` (Alumno): vincula al alumno con el profesor cuyo código ingresa y emite `AlumnoVinculado`. Responde 200 con `{ profesor: { nombre, apellido } }`; 400 con RN-IDE-11 si el código no existe o fue regenerado, y 409 con RN-IDE-10 si el alumno ya tiene profesor (US05).
 - `yarn seed` crea el Admin inicial con `ADMIN_EMAIL` y `ADMIN_PASSWORD`, de forma idempotente (RN-IDE-14) (US00).
 - `yarn seed` crea 3 profesores (P-001 a P-003) y 20 alumnos de prueba, con la contraseña de `SEMILLA_CONTRASENIA` y sin duplicados (RN-IDE-12, 13) (US00).
 - Variables de entorno `JWT_SECRETO`, `JWT_EXPIRACION` y `SEMILLA_CONTRASENIA` (US00).

@@ -139,7 +139,7 @@ Las fechas suponen un ritmo parejo de 6,5 pts/día en el ideal y 5,3 pts/día en
 | 3 | ~~US01~~ | ~~Frontend: página de registro de ejercicio~~ | ~~front~~ | ~~RN-CAT-01…07~~ | ~~3~~ | — fuera del MVP (DT-06) |
 | 3 | US04 | Modelar: Código de Profesor | back | RN-IDE-08 | 1 | ✅ |
 | 4 | US04 | Backend y Frontend: generar código de profesor | ambos | RN-IDE-08 | 2 | back ✅, front ⬜ |
-| 5 | US05 | Backend: vincular alumno con el código | back | RN-IDE-09, 10, 11 | 3 | ⬜ |
+| 5 | US05 | Backend: vincular alumno con el código | back | RN-IDE-09, 10, 11 | 3 | ✅ |
 | 6 | US05 | Frontend: página para vincularse con el profesor | front | RN-IDE-09, 10, 11 | 1 | ⬜ |
 
 **Ejemplo de microcommits para US05 (backend).** El pie `Reglas:` se muestra en la misma línea para abreviar; en el commit real va al final del mensaje.
