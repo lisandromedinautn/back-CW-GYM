@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { TipoCarga } from './tipo-carga.js';
+import { TipoCarga } from './tipo-carga.valor.js';
 
 describe('RN-CAT-03 · el tipo de carga es Sin Peso, Peso Corporal, Peso Extra o Peso Corporal + Peso Extra', () => {
   it.each(['Sin Peso', 'Peso Corporal', 'Peso Extra', 'Peso Corporal + Peso Extra'])(

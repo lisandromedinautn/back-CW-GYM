@@ -1,9 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import { ErrorDominio } from '../../../compartido/dominio/error-dominio.js';
-import { FactorPesoCorporal } from './factor-peso-corporal.js';
-import type { Musculo } from './musculo.js';
-import type { TipoCarga } from './tipo-carga.js';
-import type { TipoEjercicio } from './tipo-ejercicio.js';
+import { FactorPesoCorporal } from './factor-peso-corporal.valor.js';
+import type { Musculo } from './musculo.valor.js';
+import type { TipoCarga } from './tipo-carga.valor.js';
+import type { TipoEjercicio } from './tipo-ejercicio.valor.js';
 
 export interface DatosEjercicio {
   idDataset: string;

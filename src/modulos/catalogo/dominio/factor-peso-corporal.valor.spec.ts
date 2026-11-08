@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FactorPesoCorporal } from './factor-peso-corporal.js';
+import { FactorPesoCorporal } from './factor-peso-corporal.valor.js';
 
 describe('RN-CAT-04 · el factor es mayor que 0% y hasta 100%', () => {
   it('0% se rechaza con RN-CAT-04', () => {

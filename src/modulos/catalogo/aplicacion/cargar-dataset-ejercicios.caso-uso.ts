@@ -1,7 +1,7 @@
 import type { Semilla } from '../../../compartido/aplicacion/semilla.js';
-import { FuenteDatasetEjercicios } from '../dominio/fuente-dataset-ejercicios.js';
+import { FuenteDatasetEjercicios } from '../dominio/fuente-dataset-ejercicios.puerto.js';
 import { mapearRegistroDataset } from '../dominio/mapear-registro-dataset.js';
-import { RepositorioEjercicios } from '../dominio/repositorio-ejercicios.js';
+import { RepositorioEjercicios } from '../dominio/repositorio-ejercicios.puerto.js';
 
 /**
  * Semilla de `yarn seed` (T01). Idempotente:

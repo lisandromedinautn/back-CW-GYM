@@ -1,9 +1,9 @@
 import { ErrorDominio } from '../../../compartido/dominio/error-dominio.js';
-import { Ejercicio } from './ejercicio.js';
-import { Musculo } from './musculo.js';
+import { Ejercicio } from './ejercicio.entidad.js';
+import { Musculo } from './musculo.valor.js';
 import type { RegistroDataset } from './registro-dataset.js';
-import { TipoCarga } from './tipo-carga.js';
-import { TipoEjercicio } from './tipo-ejercicio.js';
+import { TipoCarga } from './tipo-carga.valor.js';
+import { TipoEjercicio } from './tipo-ejercicio.valor.js';
 
 /** RN-CAT-08: URL base de la media del dataset (solo se enlaza, no se copia). */
 const URL_BASE_MEDIA = 'https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/';

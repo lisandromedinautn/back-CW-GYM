@@ -4,29 +4,29 @@ Una fila por caso de test. La entrada y el esperado los **confirma el desarrolla
 
 | Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| `dominio/tipo-ejercicio.spec.ts` › "por tiempo" es un tipo válido | RN-CAT-02 | Unitario | `TipoEjercicio.desde('por tiempo')` | valor `por tiempo` | valor `por tiempo` | 08/11/2026 |
-| `dominio/tipo-ejercicio.spec.ts` › "por repeticiones" es un tipo válido | RN-CAT-02 | Unitario | `TipoEjercicio.desde('por repeticiones')` | valor `por repeticiones` | valor `por repeticiones` | 08/11/2026 |
-| `dominio/tipo-ejercicio.spec.ts` › "por distancia" se rechaza con RN-CAT-02 | RN-CAT-02 | Unitario | `TipoEjercicio.desde('por distancia')` | `ErrorDominio` código `RN-CAT-02` | `ErrorDominio` código `RN-CAT-02` | 08/11/2026 |
-| `dominio/tipo-carga.spec.ts` › "Sin Peso" es un tipo de carga válido | RN-CAT-03 | Unitario | `TipoCarga.desde('Sin Peso')` | valor `Sin Peso` | valor `Sin Peso` | 08/11/2026 |
-| `dominio/tipo-carga.spec.ts` › "Peso Corporal" es un tipo de carga válido | RN-CAT-03 | Unitario | `TipoCarga.desde('Peso Corporal')` | valor `Peso Corporal` | valor `Peso Corporal` | 08/11/2026 |
-| `dominio/tipo-carga.spec.ts` › "Peso Extra" es un tipo de carga válido | RN-CAT-03 | Unitario | `TipoCarga.desde('Peso Extra')` | valor `Peso Extra` | valor `Peso Extra` | 08/11/2026 |
-| `dominio/tipo-carga.spec.ts` › "Peso Corporal + Peso Extra" es un tipo de carga válido | RN-CAT-03 | Unitario | `TipoCarga.desde('Peso Corporal + Peso Extra')` | valor `Peso Corporal + Peso Extra` | valor `Peso Corporal + Peso Extra` | 08/11/2026 |
-| `dominio/tipo-carga.spec.ts` › "Mancuerna" se rechaza con RN-CAT-03 | RN-CAT-03 | Unitario | `TipoCarga.desde('Mancuerna')` | `ErrorDominio` código `RN-CAT-03` | `ErrorDominio` código `RN-CAT-03` | 08/11/2026 |
-| `dominio/factor-peso-corporal.spec.ts` › 0% se rechaza con RN-CAT-04 | RN-CAT-04 | Unitario | `FactorPesoCorporal.crear(0)` | `ErrorDominio` código `RN-CAT-04` | `ErrorDominio` código `RN-CAT-04` | 08/11/2026 |
-| `dominio/factor-peso-corporal.spec.ts` › 0,5% es válido | RN-CAT-04 | Unitario | `FactorPesoCorporal.crear(0.5)` | porcentaje 0.5 | porcentaje 0.5 | 08/11/2026 |
-| `dominio/factor-peso-corporal.spec.ts` › 100% es válido | RN-CAT-04 | Unitario | `FactorPesoCorporal.crear(100)` | porcentaje 100 | porcentaje 100 | 08/11/2026 |
-| `dominio/factor-peso-corporal.spec.ts` › 100,1% se rechaza con RN-CAT-04 | RN-CAT-04 | Unitario | `FactorPesoCorporal.crear(100.1)` | `ErrorDominio` código `RN-CAT-04` | `ErrorDominio` código `RN-CAT-04` | 08/11/2026 |
-| `dominio/factor-peso-corporal.spec.ts` › sin indicar el factor, vale 100% | RN-CAT-04 | Unitario | `FactorPesoCorporal.crear()` | porcentaje 100 | porcentaje 100 | 08/11/2026 |
-| `dominio/musculo.spec.ts` › Cuádriceps pertenece al grupo Piernas | RN-CAT-05 | Unitario | `Musculo.desde('Cuádriceps')` | grupo `Piernas` | grupo `Piernas` | 08/11/2026 |
-| `dominio/musculo.spec.ts` › Pectoral pertenece al grupo Pecho | RN-CAT-05 | Unitario | `Musculo.desde('Pectoral')` | grupo `Pecho` | grupo `Pecho` | 08/11/2026 |
-| `dominio/musculo.spec.ts` › Aductores pertenece al grupo Piernas | RN-CAT-05 | Unitario | `Musculo.desde('Aductores')` | grupo `Piernas` | grupo `Piernas` | 08/11/2026 |
-| `dominio/musculo.spec.ts` › Serrato pertenece al grupo Pecho | RN-CAT-05 | Unitario | `Musculo.desde('Serrato')` | grupo `Pecho` | grupo `Pecho` | 08/11/2026 |
-| `dominio/musculo.spec.ts` › Elevador de la escápula pertenece al grupo Espalda | RN-CAT-05 | Unitario | `Musculo.desde('Elevador de la escápula')` | grupo `Espalda` | grupo `Espalda` | 08/11/2026 |
-| `dominio/musculo.spec.ts` › "Cuello" se rechaza con RN-CAT-05 | RN-CAT-05 | Unitario | `Musculo.desde('Cuello')` | `ErrorDominio` código `RN-CAT-05` | `ErrorDominio` código `RN-CAT-05` | 08/11/2026 |
-| `dominio/ejercicio.spec.ts` › con nombre vacío se rechaza con RN-CAT-01 | RN-CAT-01 | Unitario | `Ejercicio.crear({ ..., nombre: '' })` | `ErrorDominio` código `RN-CAT-01` | `ErrorDominio` código `RN-CAT-01` | 08/11/2026 |
-| `dominio/ejercicio.spec.ts` › sin músculo secundario se crea bien | RN-CAT-01 | Unitario | `Ejercicio.crear` sin `musculoSecundario` | `musculoSecundario` es `null` | `musculoSecundario` es `null` | 08/11/2026 |
-| `dominio/ejercicio.spec.ts` › con carga Sin Peso el factor queda sin valor | RN-CAT-06 | Unitario | `Ejercicio.crear` con `TipoCarga.SIN_PESO` y factor 50% | `factorPesoCorporal` es `null` | `factorPesoCorporal` es `null` | 08/11/2026 |
-| `dominio/ejercicio.spec.ts` › con carga Peso Extra el factor queda sin valor | RN-CAT-06 | Unitario | `Ejercicio.crear` con `TipoCarga.PESO_EXTRA` y factor 50% | `factorPesoCorporal` es `null` | `factorPesoCorporal` es `null` | 08/11/2026 |
+| `dominio/tipo-ejercicio.valor.spec.ts` › "por tiempo" es un tipo válido | RN-CAT-02 | Unitario | `TipoEjercicio.desde('por tiempo')` | valor `por tiempo` | valor `por tiempo` | 08/11/2026 |
+| `dominio/tipo-ejercicio.valor.spec.ts` › "por repeticiones" es un tipo válido | RN-CAT-02 | Unitario | `TipoEjercicio.desde('por repeticiones')` | valor `por repeticiones` | valor `por repeticiones` | 08/11/2026 |
+| `dominio/tipo-ejercicio.valor.spec.ts` › "por distancia" se rechaza con RN-CAT-02 | RN-CAT-02 | Unitario | `TipoEjercicio.desde('por distancia')` | `ErrorDominio` código `RN-CAT-02` | `ErrorDominio` código `RN-CAT-02` | 08/11/2026 |
+| `dominio/tipo-carga.valor.spec.ts` › "Sin Peso" es un tipo de carga válido | RN-CAT-03 | Unitario | `TipoCarga.desde('Sin Peso')` | valor `Sin Peso` | valor `Sin Peso` | 08/11/2026 |
+| `dominio/tipo-carga.valor.spec.ts` › "Peso Corporal" es un tipo de carga válido | RN-CAT-03 | Unitario | `TipoCarga.desde('Peso Corporal')` | valor `Peso Corporal` | valor `Peso Corporal` | 08/11/2026 |
+| `dominio/tipo-carga.valor.spec.ts` › "Peso Extra" es un tipo de carga válido | RN-CAT-03 | Unitario | `TipoCarga.desde('Peso Extra')` | valor `Peso Extra` | valor `Peso Extra` | 08/11/2026 |
+| `dominio/tipo-carga.valor.spec.ts` › "Peso Corporal + Peso Extra" es un tipo de carga válido | RN-CAT-03 | Unitario | `TipoCarga.desde('Peso Corporal + Peso Extra')` | valor `Peso Corporal + Peso Extra` | valor `Peso Corporal + Peso Extra` | 08/11/2026 |
+| `dominio/tipo-carga.valor.spec.ts` › "Mancuerna" se rechaza con RN-CAT-03 | RN-CAT-03 | Unitario | `TipoCarga.desde('Mancuerna')` | `ErrorDominio` código `RN-CAT-03` | `ErrorDominio` código `RN-CAT-03` | 08/11/2026 |
+| `dominio/factor-peso-corporal.valor.spec.ts` › 0% se rechaza con RN-CAT-04 | RN-CAT-04 | Unitario | `FactorPesoCorporal.crear(0)` | `ErrorDominio` código `RN-CAT-04` | `ErrorDominio` código `RN-CAT-04` | 08/11/2026 |
+| `dominio/factor-peso-corporal.valor.spec.ts` › 0,5% es válido | RN-CAT-04 | Unitario | `FactorPesoCorporal.crear(0.5)` | porcentaje 0.5 | porcentaje 0.5 | 08/11/2026 |
+| `dominio/factor-peso-corporal.valor.spec.ts` › 100% es válido | RN-CAT-04 | Unitario | `FactorPesoCorporal.crear(100)` | porcentaje 100 | porcentaje 100 | 08/11/2026 |
+| `dominio/factor-peso-corporal.valor.spec.ts` › 100,1% se rechaza con RN-CAT-04 | RN-CAT-04 | Unitario | `FactorPesoCorporal.crear(100.1)` | `ErrorDominio` código `RN-CAT-04` | `ErrorDominio` código `RN-CAT-04` | 08/11/2026 |
+| `dominio/factor-peso-corporal.valor.spec.ts` › sin indicar el factor, vale 100% | RN-CAT-04 | Unitario | `FactorPesoCorporal.crear()` | porcentaje 100 | porcentaje 100 | 08/11/2026 |
+| `dominio/musculo.valor.spec.ts` › Cuádriceps pertenece al grupo Piernas | RN-CAT-05 | Unitario | `Musculo.desde('Cuádriceps')` | grupo `Piernas` | grupo `Piernas` | 08/11/2026 |
+| `dominio/musculo.valor.spec.ts` › Pectoral pertenece al grupo Pecho | RN-CAT-05 | Unitario | `Musculo.desde('Pectoral')` | grupo `Pecho` | grupo `Pecho` | 08/11/2026 |
+| `dominio/musculo.valor.spec.ts` › Aductores pertenece al grupo Piernas | RN-CAT-05 | Unitario | `Musculo.desde('Aductores')` | grupo `Piernas` | grupo `Piernas` | 08/11/2026 |
+| `dominio/musculo.valor.spec.ts` › Serrato pertenece al grupo Pecho | RN-CAT-05 | Unitario | `Musculo.desde('Serrato')` | grupo `Pecho` | grupo `Pecho` | 08/11/2026 |
+| `dominio/musculo.valor.spec.ts` › Elevador de la escápula pertenece al grupo Espalda | RN-CAT-05 | Unitario | `Musculo.desde('Elevador de la escápula')` | grupo `Espalda` | grupo `Espalda` | 08/11/2026 |
+| `dominio/musculo.valor.spec.ts` › "Cuello" se rechaza con RN-CAT-05 | RN-CAT-05 | Unitario | `Musculo.desde('Cuello')` | `ErrorDominio` código `RN-CAT-05` | `ErrorDominio` código `RN-CAT-05` | 08/11/2026 |
+| `dominio/ejercicio.entidad.spec.ts` › con nombre vacío se rechaza con RN-CAT-01 | RN-CAT-01 | Unitario | `Ejercicio.crear({ ..., nombre: '' })` | `ErrorDominio` código `RN-CAT-01` | `ErrorDominio` código `RN-CAT-01` | 08/11/2026 |
+| `dominio/ejercicio.entidad.spec.ts` › sin músculo secundario se crea bien | RN-CAT-01 | Unitario | `Ejercicio.crear` sin `musculoSecundario` | `musculoSecundario` es `null` | `musculoSecundario` es `null` | 08/11/2026 |
+| `dominio/ejercicio.entidad.spec.ts` › con carga Sin Peso el factor queda sin valor | RN-CAT-06 | Unitario | `Ejercicio.crear` con `TipoCarga.SIN_PESO` y factor 50% | `factorPesoCorporal` es `null` | `factorPesoCorporal` es `null` | 08/11/2026 |
+| `dominio/ejercicio.entidad.spec.ts` › con carga Peso Extra el factor queda sin valor | RN-CAT-06 | Unitario | `Ejercicio.crear` con `TipoCarga.PESO_EXTRA` y factor 50% | `factorPesoCorporal` es `null` | `factorPesoCorporal` es `null` | 08/11/2026 |
 | `dominio/mapear-registro-dataset.spec.ts` › con equipment body weight el tipo de carga es Peso Corporal | RN-CAT-08 | Unitario | registro con `equipment: 'body weight'` | tipo de carga `Peso Corporal` | tipo de carga `Peso Corporal` | 08/11/2026 |
 | `dominio/mapear-registro-dataset.spec.ts` › con equipment weighted el tipo de carga es Peso Corporal + Peso Extra | RN-CAT-08 | Unitario | registro con `equipment: 'weighted'` | tipo de carga `Peso Corporal + Peso Extra` | tipo de carga `Peso Corporal + Peso Extra` | 08/11/2026 |
 | `dominio/mapear-registro-dataset.spec.ts` › con equipment stationary bike el tipo de carga es Sin Peso | RN-CAT-08 | Unitario | registro con `equipment: 'stationary bike'` | tipo de carga `Sin Peso` | tipo de carga `Sin Peso` | 08/11/2026 |

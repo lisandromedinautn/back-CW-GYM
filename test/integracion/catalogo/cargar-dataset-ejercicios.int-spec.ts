@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { CargarDatasetEjercicios } from '../../../src/modulos/catalogo/aplicacion/cargar-dataset-ejercicios.caso-uso.js';
 import { ListarEjercicios } from '../../../src/modulos/catalogo/aplicacion/listar-ejercicios.caso-uso.js';
-import { FuenteDatasetEjercicios } from '../../../src/modulos/catalogo/dominio/fuente-dataset-ejercicios.js';
+import { FuenteDatasetEjercicios } from '../../../src/modulos/catalogo/dominio/fuente-dataset-ejercicios.puerto.js';
 import { FuenteDatasetEjerciciosArchivo } from '../../../src/modulos/catalogo/infraestructura/fuente-dataset-ejercicios.archivo.js';
 import { ModuloRaiz } from '../../../src/modulo-raiz.module.js';
 

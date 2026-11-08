@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import type { Ejercicio } from '../dominio/ejercicio.js';
-import { FuenteDatasetEjercicios } from '../dominio/fuente-dataset-ejercicios.js';
+import type { Ejercicio } from '../dominio/ejercicio.entidad.js';
+import { FuenteDatasetEjercicios } from '../dominio/fuente-dataset-ejercicios.puerto.js';
 import type { RegistroDataset } from '../dominio/registro-dataset.js';
-import { RepositorioEjercicios } from '../dominio/repositorio-ejercicios.js';
+import { RepositorioEjercicios } from '../dominio/repositorio-ejercicios.puerto.js';
 import { CargarDatasetEjercicios } from './cargar-dataset-ejercicios.caso-uso.js';
 
 class RepositorioEnMemoria extends RepositorioEjercicios {

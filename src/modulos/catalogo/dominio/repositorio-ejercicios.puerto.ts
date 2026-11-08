@@ -1,4 +1,4 @@
-import type { Ejercicio } from './ejercicio.js';
+import type { Ejercicio } from './ejercicio.entidad.js';
 
 /** Puerto del catálogo. Clase abstracta para que también sirva de token de inyección en Nest. */
 export abstract class RepositorioEjercicios {

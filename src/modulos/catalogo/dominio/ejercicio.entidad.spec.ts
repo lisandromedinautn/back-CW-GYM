@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { Ejercicio } from './ejercicio.js';
-import { FactorPesoCorporal } from './factor-peso-corporal.js';
-import { Musculo } from './musculo.js';
-import { TipoCarga } from './tipo-carga.js';
-import { TipoEjercicio } from './tipo-ejercicio.js';
+import { Ejercicio } from './ejercicio.entidad.js';
+import { FactorPesoCorporal } from './factor-peso-corporal.valor.js';
+import { Musculo } from './musculo.valor.js';
+import { TipoCarga } from './tipo-carga.valor.js';
+import { TipoEjercicio } from './tipo-ejercicio.valor.js';
 
 const datosValidos = {
   idDataset: '0001',

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Musculo } from './musculo.js';
+import { Musculo } from './musculo.valor.js';
 
 describe('RN-CAT-05 · el músculo es de una lista cerrada y el grupo muscular se deriva de él', () => {
   it.each([

@@ -1,5 +1,5 @@
-import type { Ejercicio } from '../dominio/ejercicio.js';
-import { RepositorioEjercicios } from '../dominio/repositorio-ejercicios.js';
+import type { Ejercicio } from '../dominio/ejercicio.entidad.js';
+import { RepositorioEjercicios } from '../dominio/repositorio-ejercicios.puerto.js';
 
 /** Lista el catálogo completo ordenado alfabéticamente por nombre. */
 export class ListarEjercicios {

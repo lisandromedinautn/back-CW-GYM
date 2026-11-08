@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ErrorDominio } from '../../../compartido/dominio/error-dominio.js';
-import { TipoEjercicio } from './tipo-ejercicio.js';
+import { TipoEjercicio } from './tipo-ejercicio.valor.js';
 
 describe('RN-CAT-02 · el tipo de ejercicio es "por tiempo" o "por repeticiones"', () => {
   it('"por tiempo" es un tipo válido', () => {
