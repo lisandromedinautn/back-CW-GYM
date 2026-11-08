@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { Logger, type Type } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import type { Semilla } from './compartido/aplicacion/semilla.js';
+import { CargarDatasetEjercicios } from './modulos/catalogo/aplicacion/cargar-dataset-ejercicios.caso-uso.js';
 import { ModuloRaiz } from './modulo-raiz.module.js';
 
 /**
@@ -10,7 +11,7 @@ import { ModuloRaiz } from './modulo-raiz.module.js';
  * Semillas registradas, en el orden en que se ejecutan. US00 agrega la primera: SembrarAdmin
  * (RN-IDE-14), que lee ADMIN_EMAIL y ADMIN_PASSWORD del .env.
  */
-const SEMILLAS: Type<Semilla>[] = [];
+const SEMILLAS: Type<Semilla>[] = [CargarDatasetEjercicios];
 
 const logger = new Logger('Semillas');
 
