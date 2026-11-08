@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CatalogoModule } from './modulos/catalogo/catalogo.module.js';
 import { ModuloCompartido } from './compartido/compartido.module.js';
 import { ModuloIdentidad } from './modulos/identidad/identidad.module.js';
 
@@ -32,6 +33,7 @@ import { ModuloIdentidad } from './modulos/identidad/identidad.module.js';
     }),
     ModuloCompartido,
     ModuloIdentidad,
+    CatalogoModule,
   ],
 })
 export class ModuloRaiz {}
