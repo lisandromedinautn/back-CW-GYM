@@ -6,6 +6,21 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ## [Sin publicar]
 
+### Agregado
+
+- `POST /identidad/ingreso` (público): con email y contraseña correctos devuelve un JWT con el rol del usuario; con datos incorrectos responde 401 con RN-IDE-01 sin decir qué dato falló (US00).
+- Guard de roles en toda la API: sin token o con token inválido responde 401, y un rol que no corresponde al endpoint responde 403, ambos con RN-IDE-03 (US00).
+- Filtro de errores de dominio: cada error responde `{ codigo, mensaje }` con el código HTTP de su categoría (US00).
+- `yarn seed` crea el Admin inicial con `ADMIN_EMAIL` y `ADMIN_PASSWORD`, de forma idempotente (RN-IDE-14) (US00).
+- `yarn seed` crea 3 profesores (P-001 a P-003) y 20 alumnos de prueba, con la contraseña de `SEMILLA_CONTRASENIA` y sin duplicados (RN-IDE-12, 13) (US00).
+- Variables de entorno `JWT_SECRETO`, `JWT_EXPIRACION` y `SEMILLA_CONTRASENIA` (US00).
+- `yarn seed` carga el catálogo desde `datos/ejercicios-dataset.json`: 1.324 registros reducidos a los campos del modelo, con GIF enlazado y atribución de Gym visual, sin duplicar ejercicios (RN-CAT-07, 08, 09) (T01).
+- El catálogo valida tipo de ejercicio, tipo de carga, músculos (con su grupo) y factor de peso corporal (RN-CAT-01 a 06) (T01).
+
+### Cambiado
+
+- `yarn test:cov` mide unitarios, integración y e2e juntos, con los umbrales de cobertura (US00).
+
 ## [1.0.0] — 2026-11-02
 
 Base técnica (fase 0). Todavía no hay funcionalidades de negocio.

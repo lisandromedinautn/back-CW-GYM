@@ -22,7 +22,7 @@ El objetivo principal del proyecto es una base de tests sólida. Un test vale si
 | `src/modulos/*/dominio/**` | 80% en líneas, ramas, funciones y sentencias | Superar el 80% |
 | Resto de `src/` | 70% | — |
 
-Los umbrales están en `vitest.config.ts`. Si no se alcanzan, `yarn test:cov` falla y el hook bloquea el commit. Para buscar brechas se usa la skill `coverage` (ver más abajo).
+Los umbrales están en `vitest.config.ts`. `yarn test:cov` usa `vitest.cov.config.ts`, que corre unitarios, integración y e2e juntos y une la cobertura: la infraestructura y la presentación se prueban contra la base real, no con unitarios (decidido por Lisandro el 08/11/2026). Por eso necesita `yarn bd:levantar`. Si los umbrales no se alcanzan, `yarn test:cov` falla. Para buscar brechas se usa la skill `coverage` (ver más abajo).
 
 ## Ciclo para escribir un test (TDD)
 
