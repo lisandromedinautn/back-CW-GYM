@@ -19,6 +19,7 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 - `yarn seed` crea 3 profesores (P-001 a P-003) y 20 alumnos de prueba, con la contraseña de `SEMILLA_CONTRASENIA` y sin duplicados (RN-IDE-12, 13) (US00).
 - Variables de entorno `JWT_SECRETO`, `JWT_EXPIRACION` y `SEMILLA_CONTRASENIA` (US00).
 - `yarn seed` carga el catálogo desde `datos/ejercicios-dataset.json`: 1.324 registros reducidos a los campos del modelo, con GIF enlazado y atribución de Gym visual, sin duplicar ejercicios (RN-CAT-07, 08, 09) (T01).
+- `GET /catalogo/ejercicios` (Admin y Profesor): lista el catálogo ordenado por nombre, con tipo, tipo de carga, músculo principal y su grupo, músculo secundario, factor de peso corporal y GIF con su atribución (RN-IDE-03, RN-CAT-01, 05) (T01).
 - El catálogo valida tipo de ejercicio, tipo de carga, músculos (con su grupo) y factor de peso corporal (RN-CAT-01 a 06) (T01).
 
 ### Cambiado
