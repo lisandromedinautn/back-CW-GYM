@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { ErrorDominio } from '../../../compartido/dominio/error-dominio.js';
-import type { FactorPesoCorporal } from './factor-peso-corporal.js';
+import { FactorPesoCorporal } from './factor-peso-corporal.js';
 import type { Musculo } from './musculo.js';
 import type { TipoCarga } from './tipo-carga.js';
 import type { TipoEjercicio } from './tipo-ejercicio.js';
@@ -18,7 +18,12 @@ export interface DatosEjercicio {
   atribucion: string;
 }
 
-/** RN-CAT-01: nombre, descripción, tipo, tipo de carga y músculo principal son obligatorios; el músculo secundario es opcional. */
+/**
+ * RN-CAT-06: el factor de peso corporal solo se guarda si el tipo de carga incluye peso corporal
+ * (si no, queda en null). Si la carga lo incluye y no se indica, vale 100% (RN-CAT-04).
+ *
+ * RN-CAT-01: nombre, descripción, tipo, tipo de carga y músculo principal son obligatorios; el músculo secundario es opcional.
+ */
 export class Ejercicio {
   private constructor(
     readonly id: string,
@@ -49,7 +54,9 @@ export class Ejercicio {
       datos.descripcion,
       datos.tipo,
       datos.tipoCarga,
-      datos.factorPesoCorporal ?? null,
+      datos.tipoCarga.incluyePesoCorporal
+        ? (datos.factorPesoCorporal ?? FactorPesoCorporal.crear())
+        : null,
       datos.musculoPrincipal,
       datos.musculoSecundario ?? null,
       datos.urlGif,

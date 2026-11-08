@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Ejercicio } from './ejercicio.js';
+import { FactorPesoCorporal } from './factor-peso-corporal.js';
 import { Musculo } from './musculo.js';
 import { TipoCarga } from './tipo-carga.js';
 import { TipoEjercicio } from './tipo-ejercicio.js';
@@ -24,5 +25,25 @@ describe('RN-CAT-01 · todo ejercicio tiene nombre, descripción, tipo, carga y 
 
   it('sin músculo secundario se crea bien', () => {
     expect(Ejercicio.crear(datosValidos).musculoSecundario).toBeNull();
+  });
+});
+
+describe('RN-CAT-06 · el factor de peso corporal solo interviene si la carga incluye peso corporal', () => {
+  it('con carga Sin Peso el factor queda sin valor', () => {
+    const ejercicio = Ejercicio.crear({
+      ...datosValidos,
+      tipoCarga: TipoCarga.SIN_PESO,
+      factorPesoCorporal: FactorPesoCorporal.crear(50),
+    });
+    expect(ejercicio.factorPesoCorporal).toBeNull();
+  });
+
+  it('con carga Peso Extra el factor queda sin valor', () => {
+    const ejercicio = Ejercicio.crear({
+      ...datosValidos,
+      tipoCarga: TipoCarga.PESO_EXTRA,
+      factorPesoCorporal: FactorPesoCorporal.crear(50),
+    });
+    expect(ejercicio.factorPesoCorporal).toBeNull();
   });
 });
