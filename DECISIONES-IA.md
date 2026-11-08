@@ -107,3 +107,13 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Ideas descartadas: renombrar los hooks a `use*` (rompe la regla de idioma); dejar la regla de React apagada sin reemplazo.
 - Reglas afectadas: ninguna RN cambia. Contrato de errores: excepción `NO-ENCONTRADO` documentada en `src/compartido/CLAUDE.md` del back.
 - Pendientes: borrar a mano US01 (CG-6 a CG-9) en Jira, porque el conector no puede borrar issues; cargar los Story Points de T04 y T05 desde la UI (el campo no está en la pantalla de creación); la regla de hooks no analiza returns anticipados; la demo de la fase 1 y el tag v1.1.0.
+
+## 2026-11-08 — Carpetas por concepto en dominio y aplicación [T05]
+- Desarrollador: Lisandro
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5
+- Objetivo: que `dominio/` y `aplicacion/` no muestren decenas de archivos sueltos.
+- Qué hizo la IA: movió con `git mv` 49 archivos de catálogo e identidad a una carpeta por concepto (entidad o valor con su spec y sus puertos; un caso de uso por carpeta) con un script que recalculó todos los imports relativos de `src/` y `test/`; actualizó las rutas en fichas, trazabilidad y atlas, y documentó la convención en `ATLAS.md` ("Carpetas por concepto"). Verificó tsc, lint, Prettier y las tres suites (113 tests, 99,2%). El pre-commit falló con "La línea de comandos es demasiado larga" (límite de 8191 caracteres de `cmd` en Windows con unos 70 archivos staged): se agregó `--max-arg-length 6000` a `.husky/pre-commit` para que lint-staged parta la lista en tandas, sin saltear el hook.
+- Decisiones del desarrollador: agrupar por concepto.
+- Ideas descartadas: dos commits por módulo (`src/semillas.ts` importa de los dos y uno de ellos no compilaba solo); usar `--no-verify` (prohibido).
+- Reglas afectadas: ninguna. Los spec solo cambian rutas de import.
+- Pendientes: el front todavía tiene pocos archivos por capa; se agrupa cuando crezca. `infraestructura/` y `presentacion/` siguen planas.
