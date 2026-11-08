@@ -1,4 +1,4 @@
-import { ErrorDominio } from '../../../compartido/dominio/error-dominio.js';
+import { CODIGO_NO_ENCONTRADO, ErrorDominio } from '../../../compartido/dominio/error-dominio.js';
 import type { PublicadorEventos } from '../../../compartido/dominio/publicador-eventos.puerto.js';
 import type { RepositorioAlumnos } from '../dominio/repositorio-alumnos.puerto.js';
 import type { RepositorioProfesores } from '../dominio/repositorio-profesores.puerto.js';
@@ -17,7 +17,8 @@ export class VincularAlumno {
 
   async ejecutar(usuarioId: string, codigo: string): Promise<Vinculo> {
     const alumno = await this.alumnos.buscarPorUsuarioId(usuarioId);
-    if (!alumno) throw new ErrorDominio('RN-IDE-09', 'No se encontró el alumno', 'no-encontrado');
+    if (!alumno)
+      throw new ErrorDominio(CODIGO_NO_ENCONTRADO, 'No se encontró el alumno', 'no-encontrado');
 
     // RN-IDE-11: solo el código vigente encuentra al profesor; el regenerado ya no está.
     const profesor = await this.profesores.buscarPorCodigo(codigo.trim().toUpperCase());
