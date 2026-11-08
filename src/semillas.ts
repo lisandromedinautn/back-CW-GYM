@@ -2,15 +2,16 @@ import 'reflect-metadata';
 import { Logger, type Type } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import type { Semilla } from './compartido/aplicacion/semilla.js';
+import { SembrarAdmin } from './modulos/identidad/aplicacion/sembrar-admin.caso-uso.js';
 import { ModuloRaiz } from './modulo-raiz.module.js';
 
 /**
  * Punto de entrada de `yarn seed`. Levanta Nest sin servidor HTTP y ejecuta las semillas en orden.
  *
- * Semillas registradas, en el orden en que se ejecutan. US00 agrega la primera: SembrarAdmin
- * (RN-IDE-14), que lee ADMIN_EMAIL y ADMIN_PASSWORD del .env.
+ * Semillas registradas, en el orden en que se ejecutan.
+ * - SembrarAdmin (RN-IDE-14): lee ADMIN_EMAIL y ADMIN_PASSWORD del .env.
  */
-const SEMILLAS: Type<Semilla>[] = [];
+const SEMILLAS: Type<Semilla>[] = [SembrarAdmin];
 
 const logger = new Logger('Semillas');
 
