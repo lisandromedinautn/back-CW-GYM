@@ -1,6 +1,7 @@
 import { ErrorDominio } from '../../../compartido/dominio/error-dominio.js';
 
-export type GrupoMuscular = 'Piernas' | 'Pecho' | 'Espalda' | 'Hombros' | 'Brazos' | 'Core' | 'Cardio';
+export type GrupoMuscular =
+  'Piernas' | 'Pecho' | 'Espalda' | 'Hombros' | 'Brazos' | 'Core' | 'Cardio';
 
 /** RN-CAT-05: lista cerrada de músculos y grupo muscular al que pertenece cada uno. */
 const GRUPO_DE_CADA_MUSCULO: Readonly<Record<string, GrupoMuscular>> = {
