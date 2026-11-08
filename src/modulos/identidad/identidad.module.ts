@@ -5,30 +5,53 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import type { Repository } from 'typeorm';
 import { IngresarAlSistema } from './aplicacion/ingresar-al-sistema.caso-uso.js';
 import { SembrarAdmin } from './aplicacion/sembrar-admin.caso-uso.js';
+import { SembrarUsuarios } from './aplicacion/sembrar-usuarios.caso-uso.js';
 import { EMISOR_TOKENS, type EmisorTokens } from './dominio/emisor-tokens.puerto.js';
 import {
   HASHEADOR_CONTRASENIAS,
   type HasheadorContrasenias,
 } from './dominio/hasheador-contrasenias.puerto.js';
 import {
+  REPOSITORIO_ALUMNOS,
+  type RepositorioAlumnos,
+} from './dominio/repositorio-alumnos.puerto.js';
+import {
+  REPOSITORIO_PROFESORES,
+  type RepositorioProfesores,
+} from './dominio/repositorio-profesores.puerto.js';
+import {
   REPOSITORIO_USUARIOS,
   type RepositorioUsuarios,
 } from './dominio/repositorio-usuarios.puerto.js';
+import { AlumnoEsquema } from './infraestructura/alumno.esquema.js';
+import { RepositorioAlumnosTypeorm } from './infraestructura/alumno.repositorio-typeorm.js';
 import { EmisorTokensJwt } from './infraestructura/emisor-tokens-jwt.js';
 import { HasheadorBcrypt } from './infraestructura/hasheador-bcrypt.js';
+import { ProfesorEsquema } from './infraestructura/profesor.esquema.js';
+import { RepositorioProfesoresTypeorm } from './infraestructura/profesor.repositorio-typeorm.js';
 import { UsuarioEsquema } from './infraestructura/usuario.esquema.js';
 import { RepositorioUsuariosTypeorm } from './infraestructura/usuario.repositorio-typeorm.js';
 import { IdentidadControlador } from './presentacion/identidad.controlador.js';
 
 /** Identidad y Vínculos. Los casos de uso no conocen Nest: se arman acá con fábricas. */
 @Module({
-  imports: [TypeOrmModule.forFeature([UsuarioEsquema])],
+  imports: [TypeOrmModule.forFeature([UsuarioEsquema, ProfesorEsquema, AlumnoEsquema])],
   controllers: [IdentidadControlador],
   providers: [
     {
       provide: REPOSITORIO_USUARIOS,
       inject: [getRepositoryToken(UsuarioEsquema)],
       useFactory: (filas: Repository<UsuarioEsquema>) => new RepositorioUsuariosTypeorm(filas),
+    },
+    {
+      provide: REPOSITORIO_PROFESORES,
+      inject: [getRepositoryToken(ProfesorEsquema)],
+      useFactory: (filas: Repository<ProfesorEsquema>) => new RepositorioProfesoresTypeorm(filas),
+    },
+    {
+      provide: REPOSITORIO_ALUMNOS,
+      inject: [getRepositoryToken(AlumnoEsquema)],
+      useFactory: (filas: Repository<AlumnoEsquema>) => new RepositorioAlumnosTypeorm(filas),
     },
     { provide: HASHEADOR_CONTRASENIAS, useClass: HasheadorBcrypt },
     {
@@ -49,6 +72,26 @@ import { IdentidadControlador } from './presentacion/identidad.controlador.js';
         new SembrarAdmin(u, h, {
           email: config.get<string>('ADMIN_EMAIL'),
           contrasenia: config.get<string>('ADMIN_PASSWORD'),
+        }),
+    },
+    {
+      provide: SembrarUsuarios,
+      inject: [
+        REPOSITORIO_USUARIOS,
+        REPOSITORIO_PROFESORES,
+        REPOSITORIO_ALUMNOS,
+        HASHEADOR_CONTRASENIAS,
+        ConfigService,
+      ],
+      useFactory: (
+        u: RepositorioUsuarios,
+        p: RepositorioProfesores,
+        a: RepositorioAlumnos,
+        h: HasheadorContrasenias,
+        config: ConfigService,
+      ) =>
+        new SembrarUsuarios(u, p, a, h, {
+          contrasenia: config.get<string>('SEMILLA_CONTRASENIA'),
         }),
     },
   ],
