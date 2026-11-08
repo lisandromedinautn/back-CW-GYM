@@ -1,4 +1,4 @@
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import { Ejercicio } from '../ejercicio/ejercicio.entidad.js';
 import { Musculo } from '../musculo/musculo.valor.js';
 import type { RegistroDataset } from './registro-dataset.js';

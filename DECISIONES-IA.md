@@ -117,3 +117,13 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Ideas descartadas: dos commits por módulo (`src/semillas.ts` importa de los dos y uno de ellos no compilaba solo); usar `--no-verify` (prohibido).
 - Reglas afectadas: ninguna. Los spec solo cambian rutas de import.
 - Pendientes: el front todavía tiene pocos archivos por capa; se agrupa cuando crezca. `infraestructura/` y `presentacion/` siguen planas.
+
+## 2026-11-08 — Carpetas por concepto en infraestructura, presentación, compartido y el front [T05]
+- Desarrollador: Lisandro
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5
+- Objetivo: extender las carpetas por concepto a todas las capas de los dos repos.
+- Qué hizo la IA: con el mismo script (`git mv` y recálculo de imports, ahora también `.ts`/`.tsx` del front) movió 29 archivos del back (infraestructura espejando dominio, `presentacion/controlador/` y una carpeta por DTO, y todo `src/compartido/`) y 32 del front (cada pantalla con su hook y su test bajo el mismo nombre de carpeta en aplicacion y presentacion; `infraestructura/api/`; compartido por concepto). Actualizó rutas en fichas, CLAUDE.md, atlas y en la matriz de trazabilidad, que quedó idéntica en los dos repos. Verificó tsc, lint, Prettier, tests (113 back, 29 front), cobertura y build.
+- Decisiones del desarrollador: agrupar también infraestructura, presentación y el front.
+- Ideas descartadas: dejar el controlador suelto en presentacion/ (se usa `controlador/` para que todo esté en carpetas).
+- Reglas afectadas: ninguna. Los tests solo cambian rutas de import.
+- Pendientes: ninguno.

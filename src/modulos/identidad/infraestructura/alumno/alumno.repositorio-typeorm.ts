@@ -1,7 +1,7 @@
 import type { Repository } from 'typeorm';
-import type { Alumno } from '../dominio/alumno/alumno.entidad.js';
-import type { Documento } from '../dominio/documento/documento.valor.js';
-import type { RepositorioAlumnos } from '../dominio/alumno/repositorio-alumnos.puerto.js';
+import type { Alumno } from '../../dominio/alumno/alumno.entidad.js';
+import type { Documento } from '../../dominio/documento/documento.valor.js';
+import type { RepositorioAlumnos } from '../../dominio/alumno/repositorio-alumnos.puerto.js';
 import type { AlumnoEsquema } from './alumno.esquema.js';
 import { AlumnoMapper } from './alumno.mapper.js';
 

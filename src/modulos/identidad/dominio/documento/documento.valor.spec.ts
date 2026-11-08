@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import { Documento } from './documento.valor.js';
 
 describe('RN-IDE-06 · el Documento es un objeto de valor de tipo y número', () => {

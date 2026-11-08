@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import type { HasheadorContrasenias } from '../dominio/usuario/hasheador-contrasenias.puerto.js';
+import type { HasheadorContrasenias } from '../../dominio/usuario/hasheador-contrasenias.puerto.js';
 
 const COSTO = 10;
 

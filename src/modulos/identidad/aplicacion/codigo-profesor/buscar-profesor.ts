@@ -1,7 +1,7 @@
 import {
   CODIGO_NO_ENCONTRADO,
   ErrorDominio,
-} from '../../../../compartido/dominio/error-dominio.js';
+} from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import type { Profesor } from '../../dominio/profesor/profesor.entidad.js';
 import type { RepositorioProfesores } from '../../dominio/profesor/repositorio-profesores.puerto.js';
 

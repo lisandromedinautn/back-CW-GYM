@@ -1,4 +1,4 @@
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 
 /**
  * RN-CAT-04: porcentaje del peso corporal que se suma a la carga. Es mayor que 0 y hasta 100

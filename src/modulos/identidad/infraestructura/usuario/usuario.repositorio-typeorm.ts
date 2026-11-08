@@ -1,6 +1,6 @@
 import type { Repository } from 'typeorm';
-import type { RepositorioUsuarios } from '../dominio/usuario/repositorio-usuarios.puerto.js';
-import type { Usuario } from '../dominio/usuario/usuario.entidad.js';
+import type { RepositorioUsuarios } from '../../dominio/usuario/repositorio-usuarios.puerto.js';
+import type { Usuario } from '../../dominio/usuario/usuario.entidad.js';
 import type { UsuarioEsquema } from './usuario.esquema.js';
 import { UsuarioMapper } from './usuario.mapper.js';
 

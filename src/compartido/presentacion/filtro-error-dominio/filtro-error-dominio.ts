@@ -1,6 +1,6 @@
 import { type ArgumentsHost, Catch, type ExceptionFilter, HttpStatus } from '@nestjs/common';
 import type { Response } from 'express';
-import { type CategoriaError, ErrorDominio } from '../dominio/error-dominio.js';
+import { type CategoriaError, ErrorDominio } from '../../dominio/error-dominio/error-dominio.js';
 
 const ESTADO_POR_CATEGORIA: Record<CategoriaError, HttpStatus> = {
   validacion: HttpStatus.BAD_REQUEST,

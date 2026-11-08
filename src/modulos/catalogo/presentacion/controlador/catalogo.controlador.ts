@@ -1,7 +1,7 @@
 import { Controller, Get, Inject } from '@nestjs/common';
-import { Roles } from '../../../compartido/presentacion/guard-roles.js';
-import { ListarEjercicios } from '../aplicacion/listar-ejercicios/listar-ejercicios.caso-uso.js';
-import type { Ejercicio } from '../dominio/ejercicio/ejercicio.entidad.js';
+import { Roles } from '../../../../compartido/presentacion/guard-roles/guard-roles.js';
+import { ListarEjercicios } from '../../aplicacion/listar-ejercicios/listar-ejercicios.caso-uso.js';
+import type { Ejercicio } from '../../dominio/ejercicio/ejercicio.entidad.js';
 
 /** Ejercicio tal como lo recibe el front (RN-CAT-01, 05, 09). */
 export interface EjercicioRespuesta {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import { Documento } from '../documento/documento.valor.js';
 import { Profesor } from './profesor.entidad.js';
 

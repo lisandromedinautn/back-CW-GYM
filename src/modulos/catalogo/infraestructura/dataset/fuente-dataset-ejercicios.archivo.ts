@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { FuenteDatasetEjercicios } from '../dominio/dataset/fuente-dataset-ejercicios.puerto.js';
-import type { RegistroDataset } from '../dominio/dataset/registro-dataset.js';
+import { FuenteDatasetEjercicios } from '../../dominio/dataset/fuente-dataset-ejercicios.puerto.js';
+import type { RegistroDataset } from '../../dominio/dataset/registro-dataset.js';
 
 export const RUTA_DATASET_EJERCICIOS = 'datos/ejercicios-dataset.json';
 

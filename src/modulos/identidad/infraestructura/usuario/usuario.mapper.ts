@@ -1,5 +1,5 @@
-import { Rol } from '../dominio/rol/rol.valor.js';
-import { Usuario } from '../dominio/usuario/usuario.entidad.js';
+import { Rol } from '../../dominio/rol/rol.valor.js';
+import { Usuario } from '../../dominio/usuario/usuario.entidad.js';
 import { UsuarioEsquema } from './usuario.esquema.js';
 
 export const UsuarioMapper = {

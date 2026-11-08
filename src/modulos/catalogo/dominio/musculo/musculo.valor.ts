@@ -1,4 +1,4 @@
-import { ErrorDominio } from '../../../../compartido/dominio/error-dominio.js';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 
 export type GrupoMuscular =
   'Piernas' | 'Pecho' | 'Espalda' | 'Hombros' | 'Brazos' | 'Core' | 'Cardio';
