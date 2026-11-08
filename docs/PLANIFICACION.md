@@ -58,6 +58,7 @@ Hay tres roles: **Profesor**, **Alumno** y **Admin**.
 | 39 | Calendario | Escenario ideal: MVP completo el **22/11/2026**. Escenario pesimista: **01/12/2026**. **`main` no se toca hasta el 22/11.** Según la velocity histórica, el escenario ideal no se alcanza (ver "Métricas y estimación") |
 | 40 | Admin inicial | Se crea con un seed idempotente que toma el email y la contraseña de variables de entorno (ZG-14) |
 | 41 | Catálogo y usuarios de prueba (08/11/2026) | US01 sale del MVP y pasa a DT-06. El catálogo se carga con T01 desde el dataset de ejercicios [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) (1324 ejercicios; datos MIT, GIFs © Gym visual con atribución). Los alumnos y profesores de prueba se crean con la semilla de usuarios (`sembrar-usuarios`, dentro de US00). Total: 127 pts; fase 1: 20 pts |
+| 42 | Métricas con IA (08/11/2026) | La planificación se mide en **puntos por hora de sesión** y **horas de sesión por semana**; la velocity semanal es el producto de las dos. La velocity histórica (37 pts/semana, sin IA) queda solo como piso del escenario pesimista. Se suman T04 (reestimación) y T05 (ajuste de métricas), 1 pt cada una: el backlog pasa a 129 pts. Detalle en "Reestimación del 08/11/2026" |
 
 ## Glosario de lenguaje ubicuo
 
@@ -252,7 +253,7 @@ Se usa versionado semántico `MAJOR.MINOR.PATCH` (decisión 38). Como el sistema
 
 ## Historias de usuario
 
-El backlog suma 127 puntos (US19 se quitó por la decisión 31, y US01 sale del MVP por la decisión 41: 9 pts, DT-06). Escala: L = 5, M = 3, S = 1. Cada historia suma sus tareas Modelar, Backend y Frontend.
+El backlog suma 129 puntos (US19 se quitó por la decisión 31, US01 sale del MVP por la decisión 41: 9 pts, DT-06, y se suman T04 y T05 por la decisión 42: 2 pts). Escala: L = 5, M = 3, S = 1. Cada historia suma sus tareas Modelar, Backend y Frontend.
 
 **Nota de calendario (decisión 39).** Los cinco "sprints" de abajo son agrupaciones funcionales y coinciden con las fases 1 a 5 del plan de implementación. El calendario real es de 3 sprints de una semana (escenario ideal, hasta el 22/11) o de 4 (escenario pesimista, hasta el 01/12). Las fechas de cada fase están en `docs/PLAN-IMPLEMENTACION.md`.
 
@@ -360,6 +361,62 @@ Si en un corte lo acumulado queda por debajo de la línea pesimista, se le consu
 **Reglas para el nuevo tablero:** misma escala y misma división en tareas, para que la velocity sea comparable. Ninguna tarjeta entra a READY sin estimación. Las tarjetas se mueven a DONE cuando se terminan. Ninguna tarea supera L; si parece mayor, se divide. Cada commit referencia el ID de su tarjeta.
 
 **Estimación paramétrica (COCOMO II, puntos de aplicación).** Para los sprints 1 y 2 hay 6 pantallas simples (1 punto cada una) y 2 medias (editor de rutina y creación de plan, 2 puntos cada una): 10 puntos de aplicación. Con productividad baja (7 NAP por persona-mes), el esfuerzo es de unas 1,4 personas-mes. Comparar esa cifra con las horas reales es parte del análisis de desvío.
+
+### Reestimación del 08/11/2026 (T04) y ajuste de métricas (T05)
+
+**Qué pasó en el sprint 1.** Del 01 al 02/11 se hicieron la planificación y la base técnica (fase 0, 4 pts). La implementación arrancó recién el **domingo 08/11**: entre el 03 y el 07/11 no hubo commits. Ese día, en una sola sesión con IA (Opus 5.5 orquestando, Sonnet 5.5 y Haiku 5.5 como subagentes), se terminó la fase 1 completa en back y front: 20 pts, más T04 y T05 (2 pts). El sprint 1 cierra con **26 pts reales**, contra 45 de la línea ideal y 37 de la pesimista originales. El atraso no viene del ritmo, sino de que hubo un solo día de trabajo.
+
+**Datos medidos en la fase 1**
+
+| Dato | Valor | Cómo se midió |
+| :-- | :-- | :-- |
+| Puntos terminados | 22 (20 de la fase + T04 y T05) | Tarjetas en DONE |
+| Horas de sesión | ≈ 1,3 h (15:10 a 16:30) | Primer y último commit del día en los dos repos, más la redacción de la reestimación |
+| Productividad | ≈ 17 pts por hora de sesión | 22 / 1,3 |
+| Backend de la fase (14 pts) | ≈ 45 min | 15:22 a 16:01, commits del back |
+| Tests | 113 en el back (99,2% de líneas), 28 en el front (93,2%) | `yarn test:cov` |
+| Bugs en demo | Pendiente | La demo de la fase 1 todavía no se hizo |
+
+**Por qué cambia la métrica (decisión 42).** La velocity de 37 pts/semana se midió en un proyecto sin agentes de IA. Con IA, el cuello de botella deja de ser escribir código y pasa a ser el tiempo del desarrollador: confirmar fichas por tarjeta, decidir zonas grises, revisar los reportes de los subagentes y hacer las demos. Por eso se mide:
+
+* **Puntos por hora de sesión**, por fase, a partir del primer y el último commit de cada sesión.
+* **Horas de sesión por semana**, que dependen de la disponibilidad del desarrollador.
+* **Velocity semanal = puntos por hora × horas por semana.** Se sigue comparando con las líneas del calendario.
+
+**Factor de complejidad.** La fase 1 fue mayormente alta, consulta y reglas simples. Las fases 2 a 4 tienen el dominio más rico (rutina por bloques y circuitos, plan de 28 días, carga efectiva, récords), con más fichas para confirmar. Se estima una productividad 2 a 2,5 veces menor: **7 a 8 pts por hora de sesión**. Se recalcula al cerrar cada fase.
+
+**Lo que falta.** 103 pts (fases 2 a 5). A 7,5 pts/h son unas **14 horas de sesión**.
+
+| Escenario | Ritmo necesario | Horas de sesión por semana (a 7,5 pts/h) | Fin | Viabilidad |
+| :-- | :-- | :-- | :-- | :-- |
+| **Ideal** | 51,5 pts/semana (7,4 pts/día) | ≈ 7 h | dom 22/11 | Viable si el desarrollador sostiene unas 3 sesiones de 2 a 2,5 h por semana |
+| **Pesimista** | 37 pts/semana (5,3 pts/día, la velocity histórica) | ≈ 5 h | sáb 28/11, con margen hasta el mar 01/12 (~16 pts) | Viable con holgura |
+
+**Nuevos cortes de control** (reemplazan a los de "Calendario frente a velocity", que quedan como registro histórico)
+
+| Corte | Acumulado ideal | Acumulado pesimista | Real |
+| :-- | :-- | :-- | :-- |
+| dom 08/11 | — | — | 26 |
+| dom 15/11 | 78 | 63 | |
+| dom 22/11 | 129 | 100 | |
+| sáb 28/11 | — | 129 | |
+| mar 01/12 | — | margen | |
+
+**Recortes.** Lo real del 08/11 (26) quedó debajo de la línea pesimista original (37), y la regla dice consultar un recorte. Con el ritmo medido no hace falta recortar: la propuesta es **no recortar** y volver a mirar el corte del 15/11. Las candidatas siguen siendo US20, US10, US18 y US12, en ese orden. La decisión es del desarrollador.
+
+**COCOMO II.** Los puntos de aplicación de los sprints 1 y 2 siguen siendo 10 NAP, porque la lista de ejercicios reemplaza a la pantalla de registro (DT-06). Con productividad muy alta (50 NAP por persona-mes) el modelo da 0,2 personas-mes, unas 32 h, y para las 5 pantallas de la fase 1 unas 16 h. El real fue de unas 1,3 h: COCOMO sobreestima unas 12 veces, porque no modela agentes de IA. Se mantiene como referencia del esfuerzo "sin IA" para el informe, pero no se usa para planificar.
+
+**Estado de los OKR al 08/11**
+
+| Resultado clave | Valor al 08/11 | Meta |
+| :-- | :-- | :-- |
+| O1 · Cobertura de dominio (back) | ≈ 99% | 80% o más |
+| O1 · Cobertura del resto | 99,2% back · 93,2% front | 70% o más |
+| O1 · RN vigentes de la fase 1 con al menos un test | 100% | 100% |
+| O2 · Desvío de calendario de la fase 1 | +1 día contra el ideal (07/11); 0 contra el pesimista (08/11) | 20% o menos |
+| O2 · Historias comprometidas terminadas en el sprint 1 | 100% (7 de 7, sin US01) | 90% o más |
+| O2 · Tarjetas terminadas sin estimación | 0% | 0% |
+| O2 · Desvío de esfuerzo estimado/real | Base nueva: 17 pts/h en la fase 1. Se mide desde la fase 2 contra los 7,5 pts/h estimados | 20% o menos |
 
 ### OKR
 

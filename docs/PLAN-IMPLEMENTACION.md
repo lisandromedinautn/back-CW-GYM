@@ -41,19 +41,24 @@ Existe igual en `back-CW-GYM` y `front-CW-GYM`. Se basa en [`docs/PLANIFICACION.
 | 3 | lun 16/11 al dom 22/11 | Los dos. **Fin del ideal** y primer merge a `main` |
 | 4 | lun 23/11 al mar 01/12 | Solo el pesimista. **Fin del pesimista** |
 
-| Escenario | Ritmo | Fin | Viabilidad |
-| :-- | :-- | :-- | :-- |
-| **Ideal** | 45,3 pts/semana | sáb 22/11 | **La velocity histórica (37) no alcanza**: necesita un 22% más. Queda como objetivo, no como compromiso |
-| **Pesimista** | 37 pts/semana (velocity histórica) | jue 27/11, con margen hasta el mar 01/12 | Viable. El margen (~21 pts) cubre los e2e de Playwright, los ajustes y el informe |
+**Reestimado el 08/11/2026 (T04, decisión 42).** La implementación arrancó el 08/11 y la fase 1 se terminó en una sesión de ≈ 1,3 h con IA (≈ 17 pts/h). Lo que falta (103 pts) se estima a 7,5 pts/h por la mayor complejidad del dominio: unas 14 h de sesión. Detalle en `docs/PLANIFICACION.md`, "Reestimación del 08/11/2026".
+
+| Escenario | Ritmo | Horas de sesión por semana | Fin | Viabilidad |
+| :-- | :-- | :-- | :-- | :-- |
+| **Ideal** | 51,5 pts/semana (7,4 pts/día) | ≈ 7 h | dom 22/11 | Viable con unas 3 sesiones de 2 a 2,5 h por semana |
+| **Pesimista** | 37 pts/semana (5,3 pts/día) | ≈ 5 h | sáb 28/11, con margen hasta el mar 01/12 | Viable con holgura. El margen (~16 pts) cubre los e2e de Playwright, los ajustes y el informe |
 
 **Control al cierre de cada sprint**
 
 | Corte | Acumulado ideal | Acumulado pesimista | Real |
 | :-- | :-- | :-- | :-- |
-| dom 08/11 | 45 | 37 | |
-| dom 15/11 | 91 | 74 | |
-| dom 22/11 | 136 | 111 | |
-| mar 01/12 | — | 136 | |
+| dom 08/11 | 45 (plan original) | 37 (plan original) | **26** |
+| dom 15/11 | 78 | 63 | |
+| dom 22/11 | 129 | 100 | |
+| sáb 28/11 | — | 129 | |
+| mar 01/12 | — | margen | |
+
+Al 08/11 lo real quedó debajo de la línea pesimista original. Con el ritmo medido, la propuesta es no recortar y revisar en el corte del 15/11 (lo decide el desarrollador).
 
 Si lo real queda por debajo de la línea pesimista, se le consulta al desarrollador un recorte. Las candidatas, en este orden, son US20 (6), US10 (6), US18 (6) y US12 (4): ninguna bloquea a otra.
 
@@ -64,14 +69,14 @@ Si lo real queda por debajo de la línea pesimista, se le consulta al desarrolla
 | Fase | Versión | Puntos | Acumulado | Fin ideal | Fin pesimista | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | 0. Base técnica | 1.0.0 | 4 | 4 | lun 03/11 | lun 03/11 | ✅ |
-| 1. Ingreso, catálogo y vínculo | 1.1.0 | 20 | 24 | vie 07/11 | dom 08/11 | 🔄 |
-| 2. Planificación básica | 1.2.0 | 28 | 52 | mar 11/11 | jue 13/11 | ⬜ |
-| 3. Más rutinas e inicio del entrenamiento | 1.3.0 | 36 | 88 | dom 16/11 | jue 20/11 | ⬜ |
-| 4. Registro, resumen y récords | 1.4.0 | 33 | 121 | vie 21/11 | mié 26/11 | ⬜ |
-| 5. Seguimiento y cierre del MVP | 1.5.0 | 6 | 127 | sáb 22/11 | jue 27/11 (margen hasta 01/12) | ⬜ |
-| **Total** | | **127** | | | | |
+| 1. Ingreso, catálogo y vínculo (incluye T04 y T05) | 1.1.0 | 22 | 26 | vie 07/11 | dom 08/11 | ✅ (falta la demo y el tag) |
+| 2. Planificación básica | 1.2.0 | 28 | 54 | jue 12/11 | sáb 14/11 | ⬜ |
+| 3. Más rutinas e inicio del entrenamiento | 1.3.0 | 36 | 90 | mar 17/11 | vie 20/11 | ⬜ |
+| 4. Registro, resumen y récords | 1.4.0 | 33 | 123 | sáb 21/11 | vie 27/11 | ⬜ |
+| 5. Seguimiento y cierre del MVP | 1.5.0 | 6 | 129 | dom 22/11 | sáb 28/11 (margen hasta 01/12) | ⬜ |
+| **Total** | | **129** | | | | |
 
-Las fechas suponen un ritmo parejo de 6,5 pts/día en el ideal y 5,3 pts/día en el pesimista, contados de lunes a domingo, igual que la velocity histórica.
+Fechas reestimadas el 08/11 (T04): desde el lunes 09/11, a 7,4 pts/día en el ideal y 5,3 pts/día en el pesimista, contados de lunes a domingo. En pts por hora de sesión: 7,5 pts/h estimados para las fases 2 a 4.
 
 **Nota (decisión 41, 08/11/2026):** el recorte de US01 deja 9 pts de margen. El total pasa de 136 a 127 y la fase 1 de 29 a 20. Las tablas de control y de velocity de la planificación se dejan con las cifras originales.
 
@@ -131,16 +136,19 @@ Las fechas suponen un ritmo parejo de 6,5 pts/día en el ideal y 5,3 pts/día en
 | 1 | US00 | Backend: seed del Admin, ingresar al sistema (JWT) y guard de roles en `compartido` | back | RN-IDE-01, 02, 03, 14 | 5 | ✅ |
 | 1 | US00 | Backend: semilla de usuarios de prueba (`sembrar-usuarios`, `yarn seed`) | back | RN-IDE-05, 06, 07, 12, 13 | incl. en US00 | ✅ |
 | 1 | ~~US01~~ | ~~Modelar: Ejercicio, músculos y grupo derivado, factor de peso~~ | ~~back~~ | ~~RN-CAT-01…07~~ | ~~3~~ | — fuera del MVP (DT-06) |
-| 2 | US00 | Frontend: página de ingreso, sesión y rutas por rol | front | RN-IDE-01, 02, 03 · RN-UI-IDE-01, 02 | 3 | ⬜ |
+| 2 | US00 | Frontend: página de ingreso, sesión y rutas por rol | front | RN-IDE-01, 02, 03 · RN-UI-IDE-01, 02 | 3 | ✅ |
 | 2 | US02 | Backend: dar de alta un profesor | back | RN-IDE-04, 06, 13 | 1 | ✅ |
 | 2 | ~~US01~~ | ~~Backend: registrar ejercicio~~ | ~~back~~ | ~~RN-CAT-01…07~~ | ~~3~~ | — fuera del MVP (DT-06) |
 | 2 | T01 | Carga del dataset de ejercicios (idempotente, `yarn seed`) | back | RN-CAT-01, 05, 07, 08, 09 | 3 | ✅ |
-| 3 | US02 | Frontend: página de alta de profesor | front | RN-IDE-04, 06, 13 | 1 | ⬜ |
+| 3 | US02 | Frontend: página de alta de profesor | front | RN-IDE-04, 06, 13 | 1 | ✅ |
 | 3 | ~~US01~~ | ~~Frontend: página de registro de ejercicio~~ | ~~front~~ | ~~RN-CAT-01…07~~ | ~~3~~ | — fuera del MVP (DT-06) |
 | 3 | US04 | Modelar: Código de Profesor | back | RN-IDE-08 | 1 | ✅ |
-| 4 | US04 | Backend y Frontend: generar código de profesor | ambos | RN-IDE-08 | 2 | back ✅, front ⬜ |
+| 4 | US04 | Backend y Frontend: generar código de profesor | ambos | RN-IDE-08 | 2 | ✅ |
 | 5 | US05 | Backend: vincular alumno con el código | back | RN-IDE-09, 10, 11 | 3 | ✅ |
-| 6 | US05 | Frontend: página para vincularse con el profesor | front | RN-IDE-09, 10, 11 | 1 | ⬜ |
+| 6 | US05 | Frontend: página para vincularse con el profesor | front | RN-IDE-09, 10, 11 | 1 | ✅ |
+| 7 | T01 | Frontend: lista de ejercicios con buscador, detalle con GIF y registro deshabilitado (DT-06) | front | RN-CAT-01, 05, 09 | incl. en T01 | ✅ |
+| 8 | T04 | Reestimación del backlog y del calendario | ambos (docs) | — | 1 | ✅ |
+| 8 | T05 | Ajuste de métricas (pts por hora de sesión, OKR, COCOMO) | ambos (docs) | — | 1 | ✅ |
 
 **Ejemplo de microcommits para US05 (backend).** El pie `Reglas:` se muestra en la misma línea para abreviar; en el commit real va al final del mensaje.
 
@@ -150,7 +158,7 @@ feat(identidad): vinculo al alumno con el profesor del código [US05]     Reglas
 feat(identidad): rechazo el vínculo de un alumno que ya tiene profesor [US05]  Reglas: RN-IDE-10
 feat(identidad): rechazo un código invalidado por regeneración [US05]   Reglas: RN-IDE-11
 refactor(identidad): extraigo la búsqueda de código al repositorio [US05]
-feat(identidad): expongo POST /identidad/vinculos con guard de Alumno [US05]
+feat(identidad): expongo POST /identidad/alumnos/vinculo con guard de Alumno [US05]
 test(identidad): cubro el vínculo con e2e de API [US05]                 Reglas: RN-IDE-03, 09, 10
 US05 — Vincular alumno con su profesor   (merge --no-ff)
 ```
@@ -161,7 +169,7 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 
 | Inicio real | Fin real | Puntos terminados | Horas reales | Desvío | Bugs en demo | Notas |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| | | | | | | |
+| dom 08/11, 15:10 | dom 08/11, 16:30 | 22 (20 + T04 y T05) | ≈ 1,3 h de sesión con IA (Opus 5.5 + Sonnet 5.5 + Haiku 5.5), incluidas las confirmaciones de fichas | +1 día contra el ideal, 0 contra el pesimista. Esfuerzo: ≈ 17 pts/h (base nueva, decisión 42) | Pendiente (falta la demo) | Decisión 41: US01 fuera del MVP y T01 como dataset de ejercicios. 141 tests en total (113 back, 28 front). Antes del 08/11 no hubo implementación |
 
 ---
 
