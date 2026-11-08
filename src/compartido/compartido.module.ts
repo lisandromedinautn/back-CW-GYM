@@ -2,6 +2,8 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+import { PUBLICADOR_EVENTOS } from './dominio/publicador-eventos.puerto.js';
+import { PublicadorEventosLog } from './infraestructura/publicador-eventos-log.js';
 import { FiltroErrorDominio } from './presentacion/filtro-error-dominio.js';
 import { GuardRoles } from './presentacion/guard-roles.js';
 
@@ -21,7 +23,8 @@ import { GuardRoles } from './presentacion/guard-roles.js';
   providers: [
     { provide: APP_GUARD, useClass: GuardRoles },
     { provide: APP_FILTER, useClass: FiltroErrorDominio },
+    { provide: PUBLICADOR_EVENTOS, useClass: PublicadorEventosLog },
   ],
-  exports: [JwtModule],
+  exports: [JwtModule, PUBLICADOR_EVENTOS],
 })
 export class ModuloCompartido {}

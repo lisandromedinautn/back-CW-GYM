@@ -8,8 +8,10 @@ import { ConsultarCodigoProfesor } from '../aplicacion/consultar-codigo-profesor
 import { DarAltaProfesor } from '../aplicacion/dar-alta-profesor.caso-uso.js';
 import { GenerarCodigoProfesor } from '../aplicacion/generar-codigo-profesor.caso-uso.js';
 import { IngresarAlSistema, type Ingreso } from '../aplicacion/ingresar-al-sistema.caso-uso.js';
+import { VincularAlumno, type Vinculo } from '../aplicacion/vincular-alumno.caso-uso.js';
 import { AltaProfesorDto } from './alta-profesor.dto.js';
 import { IngresoDto } from './ingreso.dto.js';
+import { VinculoDto } from './vinculo.dto.js';
 
 @Controller('identidad')
 export class IdentidadControlador {
@@ -18,6 +20,7 @@ export class IdentidadControlador {
     @Inject(DarAltaProfesor) private readonly darAltaProfesor: DarAltaProfesor,
     @Inject(GenerarCodigoProfesor) private readonly generarCodigo: GenerarCodigoProfesor,
     @Inject(ConsultarCodigoProfesor) private readonly consultarCodigo: ConsultarCodigoProfesor,
+    @Inject(VincularAlumno) private readonly vincularAlumno: VincularAlumno,
   ) {}
 
   /** Público. RN-IDE-01. */
@@ -51,5 +54,16 @@ export class IdentidadControlador {
     @UsuarioActual() usuario: UsuarioAutenticado,
   ): Promise<{ codigo: string | null }> {
     return { codigo: await this.consultarCodigo.ejecutar(usuario.sub) };
+  }
+
+  /** Solo Alumno. RN-IDE-09, 10, 11. */
+  @Post('alumnos/vinculo')
+  @Roles('Alumno')
+  @HttpCode(HttpStatus.OK)
+  vinculo(
+    @UsuarioActual() usuario: UsuarioAutenticado,
+    @Body() datos: VinculoDto,
+  ): Promise<Vinculo> {
+    return this.vincularAlumno.ejecutar(usuario.sub, datos.codigo);
   }
 }

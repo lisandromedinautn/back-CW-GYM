@@ -15,6 +15,11 @@ export class RepositorioAlumnosTypeorm implements RepositorioAlumnos {
     });
   }
 
+  async buscarPorUsuarioId(usuarioId: string): Promise<Alumno | null> {
+    const fila = await this.filas.findOneBy({ usuarioId });
+    return fila ? AlumnoMapper.aDominio(fila) : null;
+  }
+
   async guardar(alumno: Alumno): Promise<void> {
     await this.filas.save(AlumnoMapper.aEsquema(alumno));
   }
