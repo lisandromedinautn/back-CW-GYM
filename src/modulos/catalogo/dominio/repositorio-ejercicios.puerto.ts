@@ -7,12 +7,4 @@ export abstract class RepositorioEjercicios {
   abstract existePorNombre(nombre: string): Promise<boolean>;
   /** Todos los ejercicios del catálogo, sin orden garantizado. */
   abstract listar(): Promise<Ejercicio[]>;
-
-  /**
-   * El ejercicio con ese id, o null si no existe. La implementación por defecto recorre
-   * `listar()`; el repositorio TypeORM la reemplaza por una consulta directa.
-   */
-  async buscarPorId(id: string): Promise<Ejercicio | null> {
-    return (await this.listar()).find((ejercicio) => ejercicio.id === id) ?? null;
-  }
 }
