@@ -137,8 +137,8 @@ Las fechas suponen un ritmo parejo de 6,5 pts/día en el ideal y 5,3 pts/día en
 | 2 | T01 | Carga del dataset de ejercicios (idempotente, `yarn seed`) | back | RN-CAT-01, 05, 07, 08, 09 | 3 | ✅ |
 | 3 | US02 | Frontend: página de alta de profesor | front | RN-IDE-04, 06, 13 | 1 | ⬜ |
 | 3 | ~~US01~~ | ~~Frontend: página de registro de ejercicio~~ | ~~front~~ | ~~RN-CAT-01…07~~ | ~~3~~ | — fuera del MVP (DT-06) |
-| 3 | US04 | Modelar: Código de Profesor | back | RN-IDE-08 | 1 | ⬜ |
-| 4 | US04 | Backend y Frontend: generar código de profesor | ambos | RN-IDE-08 | 2 | ⬜ |
+| 3 | US04 | Modelar: Código de Profesor | back | RN-IDE-08 | 1 | ✅ |
+| 4 | US04 | Backend y Frontend: generar código de profesor | ambos | RN-IDE-08 | 2 | back ✅, front ⬜ |
 | 5 | US05 | Backend: vincular alumno con el código | back | RN-IDE-09, 10, 11 | 3 | ⬜ |
 | 6 | US05 | Frontend: página para vincularse con el profesor | front | RN-IDE-09, 10, 11 | 1 | ⬜ |
 
