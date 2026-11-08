@@ -15,17 +15,21 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `docs/MODELOS-IA.md` | Modelos, delegación y plantillas de prompt |
 | `.claude/settings.json` | Permisos: confirmación al editar tests e instalar paquetes |
 | `.claude/skills/tdd`, `.claude/skills/coverage` | Skills de TDD y cobertura |
-| `test/datasets/` | Fixture del dataset de ejercicios (T01) 📄 |
-| `datos/` | Dataset de ejercicios reducido y su licencia (T01) 📄 |
+| `test/datasets/` | Fixture del dataset de ejercicios (T01) ✅ |
+| `datos/` | Dataset de ejercicios reducido y su licencia (T01) ✅ |
+| `test/dobles/` | Dobles de los puertos para los tests unitarios (`identidad.ts`: repositorios, hasheador y emisor de tokens en memoria). Fuera de `src/`, no cuentan en la cobertura ✅ |
 | `package.json`, `yarn.lock` | Dependencias exactas, scripts y `resolutions` (regla de las 24 h) ✅ |
 | `docker-compose.yml` | Postgres 18 de desarrollo (5442) y de test (5443, en memoria) ✅ |
 | `.env.example`, `.env.test` | Variables de entorno: plantilla de desarrollo y valores de test ✅ |
 | `vitest.config.ts`, `vitest.int.config.ts`, `vitest.e2e.config.ts` | Unitarios con umbrales de cobertura, integración y e2e ✅ |
+| `vitest.cov.config.ts` | `yarn test:cov`: mide unitarios, integración y e2e juntos (requiere `yarn bd:levantar`) ✅ |
 | `test/preparar-vitest.ts` | Se carga antes de cada test (`reflect-metadata`) ✅ |
 | `eslint.config.js`, `.prettierrc.json` | Lint con las reglas de capas del `CLAUDE.md` y formato ✅ |
 | `.husky/`, `scripts/` | Hooks (pre-commit y commit-msg), validador de mensajes y verificación de antigüedad de paquetes ✅ |
 | `src/main.ts`, `src/modulo-raiz.module.ts` | Arranque de la API y módulo raíz (configuración y conexión a Postgres) ✅ |
 | `src/semillas.ts` | Punto de entrada de `yarn seed`: lista ordenada de semillas ✅ |
+| `src/configurar-aplicacion.ts` | Configuración HTTP común a `main.ts` y a los e2e (`ValidationPipe` con `whitelist`) ✅ |
+| `src/compartido/compartido.module.ts` | Kernel compartido: JWT global, `GuardRoles` y `FiltroErrorDominio` registrados como `APP_GUARD` y `APP_FILTER` ✅ |
 | `CHANGELOG.md` | Cambios por versión (decisión 38) ✅ |
 
 ## Módulos
@@ -44,15 +48,15 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/`. Tests de integración: `t
 
 | Módulo | Caso de uso | Endpoint | US | Estado |
 | :-- | :-- | :-- | :-- | :-- |
-| identidad | `ingresar-al-sistema.caso-uso.ts` | `POST /identidad/ingreso` | US00 | 📄 |
-| identidad | `sembrar-admin.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | US00 | 📄 |
-| identidad | `sembrar-usuarios.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | US00 | 📄 |
+| identidad | `ingresar-al-sistema.caso-uso.ts` | `POST /identidad/ingreso` | US00 | ✅ |
+| identidad | `sembrar-admin.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | US00 | ✅ |
+| identidad | `sembrar-usuarios.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | US00 | ✅ |
 | identidad | `dar-alta-profesor.caso-uso.ts` | `POST /identidad/profesores` | US02 | 📄 |
 | identidad | `generar-codigo-profesor.caso-uso.ts` | `POST /identidad/profesores/codigo` | US04 | 📄 |
 | identidad | `vincular-alumno.caso-uso.ts` | `POST /identidad/alumnos/vinculo` | US05 | 📄 |
-| catalogo | `cargar-dataset-ejercicios.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | T01 | 📄 |
+| catalogo | `cargar-dataset-ejercicios.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | T01 | ✅ |
 | catalogo | ~~`registrar-ejercicio.caso-uso.ts`~~ | ~~`POST /catalogo/ejercicios`~~ | US01 (fuera del MVP, DT-06) | — |
-| catalogo | `listar-ejercicios.caso-uso.ts` | `GET /catalogo/ejercicios` | T01, US06 | 📄 |
+| catalogo | `listar-ejercicios.caso-uso.ts` | `GET /catalogo/ejercicios` (todavía sin endpoint: el caso de uso existe, falta el controlador) | T01, US06 | ✅ |
 | planificacion | `crear-rutina.caso-uso.ts` | `POST /planificacion/rutinas` | US06, US09, US10 | 📄 |
 | planificacion | `editar-rutina.caso-uso.ts` | `PUT /planificacion/rutinas/:id` | US06 | 📄 |
 | planificacion | `importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | 📄 |
@@ -92,5 +96,5 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/`. Tests de integración: `t
 | Entidad de persistencia | `<nombre>.esquema.ts` | infraestructura |
 | Mapper | `<nombre>.mapper.ts` | infraestructura |
 | Controlador | `<modulo>.controlador.ts` | presentacion |
-| Módulo Nest | `<modulo>.modulo.ts` | raíz del módulo |
+| Módulo Nest | `<modulo>.module.ts` (reemplaza `.modulo.ts`; así lo excluye la cobertura, que ignora `src/**/*.module.ts`) | raíz del módulo |
 | Test unitario / integración / e2e | `*.spec.ts` / `*.int-spec.ts` / `*.e2e-spec.ts` | junto al archivo / `test/integracion` / `test/e2e` |
