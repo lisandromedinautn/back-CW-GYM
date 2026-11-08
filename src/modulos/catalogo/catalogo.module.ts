@@ -7,9 +7,11 @@ import { RepositorioEjercicios } from './dominio/repositorio-ejercicios.puerto.j
 import { EjercicioEsquema } from './infraestructura/ejercicio.esquema.js';
 import { FuenteDatasetEjerciciosArchivo } from './infraestructura/fuente-dataset-ejercicios.archivo.js';
 import { RepositorioEjerciciosTypeorm } from './infraestructura/ejercicio.repositorio-typeorm.js';
+import { CatalogoControlador } from './presentacion/catalogo.controlador.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([EjercicioEsquema])],
+  controllers: [CatalogoControlador],
   providers: [
     { provide: RepositorioEjercicios, useClass: RepositorioEjerciciosTypeorm },
     { provide: FuenteDatasetEjercicios, useFactory: () => new FuenteDatasetEjerciciosArchivo() },
