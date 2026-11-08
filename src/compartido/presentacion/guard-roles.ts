@@ -1,5 +1,6 @@
 import {
   type CanActivate,
+  createParamDecorator,
   type ExecutionContext,
   Inject,
   Injectable,
@@ -19,6 +20,12 @@ export interface UsuarioAutenticado {
 }
 
 export type RequestAutenticado = Request & { usuario: UsuarioAutenticado };
+
+/** El usuario del token, que el guard dejó en el request. Solo en endpoints con @Roles. */
+export const UsuarioActual = createParamDecorator(
+  (_dato: unknown, contexto: ExecutionContext): UsuarioAutenticado =>
+    contexto.switchToHttp().getRequest<RequestAutenticado>().usuario,
+);
 
 /** Roles que pueden usar el endpoint. Sin este decorador, el endpoint es público. */
 export const Roles = (...roles: string[]) => SetMetadata(CLAVE_ROLES, roles);
