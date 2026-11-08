@@ -3,7 +3,7 @@
 Versión 3 · 02/11/2026 · Lisandro (Licha)
 Original: Google Doc "Sistema de Entrenamiento de Gimnasio — Lenguaje ubicuo, US y modelo DDD" (31/10/2026). Este archivo es la copia versionada; existe igual en `back-CW-GYM` y `front-CW-GYM`. Si cambia, se actualizan los dos repos y el Google Doc.
 
-**Cambios respecto de la versión 2:** en T02 el back pasó de Jest a Vitest (decisión 21) y se fijaron las versiones del stack (decisión 17). Se agregaron la regla de microcommits (decisión 37), el versionado semántico del sistema (decisión 38) y el calendario con dos escenarios: ideal al 22/11 y pesimista al 01/12 (decisión 39). Se cerró ZG-14: el Admin inicial se crea con un seed (decisión 40). El orden de trabajo y el checklist de cada fase están en [`docs/PLAN-IMPLEMENTACION.md`](PLAN-IMPLEMENTACION.md).
+**Cambios respecto de la versión 2:** en T02 el back pasó de Jest a Vitest (decisión 21) y se fijaron las versiones del stack (decisión 17). Se agregaron la regla de microcommits (decisión 37), el versionado semántico del sistema (decisión 38) y el calendario con dos escenarios: ideal al 22/11 y pesimista al 01/12 (decisión 39). Se cerró ZG-14: el Admin inicial se crea con un seed (decisión 40). La decisión 41 (08/11/2026) saca US01 del MVP (pasa a DT-06), carga el catálogo desde un dataset público de ejercicios (T01) y crea los alumnos y profesores de prueba con una semilla de usuarios; el total baja a 127 pts. El orden de trabajo y el checklist de cada fase están en [`docs/PLAN-IMPLEMENTACION.md`](PLAN-IMPLEMENTACION.md).
 
 **Cambios respecto de la versión 1:** se cerraron los cuatro pendientes (bloqueo de rutinas, stack y arquitectura, formato del informe, escala de sensación de fuerza). Se agregaron las convenciones técnicas, el catálogo de reglas de negocio con IDs y la matriz de trazabilidad obligatoria. Se detectaron y cerraron 13 zonas grises (decisiones 24 a 36). Se quitó US19: un plan no se puede finalizar antes de tiempo.
 
@@ -17,7 +17,7 @@ Hay tres roles: **Profesor**, **Alumno** y **Admin**.
 
 | # | Tema | Decisión |
 | :-- | :-- | :-- |
-| 1 | Alta de alumnos | Se cargan con un dataset. El ABM de alumnos queda como deuda técnica |
+| 1 | Alta de alumnos | Se cargan con una semilla de usuarios de prueba (3 profesores y 20 alumnos sin vincular, decisión 41). El ABM de alumnos queda como deuda técnica (DT-01) |
 | 2 | Ejecución de una rutina | Se llama **Entrenamiento**. Para el login se dice "ingresar al sistema" |
 | 3 | Grupos musculares | Piernas, Pecho, Espalda, Hombros, Brazos, Core y Cardio |
 | 4 | Volumen y récords | Carga Efectiva con factor de peso corporal. Récords de máx. repeticiones, máx. volumen en serie, 1RM estimado y máx. tiempo |
@@ -40,8 +40,8 @@ Hay tres roles: **Profesor**, **Alumno** y **Admin**.
 | 21 | Testing | Back: Vitest (unitarios, integración y e2e de API; hasta el 02/11/2026 decía Jest, se cambió porque Nest 12 es solo ESM y su base oficial usa Vitest). Front: Vitest + Testing Library (unitarios e integración) y Playwright (e2e de navegador, se configura al crear la suite de tests). La base de datos de test es independiente y dockerizada |
 | 22 | Cobertura | Capa de dominio: 80% como mínimo, con la intención de superarlo. Resto del código: 70% |
 | 23 | Ramas | `main` y `develop`. Se puede commitear directo a `develop`; lo protegen las reglas de testing y lint. Cada commit referencia una tarjeta de Trello |
-| 24 | Ingreso al sistema | Con email y contraseña. El email es único. El dataset trae la contraseña inicial de cada alumno (ZG-13) |
-| 25 | Unicidad | El legajo del profesor y el documento (tipo + número) son únicos. El dataset no duplica alumnos con un documento existente (ZG-01) |
+| 24 | Ingreso al sistema | Con email y contraseña. El email es único. La contraseña inicial de cada alumno sale de la semilla de usuarios (`SEMILLA_CONTRASENIA`), no de un dataset (ZG-13) |
+| 25 | Unicidad | El legajo del profesor y el documento (tipo + número) son únicos. La semilla no duplica a nadie cuyo documento o email ya existe (ZG-01) |
 | 26 | Código de Profesor | Uno vigente por profesor, reutilizable y sin vencimiento. Generar uno nuevo invalida el anterior (ZG-02) |
 | 27 | Factor de peso corporal | Mayor que 0% y hasta 100% (ZG-03) |
 | 28 | Músculos | Lista cerrada, con su grupo muscular derivado (tabla en el módulo Catálogo) (ZG-04) |
@@ -57,6 +57,7 @@ Hay tres roles: **Profesor**, **Alumno** y **Admin**.
 | 38 | Versionado | SemVer `MAJOR.MINOR.PATCH`, con front y back sincronizados. Se queda en 1.x mientras dure el MVP. La minor sube al cerrar cada hito funcional (una fase del plan) y el patch sube con los arreglos. Los tags van en `develop` |
 | 39 | Calendario | Escenario ideal: MVP completo el **22/11/2026**. Escenario pesimista: **01/12/2026**. **`main` no se toca hasta el 22/11.** Según la velocity histórica, el escenario ideal no se alcanza (ver "Métricas y estimación") |
 | 40 | Admin inicial | Se crea con un seed idempotente que toma el email y la contraseña de variables de entorno (ZG-14) |
+| 41 | Catálogo y usuarios de prueba (08/11/2026) | US01 sale del MVP y pasa a DT-06. El catálogo se carga con T01 desde el dataset de ejercicios [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) (1324 ejercicios; datos MIT, GIFs © Gym visual con atribución). Los alumnos y profesores de prueba se crean con la semilla de usuarios (`sembrar-usuarios`, dentro de US00). Total: 127 pts; fase 1: 20 pts |
 
 ## Glosario de lenguaje ubicuo
 
@@ -225,7 +226,7 @@ Se usa versionado semántico `MAJOR.MINOR.PATCH` (decisión 38). Como el sistema
 | Versión | Hito | Fase | Fin ideal | Fin pesimista |
 | :-- | :-- | :-- | :-- | :-- |
 | 1.0.0 | Base técnica: proyecto arrancable, baseline de tests, hooks y seed (T02) | 0 | 03/11 | 03/11 |
-| 1.1.0 | Ingreso al sistema, catálogo de ejercicios, alta de profesores, dataset y vínculo alumno-profesor | 1 | 07/11 | 08/11 |
+| 1.1.0 | Ingreso al sistema, catálogo de ejercicios, alta de profesores, semilla de usuarios y vínculo alumno-profesor | 1 | 07/11 | 08/11 |
 | 1.2.0 | Rutina por bloques, plan de 28 días y rutina del día | 2 | 11/11 | 13/11 |
 | 1.3.0 | Circuitos, rutina mixta, importar rutina, plan del alumno e inicio del entrenamiento | 3 | 16/11 | 20/11 |
 | 1.4.0 | Series realizadas, resumen, récords, RPE y alumnos del plan vigente | 4 | 21/11 | 26/11 |
@@ -251,20 +252,20 @@ Se usa versionado semántico `MAJOR.MINOR.PATCH` (decisión 38). Como el sistema
 
 ## Historias de usuario
 
-El backlog suma 136 puntos (US19 se quitó por la decisión 31). Escala: L = 5, M = 3, S = 1. Cada historia suma sus tareas Modelar, Backend y Frontend.
+El backlog suma 127 puntos (US19 se quitó por la decisión 31, y US01 sale del MVP por la decisión 41: 9 pts, DT-06). Escala: L = 5, M = 3, S = 1. Cada historia suma sus tareas Modelar, Backend y Frontend.
 
 **Nota de calendario (decisión 39).** Los cinco "sprints" de abajo son agrupaciones funcionales y coinciden con las fases 1 a 5 del plan de implementación. El calendario real es de 3 sprints de una semana (escenario ideal, hasta el 22/11) o de 4 (escenario pesimista, hasta el 01/12). Las fechas de cada fase están en `docs/PLAN-IMPLEMENTACION.md`.
 
-### Sprint 1: base del sistema (33 pts)
+### Sprint 1: base del sistema (24 pts)
 
 | ID | Historia | Tareas | Pts |
 | :-- | :-- | :-- | :-- |
 | US00 | Como **usuario** quiero ingresar al sistema con mi rol para acceder solo a las funciones que me corresponden | Backend L, Frontend M | 8 |
-| US01 | Como **Admin** quiero registrar un ejercicio con su tipo, carga, factor de peso corporal y músculos para que los profesores puedan usarlo al armar rutinas | Modelar M, Backend M, Frontend M | 9 |
+| ~~US01~~ | ~~Como **Admin** quiero registrar un ejercicio con su tipo, carga, factor de peso corporal y músculos para que los profesores puedan usarlo al armar rutinas~~ (fuera del MVP, DT-06) | ~~Modelar M, Backend M, Frontend M~~ | ~~9~~ |
 | US02 | Como **Admin** quiero dar de alta a un profesor con su legajo para que pueda empezar a planificar | Backend S, Frontend S | 2 |
 | US04 | Como **Profesor** quiero generar un código de profesor para que mis alumnos puedan vincularse conmigo | Modelar S, Backend S, Frontend S | 3 |
 | US05 | Como **Alumno** quiero ingresar el código de mi profesor para quedar vinculado y recibir sus planes | Backend M, Frontend S | 4 |
-| T01 | Carga de dataset de alumnos | M | 3 |
+| T01 | Carga del dataset de ejercicios (idempotente) | M | 3 |
 | T02 | Setup del proyecto y baseline de tests: Nest + TypeORM, React + Vite, Vitest con umbrales de cobertura, Playwright para e2e del front, ESLint + Prettier, husky + lint-staged, Postgres dockerizado (desarrollo y test por separado), verificación de antigüedad de paquetes | M | 3 |
 | T03 | Glosario de lenguaje ubicuo, atlas y `CLAUDE.md` por módulo en los repositorios | S | 1 |
 
@@ -314,11 +315,12 @@ US19 (finalizar un plan antes de sus 28 días) se eliminó del backlog: un plan 
 
 | ID | Deuda | Historia futura | Motivo |
 | :-- | :-- | :-- | :-- |
-| DT-01 | ABM de alumnos | Como **Admin** quiero dar de alta, modificar y dar de baja alumnos para gestionarlos sin depender de un dataset | Para el MVP los alumnos se cargan por dataset |
+| DT-01 | ABM de alumnos | Como **Admin** quiero dar de alta, modificar y dar de baja alumnos para gestionarlos sin depender de una semilla | Para el MVP los alumnos se cargan con una semilla de usuarios |
 | DT-02 | Autorregistro de alumnos | Como **Alumno** quiero registrarme por mi cuenta para no depender del Admin | Fuera del alcance inicial |
-| DT-03 | Actualización de peso por el alumno | Como **Alumno** quiero actualizar mi peso y altura para que mis métricas se calculen con datos actuales | Sin ABM, el peso solo cambia por dataset |
+| DT-03 | Actualización de peso por el alumno | Como **Alumno** quiero actualizar mi peso y altura para que mis métricas se calculen con datos actuales | Sin ABM, el peso solo cambia por semilla |
 | DT-04 | Más de un profesor por alumno | Como **Alumno** quiero entrenar con más de un profesor para combinar disciplinas | La regla actual es un solo profesor |
 | DT-05 | Atlas generado por script | Regenerar `ATLAS.md` desde el código | Por ahora el atlas se mantiene a mano |
+| DT-06 | Registro de ejercicios | Como **Admin** quiero registrar un ejercicio con su tipo, carga, factor de peso corporal y músculos para ampliar el catálogo | El catálogo del MVP se carga desde un dataset. En el front queda solo un botón "Registrar ejercicio" deshabilitado (decisión 41) |
 
 El modelo de Alumno no debe depender de quién lo creó. Así, pagar DT-01 y DT-02 solo cambia quién ejecuta el alta.
 
@@ -334,6 +336,8 @@ La velocity del proyecto anterior fue de 37 puntos por semana: el promedio de tr
 | 28 de septiembre (cierre) | 9 |
 
 En total se terminaron 48 tarjetas y 120 puntos. Hay tres alertas para el nuevo tablero: 13 tarjetas no tenían estimación (8 de ellas terminadas, que no sumaron), el pico de 53 coincide con movimientos en bloque y hay IDs duplicados (dos PA-046).
+
+**Nota (decisión 41, 08/11/2026):** el recorte de US01 deja 9 pts de margen. El backlog pasa de 136 a 127 pts, pero las tablas de esta sección se dejan con las cifras originales.
 
 **Calendario frente a velocity (decisión 39)**
 

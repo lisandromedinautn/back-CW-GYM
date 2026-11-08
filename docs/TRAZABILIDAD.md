@@ -8,12 +8,12 @@ Estados: ⬜ sin empezar · 🟥 test en rojo (TDD; solo en el working tree, nun
 
 | US | RN | Caso de uso (back) | Pantalla (front) | Unit | Int | e2e API | Front (Vitest / Playwright) | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| US00 | RN-IDE-01, 02, 03, 14 | ingresar-al-sistema, sembrar-admin | PaginaIngreso | — | — | — | — | ⬜ |
-| US01 | RN-CAT-01…07 | registrar-ejercicio | PaginaRegistrarEjercicio | — | — | — | — | ⬜ |
+| US00 | RN-IDE-01, 02, 03, 05, 06, 07, 12, 13, 14 | ingresar-al-sistema, sembrar-admin, sembrar-usuarios | PaginaIngreso | — | — | — | — | ⬜ |
+| ~~US01~~ | ~~RN-CAT-01…07~~ | ~~registrar-ejercicio~~ | ~~PaginaRegistrarEjercicio~~ | — | — | — | — | fuera del MVP (DT-06) |
 | US02 | RN-IDE-04, 06, 13 | dar-alta-profesor | PaginaAltaProfesor | — | — | — | — | ⬜ |
 | US04 | RN-IDE-08 | generar-codigo-profesor | PaginaCodigoProfesor | — | — | — | — | ⬜ |
 | US05 | RN-IDE-09, 10, 11 | vincular-alumno | PaginaVincularProfesor | — | — | — | — | ⬜ |
-| T01 | RN-IDE-05, 06, 07, 12, 13 | cargar-dataset-alumnos | — | — | — | — | — | ⬜ |
+| T01 | RN-CAT-01, 05, 07, 08, 09 | cargar-dataset-ejercicios | ListaEjercicios | — | — | — | — | ⬜ |
 | US06 | RN-PLAN-01, 02, 04, 05, 06, 07 | crear-rutina, editar-rutina | EditorRutina | — | — | — | — | ⬜ |
 | US07 | RN-PLAN-09…15, 17 | crear-plan | PaginaCrearPlan | — | — | — | — | ⬜ |
 | US08 | RN-PLAN-11, 15, 18 | consultar-rutina-del-dia | PaginaRutinaDelDia | — | — | — | — | ⬜ |
@@ -38,7 +38,7 @@ Toda RN vigente tiene que tener al menos un test. Una RN sin test es una brecha 
 | RN | Tests que la validan | Estado |
 | :-- | :-- | :-- |
 | RN-IDE-01 … RN-IDE-14 | — | ⬜ |
-| RN-CAT-01 … RN-CAT-07 | — | ⬜ |
+| RN-CAT-01 … RN-CAT-09 | — | ⬜ |
 | RN-PLAN-01 … RN-PLAN-19 | — | ⬜ |
 | RN-ENT-01 … RN-ENT-20 | — | ⬜ |
 
