@@ -15,7 +15,8 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `docs/MODELOS-IA.md` | Modelos, delegación y plantillas de prompt |
 | `.claude/settings.json` | Permisos: confirmación al editar tests e instalar paquetes |
 | `.claude/skills/tdd`, `.claude/skills/coverage` | Skills de TDD y cobertura |
-| `test/datasets/` | Dataset de alumnos (T01) 📄 |
+| `test/datasets/` | Fixture del dataset de ejercicios (T01) 📄 |
+| `datos/` | Dataset de ejercicios reducido y su licencia (T01) 📄 |
 | `package.json`, `yarn.lock` | Dependencias exactas, scripts y `resolutions` (regla de las 24 h) ✅ |
 | `docker-compose.yml` | Postgres 18 de desarrollo (5442) y de test (5443, en memoria) ✅ |
 | `.env.example`, `.env.test` | Variables de entorno: plantilla de desarrollo y valores de test ✅ |
@@ -45,12 +46,13 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/`. Tests de integración: `t
 | :-- | :-- | :-- | :-- | :-- |
 | identidad | `ingresar-al-sistema.caso-uso.ts` | `POST /identidad/ingreso` | US00 | 📄 |
 | identidad | `sembrar-admin.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | US00 | 📄 |
+| identidad | `sembrar-usuarios.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | US00 | 📄 |
 | identidad | `dar-alta-profesor.caso-uso.ts` | `POST /identidad/profesores` | US02 | 📄 |
 | identidad | `generar-codigo-profesor.caso-uso.ts` | `POST /identidad/profesores/codigo` | US04 | 📄 |
 | identidad | `vincular-alumno.caso-uso.ts` | `POST /identidad/alumnos/vinculo` | US05 | 📄 |
-| identidad | `cargar-dataset-alumnos.caso-uso.ts` | — (comando) | T01 | 📄 |
-| catalogo | `registrar-ejercicio.caso-uso.ts` | `POST /catalogo/ejercicios` | US01 | 📄 |
-| catalogo | `listar-ejercicios.caso-uso.ts` | `GET /catalogo/ejercicios` | US06 | 📄 |
+| catalogo | `cargar-dataset-ejercicios.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | T01 | 📄 |
+| catalogo | ~~`registrar-ejercicio.caso-uso.ts`~~ | ~~`POST /catalogo/ejercicios`~~ | US01 (fuera del MVP, DT-06) | — |
+| catalogo | `listar-ejercicios.caso-uso.ts` | `GET /catalogo/ejercicios` | T01, US06 | 📄 |
 | planificacion | `crear-rutina.caso-uso.ts` | `POST /planificacion/rutinas` | US06, US09, US10 | 📄 |
 | planificacion | `editar-rutina.caso-uso.ts` | `PUT /planificacion/rutinas/:id` | US06 | 📄 |
 | planificacion | `importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | 📄 |

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CatalogoModule } from './modulos/catalogo/catalogo.module.js';
 
 /**
  * Módulo raíz: carga las variables de entorno y abre la conexión a PostgreSQL.
@@ -28,6 +29,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         synchronize: config.get<string>('BD_SINCRONIZAR') === 'true',
       }),
     }),
+    CatalogoModule,
   ],
 })
 export class ModuloRaiz {}

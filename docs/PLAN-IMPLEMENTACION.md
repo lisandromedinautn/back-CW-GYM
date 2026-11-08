@@ -64,14 +64,16 @@ Si lo real queda por debajo de la línea pesimista, se le consulta al desarrolla
 | Fase | Versión | Puntos | Acumulado | Fin ideal | Fin pesimista | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | 0. Base técnica | 1.0.0 | 4 | 4 | lun 03/11 | lun 03/11 | ✅ |
-| 1. Ingreso, catálogo y vínculo | 1.1.0 | 29 | 33 | vie 07/11 | dom 08/11 | ⬜ |
-| 2. Planificación básica | 1.2.0 | 28 | 61 | mar 11/11 | jue 13/11 | ⬜ |
-| 3. Más rutinas e inicio del entrenamiento | 1.3.0 | 36 | 97 | dom 16/11 | jue 20/11 | ⬜ |
-| 4. Registro, resumen y récords | 1.4.0 | 33 | 130 | vie 21/11 | mié 26/11 | ⬜ |
-| 5. Seguimiento y cierre del MVP | 1.5.0 | 6 | 136 | sáb 22/11 | jue 27/11 (margen hasta 01/12) | ⬜ |
-| **Total** | | **136** | | | | |
+| 1. Ingreso, catálogo y vínculo | 1.1.0 | 20 | 24 | vie 07/11 | dom 08/11 | ⬜ |
+| 2. Planificación básica | 1.2.0 | 28 | 52 | mar 11/11 | jue 13/11 | ⬜ |
+| 3. Más rutinas e inicio del entrenamiento | 1.3.0 | 36 | 88 | dom 16/11 | jue 20/11 | ⬜ |
+| 4. Registro, resumen y récords | 1.4.0 | 33 | 121 | vie 21/11 | mié 26/11 | ⬜ |
+| 5. Seguimiento y cierre del MVP | 1.5.0 | 6 | 127 | sáb 22/11 | jue 27/11 (margen hasta 01/12) | ⬜ |
+| **Total** | | **127** | | | | |
 
 Las fechas suponen un ritmo parejo de 6,5 pts/día en el ideal y 5,3 pts/día en el pesimista, contados de lunes a domingo, igual que la velocity histórica.
+
+**Nota (decisión 41, 08/11/2026):** el recorte de US01 deja 9 pts de margen. El total pasa de 136 a 127 y la fase 1 de 29 a 20. Las tablas de control y de velocity de la planificación se dejan con las cifras originales.
 
 ---
 
@@ -118,20 +120,23 @@ Las fechas suponen un ritmo parejo de 6,5 pts/día en el ideal y 5,3 pts/día en
 
 ## Fase 1 — Ingreso, catálogo y vínculo · v1.1.0
 
-**Objetivo:** cada rol ingresa al sistema, el Admin carga ejercicios y profesores, los alumnos llegan por dataset y se vinculan con su profesor.
+**Objetivo:** cada rol ingresa al sistema, el catálogo se carga desde el dataset, el Admin da de alta profesores, los alumnos llegan con una semilla de usuarios y se vinculan con su profesor.
 
-**Primero el seed:** el Admin inicial (RN-IDE-14) va en el backend de US00, porque sin él no se pueden probar US01 ni US02.
+**Primero el seed:** el Admin inicial (RN-IDE-14) y la semilla de usuarios de prueba (RN-IDE-05, 06, 07, 12, 13) van en el backend de US00, porque sin ellos no se puede probar US02.
+
+**Decisión 41 (08/11/2026):** US01 sale del MVP y pasa a deuda técnica (DT-06). Sus filas quedan tachadas. El catálogo se carga con T01 desde el dataset de ejercicios, y los alumnos y profesores de prueba, con la semilla de usuarios.
 
 | Orden | Tarjeta | Tarea | Repo | RN | Pts | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | 1 | US00 | Backend: seed del Admin, ingresar al sistema (JWT) y guard de roles en `compartido` | back | RN-IDE-01, 02, 03, 14 | 5 | ⬜ |
-| 1 | US01 | Modelar: Ejercicio, músculos y grupo derivado, factor de peso | back | RN-CAT-01…07 | 3 | ⬜ |
+| 1 | US00 | Backend: semilla de usuarios de prueba (`sembrar-usuarios`, `yarn seed`) | back | RN-IDE-05, 06, 07, 12, 13 | incl. en US00 | ⬜ |
+| 1 | ~~US01~~ | ~~Modelar: Ejercicio, músculos y grupo derivado, factor de peso~~ | ~~back~~ | ~~RN-CAT-01…07~~ | ~~3~~ | — fuera del MVP (DT-06) |
 | 2 | US00 | Frontend: página de ingreso, sesión y rutas por rol | front | RN-IDE-01, 02, 03 · RN-UI-IDE-01, 02 | 3 | ⬜ |
 | 2 | US02 | Backend: dar de alta un profesor | back | RN-IDE-04, 06, 13 | 1 | ⬜ |
-| 2 | US01 | Backend: registrar ejercicio | back | RN-CAT-01…07 | 3 | ⬜ |
-| 2 | T01 | Carga del dataset de alumnos (idempotente) | back | RN-IDE-05, 06, 07, 12, 13 | 3 | ⬜ |
+| 2 | ~~US01~~ | ~~Backend: registrar ejercicio~~ | ~~back~~ | ~~RN-CAT-01…07~~ | ~~3~~ | — fuera del MVP (DT-06) |
+| 2 | T01 | Carga del dataset de ejercicios (idempotente, `yarn seed`) | back | RN-CAT-01, 05, 07, 08, 09 | 3 | ⬜ |
 | 3 | US02 | Frontend: página de alta de profesor | front | RN-IDE-04, 06, 13 | 1 | ⬜ |
-| 3 | US01 | Frontend: página de registro de ejercicio | front | RN-CAT-01…07 | 3 | ⬜ |
+| 3 | ~~US01~~ | ~~Frontend: página de registro de ejercicio~~ | ~~front~~ | ~~RN-CAT-01…07~~ | ~~3~~ | — fuera del MVP (DT-06) |
 | 3 | US04 | Modelar: Código de Profesor | back | RN-IDE-08 | 1 | ⬜ |
 | 4 | US04 | Backend y Frontend: generar código de profesor | ambos | RN-IDE-08 | 2 | ⬜ |
 | 5 | US05 | Backend: vincular alumno con el código | back | RN-IDE-09, 10, 11 | 3 | ⬜ |
@@ -150,7 +155,7 @@ test(identidad): cubro el vínculo con e2e de API [US05]                 Reglas:
 US05 — Vincular alumno con su profesor   (merge --no-ff)
 ```
 
-**Criterio de cierre:** la demo pasa de punta a punta en el navegador: el Admin ingresa y carga un ejercicio y un profesor, el profesor genera su código, y un alumno del dataset ingresa y se vincula. Están los tags `v1.1.0` en los dos repos.
+**Criterio de cierre:** la demo pasa de punta a punta en el navegador: el catálogo se carga desde el dataset, el Admin ingresa y da de alta un profesor, el profesor genera su código, y un alumno de la semilla ingresa y se vincula. Están los tags `v1.1.0` en los dos repos.
 
 **Registro de la fase 1**
 
