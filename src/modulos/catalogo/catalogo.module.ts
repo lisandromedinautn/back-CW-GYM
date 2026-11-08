@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CargarDatasetEjercicios } from './aplicacion/cargar-dataset-ejercicios.caso-uso.js';
-import { ListarEjercicios } from './aplicacion/listar-ejercicios.caso-uso.js';
-import { FuenteDatasetEjercicios } from './dominio/fuente-dataset-ejercicios.puerto.js';
-import { RepositorioEjercicios } from './dominio/repositorio-ejercicios.puerto.js';
+import { CargarDatasetEjercicios } from './aplicacion/cargar-dataset-ejercicios/cargar-dataset-ejercicios.caso-uso.js';
+import { ListarEjercicios } from './aplicacion/listar-ejercicios/listar-ejercicios.caso-uso.js';
+import { FuenteDatasetEjercicios } from './dominio/dataset/fuente-dataset-ejercicios.puerto.js';
+import { RepositorioEjercicios } from './dominio/ejercicio/repositorio-ejercicios.puerto.js';
 import { EjercicioEsquema } from './infraestructura/ejercicio.esquema.js';
 import { FuenteDatasetEjerciciosArchivo } from './infraestructura/fuente-dataset-ejercicios.archivo.js';
 import { RepositorioEjerciciosTypeorm } from './infraestructura/ejercicio.repositorio-typeorm.js';

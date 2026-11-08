@@ -1,5 +1,5 @@
 import type { JwtService } from '@nestjs/jwt';
-import type { DatosToken, EmisorTokens } from '../dominio/emisor-tokens.puerto.js';
+import type { DatosToken, EmisorTokens } from '../dominio/usuario/emisor-tokens.puerto.js';
 
 export class EmisorTokensJwt implements EmisorTokens {
   constructor(private readonly jwt: JwtService) {}

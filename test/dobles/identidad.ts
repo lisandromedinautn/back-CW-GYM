@@ -7,16 +7,16 @@ import type {
 import type {
   EmisorTokens,
   DatosToken,
-} from '../../src/modulos/identidad/dominio/emisor-tokens.puerto.js';
-import type { HasheadorContrasenias } from '../../src/modulos/identidad/dominio/hasheador-contrasenias.puerto.js';
-import type { RepositorioUsuarios } from '../../src/modulos/identidad/dominio/repositorio-usuarios.puerto.js';
-import type { Usuario } from '../../src/modulos/identidad/dominio/usuario.entidad.js';
-import type { Alumno } from '../../src/modulos/identidad/dominio/alumno.entidad.js';
-import type { Documento } from '../../src/modulos/identidad/dominio/documento.valor.js';
-import type { GeneradorCodigos } from '../../src/modulos/identidad/dominio/generador-codigos.puerto.js';
-import type { Profesor } from '../../src/modulos/identidad/dominio/profesor.entidad.js';
-import type { RepositorioAlumnos } from '../../src/modulos/identidad/dominio/repositorio-alumnos.puerto.js';
-import type { RepositorioProfesores } from '../../src/modulos/identidad/dominio/repositorio-profesores.puerto.js';
+} from '../../src/modulos/identidad/dominio/usuario/emisor-tokens.puerto.js';
+import type { HasheadorContrasenias } from '../../src/modulos/identidad/dominio/usuario/hasheador-contrasenias.puerto.js';
+import type { RepositorioUsuarios } from '../../src/modulos/identidad/dominio/usuario/repositorio-usuarios.puerto.js';
+import type { Usuario } from '../../src/modulos/identidad/dominio/usuario/usuario.entidad.js';
+import type { Alumno } from '../../src/modulos/identidad/dominio/alumno/alumno.entidad.js';
+import type { Documento } from '../../src/modulos/identidad/dominio/documento/documento.valor.js';
+import type { GeneradorCodigos } from '../../src/modulos/identidad/dominio/profesor/generador-codigos.puerto.js';
+import type { Profesor } from '../../src/modulos/identidad/dominio/profesor/profesor.entidad.js';
+import type { RepositorioAlumnos } from '../../src/modulos/identidad/dominio/alumno/repositorio-alumnos.puerto.js';
+import type { RepositorioProfesores } from '../../src/modulos/identidad/dominio/profesor/repositorio-profesores.puerto.js';
 
 export class RepositorioUsuariosEnMemoria implements RepositorioUsuarios {
   readonly usuarios: Usuario[] = [];
