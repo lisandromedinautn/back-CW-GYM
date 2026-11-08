@@ -36,7 +36,7 @@ src/
 test/
   integracion/<modulo>/   casos de uso + repositorio real contra la base de test
   e2e/<modulo>/           API HTTP completa (supertest) contra la base de test
-  datasets/               dataset de alumnos (T01)
+  datasets/               fixture del dataset de ejercicios (T01)
 ```
 
 Reglas de dependencia (se revisan en cada code review):
