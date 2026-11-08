@@ -64,7 +64,7 @@ Si lo real queda por debajo de la línea pesimista, se le consulta al desarrolla
 | Fase | Versión | Puntos | Acumulado | Fin ideal | Fin pesimista | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | 0. Base técnica | 1.0.0 | 4 | 4 | lun 03/11 | lun 03/11 | ✅ |
-| 1. Ingreso, catálogo y vínculo | 1.1.0 | 20 | 24 | vie 07/11 | dom 08/11 | ⬜ |
+| 1. Ingreso, catálogo y vínculo | 1.1.0 | 20 | 24 | vie 07/11 | dom 08/11 | 🔄 |
 | 2. Planificación básica | 1.2.0 | 28 | 52 | mar 11/11 | jue 13/11 | ⬜ |
 | 3. Más rutinas e inicio del entrenamiento | 1.3.0 | 36 | 88 | dom 16/11 | jue 20/11 | ⬜ |
 | 4. Registro, resumen y récords | 1.4.0 | 33 | 121 | vie 21/11 | mié 26/11 | ⬜ |
@@ -128,13 +128,13 @@ Las fechas suponen un ritmo parejo de 6,5 pts/día en el ideal y 5,3 pts/día en
 
 | Orden | Tarjeta | Tarea | Repo | RN | Pts | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| 1 | US00 | Backend: seed del Admin, ingresar al sistema (JWT) y guard de roles en `compartido` | back | RN-IDE-01, 02, 03, 14 | 5 | ⬜ |
-| 1 | US00 | Backend: semilla de usuarios de prueba (`sembrar-usuarios`, `yarn seed`) | back | RN-IDE-05, 06, 07, 12, 13 | incl. en US00 | ⬜ |
+| 1 | US00 | Backend: seed del Admin, ingresar al sistema (JWT) y guard de roles en `compartido` | back | RN-IDE-01, 02, 03, 14 | 5 | ✅ |
+| 1 | US00 | Backend: semilla de usuarios de prueba (`sembrar-usuarios`, `yarn seed`) | back | RN-IDE-05, 06, 07, 12, 13 | incl. en US00 | ✅ |
 | 1 | ~~US01~~ | ~~Modelar: Ejercicio, músculos y grupo derivado, factor de peso~~ | ~~back~~ | ~~RN-CAT-01…07~~ | ~~3~~ | — fuera del MVP (DT-06) |
 | 2 | US00 | Frontend: página de ingreso, sesión y rutas por rol | front | RN-IDE-01, 02, 03 · RN-UI-IDE-01, 02 | 3 | ⬜ |
 | 2 | US02 | Backend: dar de alta un profesor | back | RN-IDE-04, 06, 13 | 1 | ⬜ |
 | 2 | ~~US01~~ | ~~Backend: registrar ejercicio~~ | ~~back~~ | ~~RN-CAT-01…07~~ | ~~3~~ | — fuera del MVP (DT-06) |
-| 2 | T01 | Carga del dataset de ejercicios (idempotente, `yarn seed`) | back | RN-CAT-01, 05, 07, 08, 09 | 3 | ⬜ |
+| 2 | T01 | Carga del dataset de ejercicios (idempotente, `yarn seed`) | back | RN-CAT-01, 05, 07, 08, 09 | 3 | ✅ |
 | 3 | US02 | Frontend: página de alta de profesor | front | RN-IDE-04, 06, 13 | 1 | ⬜ |
 | 3 | ~~US01~~ | ~~Frontend: página de registro de ejercicio~~ | ~~front~~ | ~~RN-CAT-01…07~~ | ~~3~~ | — fuera del MVP (DT-06) |
 | 3 | US04 | Modelar: Código de Profesor | back | RN-IDE-08 | 1 | ⬜ |
