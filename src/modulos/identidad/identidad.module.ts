@@ -3,11 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import type { Repository } from 'typeorm';
+import { ConsultarCodigoProfesor } from './aplicacion/consultar-codigo-profesor.caso-uso.js';
 import { DarAltaProfesor } from './aplicacion/dar-alta-profesor.caso-uso.js';
+import { GenerarCodigoProfesor } from './aplicacion/generar-codigo-profesor.caso-uso.js';
 import { IngresarAlSistema } from './aplicacion/ingresar-al-sistema.caso-uso.js';
 import { SembrarAdmin } from './aplicacion/sembrar-admin.caso-uso.js';
 import { SembrarUsuarios } from './aplicacion/sembrar-usuarios.caso-uso.js';
 import { EMISOR_TOKENS, type EmisorTokens } from './dominio/emisor-tokens.puerto.js';
+import { GENERADOR_CODIGOS, type GeneradorCodigos } from './dominio/generador-codigos.puerto.js';
 import {
   HASHEADOR_CONTRASENIAS,
   type HasheadorContrasenias,
@@ -27,6 +30,7 @@ import {
 import { AlumnoEsquema } from './infraestructura/alumno.esquema.js';
 import { RepositorioAlumnosTypeorm } from './infraestructura/alumno.repositorio-typeorm.js';
 import { EmisorTokensJwt } from './infraestructura/emisor-tokens-jwt.js';
+import { GeneradorCodigosAleatorio } from './infraestructura/generador-codigos-aleatorio.js';
 import { HasheadorBcrypt } from './infraestructura/hasheador-bcrypt.js';
 import { ProfesorEsquema } from './infraestructura/profesor.esquema.js';
 import { RepositorioProfesoresTypeorm } from './infraestructura/profesor.repositorio-typeorm.js';
@@ -80,6 +84,18 @@ import { IdentidadControlador } from './presentacion/identidad.controlador.js';
         a: RepositorioAlumnos,
         h: HasheadorContrasenias,
       ) => new DarAltaProfesor(u, p, a, h),
+    },
+    { provide: GENERADOR_CODIGOS, useClass: GeneradorCodigosAleatorio },
+    {
+      provide: GenerarCodigoProfesor,
+      inject: [REPOSITORIO_PROFESORES, GENERADOR_CODIGOS],
+      useFactory: (p: RepositorioProfesores, g: GeneradorCodigos) =>
+        new GenerarCodigoProfesor(p, g),
+    },
+    {
+      provide: ConsultarCodigoProfesor,
+      inject: [REPOSITORIO_PROFESORES],
+      useFactory: (p: RepositorioProfesores) => new ConsultarCodigoProfesor(p),
     },
     {
       provide: SembrarAdmin,

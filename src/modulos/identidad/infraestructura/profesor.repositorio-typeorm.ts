@@ -19,6 +19,16 @@ export class RepositorioProfesoresTypeorm implements RepositorioProfesores {
     });
   }
 
+  async buscarPorUsuarioId(usuarioId: string): Promise<Profesor | null> {
+    const fila = await this.filas.findOneBy({ usuarioId });
+    return fila ? ProfesorMapper.aDominio(fila) : null;
+  }
+
+  async buscarPorCodigo(codigo: string): Promise<Profesor | null> {
+    const fila = await this.filas.findOneBy({ codigo });
+    return fila ? ProfesorMapper.aDominio(fila) : null;
+  }
+
   async guardar(profesor: Profesor): Promise<void> {
     await this.filas.save(ProfesorMapper.aEsquema(profesor));
   }

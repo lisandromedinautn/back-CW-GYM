@@ -9,6 +9,7 @@ import type { RepositorioUsuarios } from '../../src/modulos/identidad/dominio/re
 import type { Usuario } from '../../src/modulos/identidad/dominio/usuario.entidad.js';
 import type { Alumno } from '../../src/modulos/identidad/dominio/alumno.entidad.js';
 import type { Documento } from '../../src/modulos/identidad/dominio/documento.valor.js';
+import type { GeneradorCodigos } from '../../src/modulos/identidad/dominio/generador-codigos.puerto.js';
 import type { Profesor } from '../../src/modulos/identidad/dominio/profesor.entidad.js';
 import type { RepositorioAlumnos } from '../../src/modulos/identidad/dominio/repositorio-alumnos.puerto.js';
 import type { RepositorioProfesores } from '../../src/modulos/identidad/dominio/repositorio-profesores.puerto.js';
@@ -56,8 +57,18 @@ export class RepositorioProfesoresEnMemoria implements RepositorioProfesores {
     return this.profesores.some((profesor) => profesor.documento.igualA(documento));
   }
 
+  async buscarPorUsuarioId(usuarioId: string): Promise<Profesor | null> {
+    return this.profesores.find((profesor) => profesor.usuarioId === usuarioId) ?? null;
+  }
+
+  async buscarPorCodigo(codigo: string): Promise<Profesor | null> {
+    return this.profesores.find((profesor) => profesor.codigo === codigo) ?? null;
+  }
+
   async guardar(profesor: Profesor): Promise<void> {
-    this.profesores.push(profesor);
+    const indice = this.profesores.findIndex((existente) => existente.id === profesor.id);
+    if (indice === -1) this.profesores.push(profesor);
+    else this.profesores[indice] = profesor;
   }
 }
 
@@ -72,5 +83,18 @@ export class RepositorioAlumnosEnMemoria implements RepositorioAlumnos {
     const indice = this.alumnos.findIndex((existente) => existente.id === alumno.id);
     if (indice === -1) this.alumnos.push(alumno);
     else this.alumnos[indice] = alumno;
+  }
+}
+
+/** Devuelve los códigos en el orden dado (RN-IDE-08). */
+export class GeneradorCodigosFalso implements GeneradorCodigos {
+  private indice = 0;
+
+  constructor(private readonly codigos: string[]) {}
+
+  generar(): string {
+    const codigo = this.codigos[this.indice++];
+    if (!codigo) throw new Error('GeneradorCodigosFalso: no quedan códigos');
+    return codigo;
   }
 }

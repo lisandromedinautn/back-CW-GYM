@@ -24,4 +24,8 @@ export class ProfesorEsquema {
 
   @Column({ type: 'varchar', length: 30, unique: true })
   legajo: string;
+
+  // RN-IDE-08: una sola columna, así regenerar reemplaza (e invalida) el código anterior.
+  @Column({ type: 'varchar', length: 6, unique: true, nullable: true })
+  codigo: string | null;
 }
