@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import type { Repository } from 'typeorm';
+import { DarAltaProfesor } from './aplicacion/dar-alta-profesor.caso-uso.js';
 import { IngresarAlSistema } from './aplicacion/ingresar-al-sistema.caso-uso.js';
 import { SembrarAdmin } from './aplicacion/sembrar-admin.caso-uso.js';
 import { SembrarUsuarios } from './aplicacion/sembrar-usuarios.caso-uso.js';
@@ -64,6 +65,21 @@ import { IdentidadControlador } from './presentacion/identidad.controlador.js';
       inject: [REPOSITORIO_USUARIOS, HASHEADOR_CONTRASENIAS, EMISOR_TOKENS],
       useFactory: (u: RepositorioUsuarios, h: HasheadorContrasenias, e: EmisorTokens) =>
         new IngresarAlSistema(u, h, e),
+    },
+    {
+      provide: DarAltaProfesor,
+      inject: [
+        REPOSITORIO_USUARIOS,
+        REPOSITORIO_PROFESORES,
+        REPOSITORIO_ALUMNOS,
+        HASHEADOR_CONTRASENIAS,
+      ],
+      useFactory: (
+        u: RepositorioUsuarios,
+        p: RepositorioProfesores,
+        a: RepositorioAlumnos,
+        h: HasheadorContrasenias,
+      ) => new DarAltaProfesor(u, p, a, h),
     },
     {
       provide: SembrarAdmin,
