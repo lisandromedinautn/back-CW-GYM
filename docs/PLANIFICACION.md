@@ -323,7 +323,7 @@ US19 (finalizar un plan antes de sus 28 días) se eliminó del backlog: un plan 
 | DT-05 | Atlas generado por script | Regenerar `ATLAS.md` desde el código | Por ahora el atlas se mantiene a mano |
 | DT-06 | Registro de ejercicios | Como **Admin** quiero registrar un ejercicio con su tipo, carga, factor de peso corporal y músculos para ampliar el catálogo | El catálogo del MVP se carga desde un dataset. En el front queda solo un botón "Registrar ejercicio" deshabilitado (decisión 41) |
 | DT-07 | Paginación en todos los listados (T06, CG-73) | Como **usuario** quiero elegir cuántos ítems ver por página (5, 10, 20, 50 o 100) para recorrer listados largos, como los 1318 ejercicios | Pedido el 08/11/2026. Está en el backlog de Jira con la etiqueta `verificacion`, sin puntos ni fase: se estima y se le asigna fase cuando se replanifique. Antes de testear hace falta una RN-UI de paginación |
-| DT-08 | Filtros por atributo en todos los listados (T07, CG-74) | Como **usuario** quiero filtrar los listados por sus atributos (grupo muscular, tipo de carga, legajo, documento, etc.) para encontrar rápido lo que busco | Pedido el 08/11/2026. Depende de DT-07. Mismo estado: backlog con `verificacion`, sin puntos ni fase |
+| DT-08 | Reglas de filtros por atributo en los listados (T07, CG-74; RN-UI-LIS-01 a 04, a confirmar en `src/compartido/CLAUDE.md` del front) | Como **usuario** quiero filtrar los listados por sus atributos (grupo muscular, tipo de carga, legajo, documento, etc.) para encontrar rápido lo que busco | Pedido el 08/11/2026. Depende de DT-07. Mismo estado: backlog con `verificacion`, sin puntos ni fase |
 
 El modelo de Alumno no debe depender de quién lo creó. Así, pagar DT-01 y DT-02 solo cambia quién ejecuta el alta.
 
