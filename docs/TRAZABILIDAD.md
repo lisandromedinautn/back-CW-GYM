@@ -10,7 +10,7 @@ Estados: ⬜ sin empezar · 🟥 test en rojo (TDD; solo en el working tree, nun
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | US00 | RN-IDE-01, 02, 03, 05, 06, 07, 12, 13, 14 | ingresar-al-sistema, sembrar-admin, sembrar-usuarios | PaginaIngreso | `src/modulos/identidad/dominio/*.spec.ts`, `src/modulos/identidad/aplicacion/*.spec.ts`, `src/compartido/presentacion/guard-roles.spec.ts` | `test/integracion/identidad/sembrar-usuarios.int-spec.ts` | `test/e2e/identidad/ingreso.e2e-spec.ts` | — | back 🟩, front ⬜ |
 | ~~US01~~ | ~~RN-CAT-01…07~~ | ~~registrar-ejercicio~~ | ~~PaginaRegistrarEjercicio~~ | — | — | — | — | fuera del MVP (DT-06) |
-| US02 | RN-IDE-04, 06, 13 | dar-alta-profesor | PaginaAltaProfesor | — | — | — | — | ⬜ |
+| US02 | RN-IDE-04, 06, 13 | dar-alta-profesor | PaginaAltaProfesor | `src/modulos/identidad/aplicacion/dar-alta-profesor.caso-uso.spec.ts` | — | `test/e2e/identidad/alta-profesor.e2e-spec.ts` | — | back 🟩, front ⬜ |
 | US04 | RN-IDE-08 | generar-codigo-profesor | PaginaCodigoProfesor | — | — | — | — | ⬜ |
 | US05 | RN-IDE-09, 10, 11 | vincular-alumno | PaginaVincularProfesor | — | — | — | — | ⬜ |
 | T01 | RN-CAT-01, 05, 07, 08, 09 | cargar-dataset-ejercicios | ListaEjercicios | `src/modulos/catalogo/dominio/*.spec.ts`, `src/modulos/catalogo/aplicacion/cargar-dataset-ejercicios.caso-uso.spec.ts` | `test/integracion/catalogo/cargar-dataset-ejercicios.int-spec.ts` | — | — | back 🟩, front ⬜ |
@@ -40,14 +40,14 @@ Toda RN vigente tiene que tener al menos un test. Una RN sin test es una brecha 
 | RN-IDE-01 | `src/modulos/identidad/aplicacion/ingresar-al-sistema.caso-uso.spec.ts` (3 casos) · `test/e2e/identidad/ingreso.e2e-spec.ts` (3 casos) | 🟩 |
 | RN-IDE-02 | `src/modulos/identidad/dominio/rol.valor.spec.ts` (4 casos) | 🟩 |
 | RN-IDE-03 | `src/compartido/presentacion/guard-roles.spec.ts` (4 casos) | 🟩 |
-| RN-IDE-04 | `src/modulos/identidad/dominio/profesor.entidad.spec.ts` (2 casos) | 🟩 entidad. Pendiente el caso de uso `dar-alta-profesor` (US02) |
+| RN-IDE-04 | `src/modulos/identidad/dominio/profesor.entidad.spec.ts` (2 casos) · `src/modulos/identidad/aplicacion/dar-alta-profesor.caso-uso.spec.ts` (2 casos) · `test/e2e/identidad/alta-profesor.e2e-spec.ts` (2 casos) | 🟩 |
 | RN-IDE-05 | `src/modulos/identidad/dominio/alumno.entidad.spec.ts` (2 casos) | 🟩 |
-| RN-IDE-06 | `src/modulos/identidad/dominio/documento.valor.spec.ts` (7 casos) | 🟩 valor. Pendiente el caso de uso `dar-alta-profesor` (US02) |
+| RN-IDE-06 | `src/modulos/identidad/dominio/documento.valor.spec.ts` (7 casos) · `src/modulos/identidad/aplicacion/dar-alta-profesor.caso-uso.spec.ts` (2 casos) | 🟩 |
 | RN-IDE-07 | `src/modulos/identidad/dominio/alumno.entidad.spec.ts` (1 caso) | 🟩 |
 | RN-IDE-08 | — | ⬜ (US04) |
 | RN-IDE-09 … RN-IDE-11 | — | ⬜ (US05) |
 | RN-IDE-12 | `src/modulos/identidad/aplicacion/sembrar-usuarios.caso-uso.spec.ts` (7 casos) · `test/integracion/identidad/sembrar-usuarios.int-spec.ts` (1 caso) | 🟩 |
-| RN-IDE-13 | `src/modulos/identidad/aplicacion/sembrar-usuarios.caso-uso.spec.ts` (1 caso) | 🟩 |
+| RN-IDE-13 | `src/modulos/identidad/aplicacion/sembrar-usuarios.caso-uso.spec.ts` (1 caso) · `src/modulos/identidad/aplicacion/dar-alta-profesor.caso-uso.spec.ts` (1 caso) | 🟩 |
 | RN-IDE-14 | `src/modulos/identidad/aplicacion/sembrar-admin.caso-uso.spec.ts` (6 casos) | 🟩 |
 | RN-CAT-01 | `src/modulos/catalogo/dominio/ejercicio.entidad.spec.ts` (2 casos) | 🟩 |
 | RN-CAT-02 | `src/modulos/catalogo/dominio/tipo-ejercicio.valor.spec.ts` (3 casos) | 🟩 |

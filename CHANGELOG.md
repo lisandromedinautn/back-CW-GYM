@@ -11,6 +11,7 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 - `POST /identidad/ingreso` (público): con email y contraseña correctos devuelve un JWT con el rol del usuario; con datos incorrectos responde 401 con RN-IDE-01 sin decir qué dato falló (US00).
 - Guard de roles en toda la API: sin token o con token inválido responde 401, y un rol que no corresponde al endpoint responde 403, ambos con RN-IDE-03 (US00).
 - Filtro de errores de dominio: cada error responde `{ codigo, mensaje }` con el código HTTP de su categoría (US00).
+- `POST /identidad/profesores` (Admin): da de alta un profesor con su legajo y su usuario de rol Profesor. Responde 201 con `{ id, legajo }`; con un legajo, un documento o un email repetidos responde 409 con RN-IDE-04, 06 o 13 (US02).
 - `yarn seed` crea el Admin inicial con `ADMIN_EMAIL` y `ADMIN_PASSWORD`, de forma idempotente (RN-IDE-14) (US00).
 - `yarn seed` crea 3 profesores (P-001 a P-003) y 20 alumnos de prueba, con la contraseña de `SEMILLA_CONTRASENIA` y sin duplicados (RN-IDE-12, 13) (US00).
 - Variables de entorno `JWT_SECRETO`, `JWT_EXPIRACION` y `SEMILLA_CONTRASENIA` (US00).
