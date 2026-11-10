@@ -127,3 +127,13 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Ideas descartadas: dejar el controlador suelto en presentacion/ (se usa `controlador/` para que todo esté en carpetas).
 - Reglas afectadas: ninguna. Los tests solo cambian rutas de import.
 - Pendientes: ninguno.
+
+## 2026-11-09 — Crear rutina por bloques (back) e integración con las carpetas por concepto [US06]
+- Desarrollador: Ignacio
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5
+- Objetivo: implementar en el back la creación de rutinas por bloques y dejar la rama de US06 lista para mergear en develop sin conflictos.
+- Qué hizo la IA: propuso los casos de test (15 unitarios y 5 e2e), registró las fichas y escribió los tests, el dominio (Rutina, Bloque, ObjetivoPrescripto, Pausa, TipoRutina), el caso de uso crear-rutina, la Fachada de catálogo, la persistencia TypeORM y `POST /planificacion/rutinas`. Vio el rojo, implementó, verificó con mutaciones que cada regla tiene un test que muerde y completó las fichas. Mergeó develop (T05): resolvió el conflicto de `catalogo.module.ts` y movió los archivos de US06 a carpetas por concepto con recálculo de imports. Instaló Node 24.22.1 (el proyecto pide 24.15+) y levantó Docker. Verificó tsc, lint, Prettier y la suite completa (133 tests) con la cobertura sobre los umbrales.
+- Decisiones del desarrollador: aprobar los casos de test; peso opcional aunque la carga incluya Peso Extra (aclaración de RN-PLAN-05); validar el formato de los números en el DTO, no en el dominio; la rutina no tiene nombre por ahora (se decide en US07); integrar develop en la rama de US06.
+- Ideas descartadas: nueva RN para el nombre de la rutina; validar los números como regla de dominio; mergear sin mover los archivos a carpetas por concepto.
+- Reglas afectadas: RN-PLAN-05 (aclaración: el peso es opcional).
+- Pendientes: editar-rutina (RN-PLAN-07) de US06; el editor de rutinas del front; replicar en el front la fila de US06 de la matriz de trazabilidad. Aviso: el PR #1 se mergeó en `main` (decisión 39) y después se revirtió con `7fb34c7`; `main` quedó con el contenido de `cb9cb89`.
