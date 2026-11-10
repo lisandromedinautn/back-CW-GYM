@@ -17,7 +17,7 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `.claude/skills/tdd`, `.claude/skills/coverage` | Skills de TDD y cobertura |
 | `test/datasets/` | Fixture del dataset de ejercicios (T01) ✅ |
 | `datos/` | Dataset de ejercicios reducido y su licencia (T01) ✅ |
-| `test/dobles/` | Dobles de los puertos para los tests unitarios (`identidad.ts`: repositorios, hasheador y emisor de tokens en memoria). Fuera de `src/`, no cuentan en la cobertura ✅ |
+| `test/dobles/` | Dobles de los puertos para los tests unitarios (`identidad.ts`: repositorios, hasheador y emisor de tokens en memoria; `planificacion.ts`: repositorio de rutinas en memoria y catálogo fijo). Fuera de `src/`, no cuentan en la cobertura ✅ |
 | `package.json`, `yarn.lock` | Dependencias exactas, scripts y `resolutions` (regla de las 24 h) ✅ |
 | `docker-compose.yml` | Postgres 18 de desarrollo (5442) y de test (5443, en memoria) ✅ |
 | `.env.example`, `.env.test` | Variables de entorno: plantilla de desarrollo y valores de test ✅ |
@@ -60,7 +60,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | catalogo | `cargar-dataset-ejercicios.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | T01 | ✅ |
 | catalogo | ~~`registrar-ejercicio.caso-uso.ts`~~ | ~~`POST /catalogo/ejercicios`~~ | US01 (fuera del MVP, DT-06) | — |
 | catalogo | `listar-ejercicios.caso-uso.ts` | `GET /catalogo/ejercicios` | T01, US06 | ✅ |
-| planificacion | `crear-rutina.caso-uso.ts` | `POST /planificacion/rutinas` | US06, US09, US10 | 📄 |
+| planificacion | `crear-rutina.caso-uso.ts` | `POST /planificacion/rutinas` | US06, US09, US10 | ✅ bloques (US06); circuitos y mixta 📄 |
 | planificacion | `editar-rutina.caso-uso.ts` | `PUT /planificacion/rutinas/:id` | US06 | 📄 |
 | planificacion | `importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | 📄 |
 | planificacion | `crear-plan.caso-uso.ts` | `POST /planificacion/planes` | US07 | 📄 |
@@ -80,7 +80,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | Consumidor | Usa | Para qué |
 | :-- | :-- | :-- |
 | planificacion | Fachada de identidad | Validar el vínculo alumno-profesor (RN-PLAN-13) |
-| planificacion | Fachada de catalogo | Validar ejercicios referenciados y su tipo (RN-PLAN-04, 06) |
+| planificacion | Fachada de catalogo | Validar ejercicios referenciados y su tipo (RN-PLAN-04, 05, 06). ✅ `src/modulos/catalogo/fachada-catalogo.ts`, por el puerto `ConsultaEjercicios` (adaptador en `planificacion/infraestructura/rutina/`) |
 | entrenamiento | Fachada de planificacion | Copiar la rutina del día (RN-ENT-01, 02) |
 | entrenamiento | Fachada de identidad | Peso actual del alumno y su profesor (RN-ENT-02, 18) |
 | entrenamiento | Fachada de catalogo | Tipo, tipo de carga, factor y grupo de cada ejercicio (RN-ENT-07, 09, 10) |
@@ -106,6 +106,10 @@ Hoy:
 | identidad | aplicacion | ingresar-al-sistema, sembrar-admin, sembrar-usuarios, dar-alta-profesor, codigo-profesor, vincular-alumno |
 | identidad | infraestructura | usuario, profesor, alumno |
 | identidad | presentacion | controlador, ingreso, alta-profesor, vinculo |
+| planificacion | dominio | rutina (con bloque y los puertos RepositorioRutinas y ConsultaEjercicios), objetivo-prescripto, pausa, tipo-rutina |
+| planificacion | aplicacion | crear-rutina |
+| planificacion | infraestructura | rutina |
+| planificacion | presentacion | controlador, crear-rutina |
 | compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio |
 
 ## Nombres de archivo

@@ -16,7 +16,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | RN-PLAN-02 | Un bloque tiene un ejercicio prescripto, N series (N ≥ 1), una micropausa entre series y una macropausa al final | Glosario, US06 | Vigente |
 | RN-PLAN-03 | Un circuito tiene 2 o más ejercicios seguidos sin descanso. Cada vuelta es una serie y termina con macropausa. No tiene micropausas | Decisión 5, US09 | Vigente |
 | RN-PLAN-04 | Un ejercicio prescripto por tiempo no tiene repeticiones, y uno por repeticiones no tiene tiempo. El tipo lo define el ejercicio del catálogo | Invariante 6 | Vigente |
-| RN-PLAN-05 | El peso del ejercicio prescripto se indica solo si su tipo de carga incluye Peso Extra | Glosario ("si corresponde") | Vigente |
+| RN-PLAN-05 | El peso del ejercicio prescripto se indica solo si su tipo de carga incluye Peso Extra. Aun así es opcional: se puede prescribir sin peso | Glosario ("si corresponde"), decisión del 08/11/2026 | Vigente |
 | RN-PLAN-06 | Una rutina referencia ejercicios del catálogo por id, y esos ejercicios tienen que existir | Modelo | Vigente |
 | RN-PLAN-07 | Una rutina se puede editar siempre. Los cambios no alteran los entrenamientos ya realizados | Decisiones 9 y 14, invariante 5 | Vigente |
 | RN-PLAN-08 | Importar una rutina crea una copia independiente. Si se modifica la copia importada, se pregunta si es una rutina nueva. Un profesor solo ve, edita e importa sus propias rutinas | Decisión 8, US20, ZG-06 | Vigente |
@@ -65,3 +65,11 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | 01/11/2026 | Todas | Versión inicial | Lisandro |
 | 01/11/2026 | RN-PLAN-07 | Se quita el bloqueo de rutinas: se editan siempre | Lisandro |
 | 01/11/2026 | RN-PLAN-03, 08, 12, 15, 16, 17 | Se cierran ZG-06 y ZG-07: circuito con 2 o más ejercicios, cada profesor trabaja solo con sus rutinas, el plan puede quedar sin alumnos, no hay finalización anticipada (se quita US19 y el caso de uso finalizar-plan) | Lisandro |
+| 08/11/2026 | RN-PLAN-05 | Se aclara que el peso es opcional aunque la carga incluya Peso Extra (US06) | Ignacio |
+
+## Decisiones de implementación (US06)
+
+* El formato de los números (series enteras; repeticiones y segundos enteros ≥ 1; pausas enteras ≥ 0 s; peso > 0) se valida en el DTO de entrada (400 sin código RN), no en el dominio, porque no hay RN sobre eso. Las series se dejan llegar al dominio para que 0 responda RN-PLAN-02, y una lista de bloques vacía responde RN-PLAN-01. Decidido por Ignacio el 08/11/2026.
+* La rutina guarda el id del **usuario** profesor que la creó (`profesorUsuarioId`, el `sub` del JWT). La rutina no tiene nombre por ahora: se decide en US07.
+* RN-PLAN-06 responde 404 (`no-encontrado`) con código `RN-PLAN-06`.
+* El catálogo se consulta por `FachadaCatalogo` (`src/modulos/catalogo/fachada-catalogo.ts`) a través del puerto `ConsultaEjercicios`.

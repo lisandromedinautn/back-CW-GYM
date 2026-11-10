@@ -8,6 +8,7 @@ import { EjercicioEsquema } from './infraestructura/ejercicio/ejercicio.esquema.
 import { FuenteDatasetEjerciciosArchivo } from './infraestructura/dataset/fuente-dataset-ejercicios.archivo.js';
 import { RepositorioEjerciciosTypeorm } from './infraestructura/ejercicio/ejercicio.repositorio-typeorm.js';
 import { CatalogoControlador } from './presentacion/controlador/catalogo.controlador.js';
+import { FachadaCatalogo } from './fachada-catalogo.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([EjercicioEsquema])],
@@ -26,7 +27,8 @@ import { CatalogoControlador } from './presentacion/controlador/catalogo.control
       useFactory: (repositorio: RepositorioEjercicios) => new ListarEjercicios(repositorio),
       inject: [RepositorioEjercicios],
     },
+    FachadaCatalogo,
   ],
-  exports: [CargarDatasetEjercicios, ListarEjercicios],
+  exports: [CargarDatasetEjercicios, ListarEjercicios, FachadaCatalogo],
 })
 export class CatalogoModule {}
