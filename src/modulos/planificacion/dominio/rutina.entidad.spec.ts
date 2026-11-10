@@ -29,7 +29,8 @@ const bloque = (cambios: Partial<DatosBloque> = {}): DatosBloque => ({
   ...cambios,
 });
 
-const crear = (...bloques: DatosBloque[]) => Rutina.crear({ profesorUsuarioId: 'u-laura', bloques });
+const crear = (...bloques: DatosBloque[]) =>
+  Rutina.crear({ profesorUsuarioId: 'u-laura', bloques });
 
 const codigoDelError = (accion: () => unknown): string | undefined => {
   try {
@@ -51,7 +52,10 @@ describe('RN-PLAN-01 · una rutina es una secuencia ordenada de bloques, con al 
   });
 
   it('dos bloques (lever chest press, weighted front plank) respetan el orden dado', () => {
-    const rutina = crear(bloque(), bloque({ ejercicio: PLANCHA, repeticiones: null, segundos: 45 }));
+    const rutina = crear(
+      bloque(),
+      bloque({ ejercicio: PLANCHA, repeticiones: null, segundos: 45 }),
+    );
 
     expect(rutina.bloques.map((b) => b.ejercicio.ejercicioId)).toEqual([
       'lever-chest-press',
@@ -90,9 +94,8 @@ describe('RN-PLAN-04 · por repeticiones no lleva tiempo y por tiempo no lleva r
   });
 
   it('weighted front plank (por tiempo) con 45 segundos se acepta', () => {
-    const { objetivo } = crear(
-      bloque({ ejercicio: PLANCHA, repeticiones: null, segundos: 45 }),
-    ).bloques[0]!.ejercicio;
+    const { objetivo } = crear(bloque({ ejercicio: PLANCHA, repeticiones: null, segundos: 45 }))
+      .bloques[0]!.ejercicio;
 
     expect([objetivo.segundos, objetivo.repeticiones]).toEqual([45, null]);
   });

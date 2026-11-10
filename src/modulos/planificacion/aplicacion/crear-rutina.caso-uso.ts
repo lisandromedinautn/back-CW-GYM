@@ -1,4 +1,6 @@
+import { ErrorDominio } from '../../../compartido/dominio/error-dominio.js';
 import type { ConsultaEjercicios } from '../dominio/consulta-ejercicios.puerto.js';
+import type { EjercicioDelCatalogo } from '../dominio/ejercicio-del-catalogo.js';
 import type { RepositorioRutinas } from '../dominio/repositorio-rutinas.puerto.js';
 import { Rutina } from '../dominio/rutina.entidad.js';
 
@@ -17,14 +19,35 @@ export interface PedidoRutina {
   bloques: PedidoBloque[];
 }
 
-// ESQUELETO (rojo de TDD): todavía no valida que los ejercicios existan ni guarda.
+/** US06: el profesor crea una rutina por bloques. */
 export class CrearRutina {
   constructor(
     private readonly rutinas: RepositorioRutinas,
     private readonly ejercicios: ConsultaEjercicios,
   ) {}
 
-  async ejecutar(profesorUsuarioId: string, _pedido: PedidoRutina): Promise<Rutina> {
-    return Rutina.crear({ profesorUsuarioId, bloques: [] });
+  async ejecutar(profesorUsuarioId: string, pedido: PedidoRutina): Promise<Rutina> {
+    const bloques = await Promise.all(
+      pedido.bloques.map(async ({ ejercicioId, ...resto }) => ({
+        ...resto,
+        ejercicio: await this.buscarEjercicio(ejercicioId),
+      })),
+    );
+    const rutina = Rutina.crear({ profesorUsuarioId, bloques });
+    await this.rutinas.guardar(rutina);
+    return rutina;
+  }
+
+  /** RN-PLAN-06: el ejercicio referenciado tiene que existir en el catálogo. */
+  private async buscarEjercicio(id: string): Promise<EjercicioDelCatalogo> {
+    const ejercicio = await this.ejercicios.buscarPorId(id);
+    if (!ejercicio) {
+      throw new ErrorDominio(
+        'RN-PLAN-06',
+        `El ejercicio ${id} no existe en el catálogo`,
+        'no-encontrado',
+      );
+    }
+    return ejercicio;
   }
 }

@@ -33,9 +33,10 @@ describe('RN-PLAN-06 · la rutina referencia ejercicios del catálogo que tienen
       .ejecutar('u-laura', { bloques: [bloque('no-existe')] })
       .catch((e: unknown) => e);
 
-    expect(
-      error instanceof ErrorDominio ? [error.codigo, error.categoria] : error,
-    ).toEqual(['RN-PLAN-06', 'no-encontrado']);
+    expect(error instanceof ErrorDominio ? [error.codigo, error.categoria] : error).toEqual([
+      'RN-PLAN-06',
+      'no-encontrado',
+    ]);
   });
 
   it('con ejercicios existentes la rutina queda guardada para el profesor u-laura', async () => {

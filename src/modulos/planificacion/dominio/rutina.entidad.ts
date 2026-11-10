@@ -25,9 +25,14 @@ export class Rutina {
     return TipoRutina.derivar(this.bloques.length);
   }
 
-  // ESQUELETO (rojo de TDD): todavía no aplica RN-PLAN-01, 02, 04 ni 05.
+  /** RN-PLAN-01 (al menos un bloque, en el orden dado); cada bloque valida RN-PLAN-02, 04 y 05. */
   static crear(datos: DatosRutina): Rutina {
-    return new Rutina(randomUUID(), datos.profesorUsuarioId, []);
+    TipoRutina.derivar(datos.bloques.length);
+    return new Rutina(
+      randomUUID(),
+      datos.profesorUsuarioId,
+      datos.bloques.map((bloque) => Bloque.crear(bloque)),
+    );
   }
 
   /** Rehidrata desde la base sin volver a validar contra el catálogo. */
@@ -35,5 +40,3 @@ export class Rutina {
     return new Rutina(id, profesorUsuarioId, bloques);
   }
 }
-
-void Bloque;

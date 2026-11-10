@@ -43,7 +43,10 @@ export class Bloque {
     }
     return new Bloque(
       randomUUID(),
-      { ejercicioId: datos.ejercicio.id, objetivo: ObjetivoPrescripto.para(datos.ejercicio, datos) },
+      {
+        ejercicioId: datos.ejercicio.id,
+        objetivo: ObjetivoPrescripto.para(datos.ejercicio, datos),
+      },
       datos.series,
       Pausa.de(datos.micropausaSegundos),
       Pausa.de(datos.macropausaSegundos),
