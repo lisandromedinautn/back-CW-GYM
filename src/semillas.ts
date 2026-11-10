@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import { Logger, type Type } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import type { Semilla } from './compartido/aplicacion/semilla.js';
-import { CargarDatasetEjercicios } from './modulos/catalogo/aplicacion/cargar-dataset-ejercicios.caso-uso.js';
-import { SembrarAdmin } from './modulos/identidad/aplicacion/sembrar-admin.caso-uso.js';
-import { SembrarUsuarios } from './modulos/identidad/aplicacion/sembrar-usuarios.caso-uso.js';
+import type { Semilla } from './compartido/aplicacion/semilla/semilla.js';
+import { CargarDatasetEjercicios } from './modulos/catalogo/aplicacion/cargar-dataset-ejercicios/cargar-dataset-ejercicios.caso-uso.js';
+import { SembrarAdmin } from './modulos/identidad/aplicacion/sembrar-admin/sembrar-admin.caso-uso.js';
+import { SembrarUsuarios } from './modulos/identidad/aplicacion/sembrar-usuarios/sembrar-usuarios.caso-uso.js';
 import { ModuloRaiz } from './modulo-raiz.module.js';
 
 /**

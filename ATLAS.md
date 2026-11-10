@@ -30,8 +30,8 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `src/semillas.ts` | Punto de entrada de `yarn seed`: lista ordenada de semillas ✅ |
 | `src/configurar-aplicacion.ts` | Configuración HTTP común a `main.ts` y a los e2e (`ValidationPipe` con `whitelist`) ✅ |
 | `src/compartido/compartido.module.ts` | Kernel compartido: JWT global, `GuardRoles` y `FiltroErrorDominio` registrados como `APP_GUARD` y `APP_FILTER` ✅ |
-| `src/compartido/dominio/publicador-eventos.puerto.ts` | Puerto `PublicadorEventos` (publica un `EventoDominio`) y su símbolo de inyección ✅ |
-| `src/compartido/infraestructura/publicador-eventos-log.ts` | `PublicadorEventosLog`: implementación del puerto que solo registra el evento en el log, hasta que haya un suscriptor ✅ |
+| `src/compartido/dominio/publicador-eventos/publicador-eventos.puerto.ts` | Puerto `PublicadorEventos` (publica un `EventoDominio`) y su símbolo de inyección ✅ |
+| `src/compartido/infraestructura/publicador-eventos/publicador-eventos-log.ts` | `PublicadorEventosLog`: implementación del puerto que solo registra el evento en el log, hasta que haya un suscriptor ✅ |
 | `CHANGELOG.md` | Cambios por versión (decisión 38) ✅ |
 
 ## Módulos
@@ -46,7 +46,7 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 
 ## Casos de uso → endpoint → tests
 
-Base de cada ruta: `src/modulos/<modulo>/aplicacion/`. Tests de integración: `test/integracion/<modulo>/`. Tests e2e: `test/e2e/<modulo>/`.
+Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta por caso de uso, con su spec; ver "Carpetas por concepto"). Tests de integración: `test/integracion/<modulo>/`. Tests e2e: `test/e2e/<modulo>/`.
 
 | Módulo | Caso de uso | Endpoint | US | Estado |
 | :-- | :-- | :-- | :-- | :-- |
@@ -84,6 +84,29 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/`. Tests de integración: `t
 | entrenamiento | Fachada de planificacion | Copiar la rutina del día (RN-ENT-01, 02) |
 | entrenamiento | Fachada de identidad | Peso actual del alumno y su profesor (RN-ENT-02, 18) |
 | entrenamiento | Fachada de catalogo | Tipo, tipo de carga, factor y grupo de cada ejercicio (RN-ENT-07, 09, 10) |
+
+## Carpetas por concepto
+
+Decidido por Lisandro el 08/11/2026: en **todas las capas** (`dominio/`, `aplicacion/`, `infraestructura/`, `presentacion/`) y en `src/compartido/`, cada concepto tiene su carpeta con el código y su spec juntos, para que la vista no quede con archivos sueltos.
+
+* `dominio/<concepto>/`: la entidad o el objeto de valor y su spec. Los puertos y eventos van en la carpeta del agregado al que pertenecen (`identidad/dominio/profesor/` tiene la entidad, su spec, `repositorio-profesores.puerto.ts` y `generador-codigos.puerto.ts`).
+* `aplicacion/<caso-de-uso>/`: el caso de uso, su spec y sus ayudantes. Los muy relacionados comparten carpeta (`identidad/aplicacion/codigo-profesor/`).
+* `infraestructura/<concepto>/`: espeja las carpetas de `dominio/` (esquema, mapper, repositorio TypeORM y adaptadores de ese agregado).
+* `presentacion/controlador/` tiene el controlador del módulo, y `presentacion/<endpoint>/` el DTO de cada endpoint.
+
+Hoy:
+
+| Módulo | Capa | Carpetas |
+| :-- | :-- | :-- |
+| catalogo | dominio | ejercicio, factor-peso-corporal, musculo, tipo-carga, tipo-ejercicio, dataset |
+| catalogo | aplicacion | cargar-dataset-ejercicios, listar-ejercicios |
+| catalogo | infraestructura | ejercicio, dataset |
+| catalogo | presentacion | controlador |
+| identidad | dominio | usuario, rol, documento, profesor, alumno |
+| identidad | aplicacion | ingresar-al-sistema, sembrar-admin, sembrar-usuarios, dar-alta-profesor, codigo-profesor, vincular-alumno |
+| identidad | infraestructura | usuario, profesor, alumno |
+| identidad | presentacion | controlador, ingreso, alta-profesor, vinculo |
+| compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio |
 
 ## Nombres de archivo
 

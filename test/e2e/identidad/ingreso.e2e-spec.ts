@@ -4,7 +4,7 @@ import request from 'supertest';
 import { DataSource } from 'typeorm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { configurarAplicacion } from '../../../src/configurar-aplicacion.js';
-import { SembrarAdmin } from '../../../src/modulos/identidad/aplicacion/sembrar-admin.caso-uso.js';
+import { SembrarAdmin } from '../../../src/modulos/identidad/aplicacion/sembrar-admin/sembrar-admin.caso-uso.js';
 import { ModuloRaiz } from '../../../src/modulo-raiz.module.js';
 
 // .env.test: ADMIN_EMAIL=admin@test.local, ADMIN_PASSWORD=clave-de-test

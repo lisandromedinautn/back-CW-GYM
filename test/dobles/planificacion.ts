@@ -1,9 +1,9 @@
 // Dobles de los puertos de planificación para los tests unitarios (docs/TESTING.md: se mockea
 // solo en los bordes). Viven fuera de src/ para no contar en la cobertura.
-import { ConsultaEjercicios } from '../../src/modulos/planificacion/dominio/consulta-ejercicios.puerto.js';
-import type { EjercicioDelCatalogo } from '../../src/modulos/planificacion/dominio/ejercicio-del-catalogo.js';
-import { RepositorioRutinas } from '../../src/modulos/planificacion/dominio/repositorio-rutinas.puerto.js';
-import type { Rutina } from '../../src/modulos/planificacion/dominio/rutina.entidad.js';
+import { ConsultaEjercicios } from '../../src/modulos/planificacion/dominio/rutina/consulta-ejercicios.puerto.js';
+import type { EjercicioDelCatalogo } from '../../src/modulos/planificacion/dominio/rutina/ejercicio-del-catalogo.js';
+import { RepositorioRutinas } from '../../src/modulos/planificacion/dominio/rutina/repositorio-rutinas.puerto.js';
+import type { Rutina } from '../../src/modulos/planificacion/dominio/rutina/rutina.entidad.js';
 
 export class RepositorioRutinasEnMemoria extends RepositorioRutinas {
   readonly rutinas: Rutina[] = [];

@@ -2,10 +2,10 @@ import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { CargarDatasetEjercicios } from '../../../src/modulos/catalogo/aplicacion/cargar-dataset-ejercicios.caso-uso.js';
-import { ListarEjercicios } from '../../../src/modulos/catalogo/aplicacion/listar-ejercicios.caso-uso.js';
-import { FuenteDatasetEjercicios } from '../../../src/modulos/catalogo/dominio/fuente-dataset-ejercicios.puerto.js';
-import { FuenteDatasetEjerciciosArchivo } from '../../../src/modulos/catalogo/infraestructura/fuente-dataset-ejercicios.archivo.js';
+import { CargarDatasetEjercicios } from '../../../src/modulos/catalogo/aplicacion/cargar-dataset-ejercicios/cargar-dataset-ejercicios.caso-uso.js';
+import { ListarEjercicios } from '../../../src/modulos/catalogo/aplicacion/listar-ejercicios/listar-ejercicios.caso-uso.js';
+import { FuenteDatasetEjercicios } from '../../../src/modulos/catalogo/dominio/dataset/fuente-dataset-ejercicios.puerto.js';
+import { FuenteDatasetEjerciciosArchivo } from '../../../src/modulos/catalogo/infraestructura/dataset/fuente-dataset-ejercicios.archivo.js';
 import { ModuloRaiz } from '../../../src/modulo-raiz.module.js';
 
 describe('Carga del dataset de ejercicios contra la base de test', () => {

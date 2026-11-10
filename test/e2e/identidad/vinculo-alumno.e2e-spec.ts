@@ -4,7 +4,7 @@ import request from 'supertest';
 import { DataSource } from 'typeorm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { configurarAplicacion } from '../../../src/configurar-aplicacion.js';
-import { SembrarUsuarios } from '../../../src/modulos/identidad/aplicacion/sembrar-usuarios.caso-uso.js';
+import { SembrarUsuarios } from '../../../src/modulos/identidad/aplicacion/sembrar-usuarios/sembrar-usuarios.caso-uso.js';
 import { ModuloRaiz } from '../../../src/modulo-raiz.module.js';
 
 // Semilla: profesor01@cwgym.test es Laura Gómez; alumno01@cwgym.test, Martín Pérez (clave-de-semilla).

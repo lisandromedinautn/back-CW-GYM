@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { RepositorioEjercicios } from './dominio/repositorio-ejercicios.puerto.js';
+import { RepositorioEjercicios } from './dominio/ejercicio/repositorio-ejercicios.puerto.js';
 
 /** Datos públicos de un ejercicio para otros módulos: solo tipos primitivos, sin clases del dominio. */
 export interface EjercicioPublico {
