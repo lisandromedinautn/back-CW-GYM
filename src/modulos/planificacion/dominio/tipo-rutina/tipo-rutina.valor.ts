@@ -8,11 +8,15 @@ export class TipoRutina {
 
   private constructor(readonly valor: string) {}
 
-  /** Por ahora solo hay bloques (US06). Circuitos (US09) y Mixta (US10) se suman acá. */
-  static derivar(cantidadBloques: number): TipoRutina {
-    if (cantidadBloques < 1) {
-      throw new ErrorDominio('RN-PLAN-01', 'La rutina tiene que tener al menos un bloque');
+  /** Mixta (bloques y circuitos) se testea con US10. */
+  static derivar(cantidadBloques: number, cantidadCircuitos = 0): TipoRutina {
+    if (cantidadBloques + cantidadCircuitos < 1) {
+      throw new ErrorDominio(
+        'RN-PLAN-01',
+        'La rutina tiene que tener al menos un bloque o un circuito',
+      );
     }
-    return TipoRutina.BLOQUES;
+    if (cantidadCircuitos === 0) return TipoRutina.BLOQUES;
+    return cantidadBloques === 0 ? TipoRutina.CIRCUITOS : TipoRutina.MIXTA;
   }
 }

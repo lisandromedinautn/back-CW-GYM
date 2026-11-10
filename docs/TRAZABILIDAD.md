@@ -17,7 +17,7 @@ Estados: ⬜ sin empezar · 🟥 test en rojo (TDD; solo en el working tree, nun
 | US06 | RN-PLAN-01, 02, 04, 05, 06, 07 | crear-rutina, editar-rutina | EditorRutina | `src/modulos/planificacion/dominio/rutina/rutina.entidad.spec.ts`, `src/modulos/planificacion/aplicacion/crear-rutina/crear-rutina.caso-uso.spec.ts` | — | `test/e2e/planificacion/crear-rutina.e2e-spec.ts` | — | back 🟩 crear-rutina (editar-rutina ⬜), front ⬜ |
 | US07 | RN-PLAN-09…15, 17 | crear-plan | PaginaCrearPlan | — | — | — | — | ⬜ |
 | US08 | RN-PLAN-11, 15, 18 | consultar-rutina-del-dia | PaginaRutinaDelDia | — | — | — | — | ⬜ |
-| US09 | RN-PLAN-01, 03, 04 | crear-rutina | EditorRutina | — | — | — | — | ⬜ |
+| US09 | RN-PLAN-01, 03, 04, 05, 06, 20 | crear-rutina | EditorRutina | `src/modulos/planificacion/dominio/rutina/circuito.entidad.spec.ts`, `src/modulos/planificacion/aplicacion/crear-rutina/crear-rutina-circuitos.caso-uso.spec.ts` | — | `test/e2e/planificacion/crear-rutina-circuitos.e2e-spec.ts` | — | back 🟩, front ⬜ |
 | US10 | RN-PLAN-01 | crear-rutina | EditorRutina | — | — | — | — | ⬜ |
 | US20 | RN-PLAN-08 | importar-rutina | PaginaImportarRutina | — | — | — | — | ⬜ |
 | US11 | RN-PLAN-11, 19 | consultar-plan-del-alumno | PaginaMiPlan | — | — | — | — | ⬜ |
@@ -62,13 +62,14 @@ Toda RN vigente tiene que tener al menos un test. Una RN sin test es una brecha 
 | RN-CAT-07 | `src/modulos/catalogo/aplicacion/cargar-dataset-ejercicios/cargar-dataset-ejercicios.caso-uso.spec.ts` (1 caso) · `test/integracion/catalogo/cargar-dataset-ejercicios.int-spec.ts` (1 caso) | 🟩 |
 | RN-CAT-08 | `src/modulos/catalogo/dominio/dataset/mapear-registro-dataset.spec.ts` (13 casos) | 🟩 |
 | RN-CAT-09 | `src/modulos/catalogo/aplicacion/cargar-dataset-ejercicios/cargar-dataset-ejercicios.caso-uso.spec.ts` (2 casos) · `test/integracion/catalogo/cargar-dataset-ejercicios.int-spec.ts` (1 caso) · `src/modulos/catalogo/presentacion/lista-ejercicios/ListaEjercicios.int.test.tsx` (1 caso) | 🟩 |
-| RN-PLAN-01 | `src/modulos/planificacion/dominio/rutina/rutina.entidad.spec.ts` (3 casos) · `test/e2e/planificacion/crear-rutina.e2e-spec.ts` (1 caso) | 🟩 |
+| RN-PLAN-01 | `src/modulos/planificacion/dominio/rutina/rutina.entidad.spec.ts` (3 casos) · `test/e2e/planificacion/crear-rutina.e2e-spec.ts` (1 caso) · `src/modulos/planificacion/dominio/rutina/circuito.entidad.spec.ts` (2 casos) · `test/e2e/planificacion/crear-rutina-circuitos.e2e-spec.ts` (1 caso) | 🟩 |
 | RN-PLAN-02 | `src/modulos/planificacion/dominio/rutina/rutina.entidad.spec.ts` (3 casos) | 🟩 |
-| RN-PLAN-03 | — | ⬜ |
-| RN-PLAN-04 | `src/modulos/planificacion/dominio/rutina/rutina.entidad.spec.ts` (4 casos) | 🟩 |
-| RN-PLAN-05 | `src/modulos/planificacion/dominio/rutina/rutina.entidad.spec.ts` (3 casos) · `test/e2e/planificacion/crear-rutina.e2e-spec.ts` (1 caso) | 🟩 |
-| RN-PLAN-06 | `src/modulos/planificacion/aplicacion/crear-rutina/crear-rutina.caso-uso.spec.ts` (2 casos) · `test/e2e/planificacion/crear-rutina.e2e-spec.ts` (1 caso) | 🟩 |
+| RN-PLAN-03 | `src/modulos/planificacion/dominio/rutina/circuito.entidad.spec.ts` (4 casos) · `test/e2e/planificacion/crear-rutina-circuitos.e2e-spec.ts` (2 casos) | 🟩 |
+| RN-PLAN-04 | `src/modulos/planificacion/dominio/rutina/rutina.entidad.spec.ts` (4 casos) · `src/modulos/planificacion/dominio/rutina/circuito.entidad.spec.ts` (1 caso) | 🟩 |
+| RN-PLAN-05 | `src/modulos/planificacion/dominio/rutina/rutina.entidad.spec.ts` (3 casos) · `test/e2e/planificacion/crear-rutina.e2e-spec.ts` (1 caso) · `src/modulos/planificacion/dominio/rutina/circuito.entidad.spec.ts` (1 caso) | 🟩 |
+| RN-PLAN-06 | `src/modulos/planificacion/aplicacion/crear-rutina/crear-rutina.caso-uso.spec.ts` (2 casos) · `test/e2e/planificacion/crear-rutina.e2e-spec.ts` (1 caso) · `src/modulos/planificacion/aplicacion/crear-rutina/crear-rutina-circuitos.caso-uso.spec.ts` (2 casos) | 🟩 |
 | RN-PLAN-07 … RN-PLAN-19 | — | ⬜ |
+| RN-PLAN-20 | `src/modulos/planificacion/dominio/rutina/circuito.entidad.spec.ts` (1 caso) | 🟩 |
 | RN-ENT-01 … RN-ENT-20 | — | ⬜ |
 
 Cuando se escriba el primer test de una RN, se separa en su propia fila.

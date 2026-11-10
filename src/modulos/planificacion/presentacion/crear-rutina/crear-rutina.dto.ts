@@ -44,10 +44,58 @@ export class BloqueDto {
   pesoKg?: number | null;
 }
 
-/** US06. Una lista vacía llega al dominio y responde RN-PLAN-01. */
+/** Un ejercicio de un circuito: sin series ni pausas propias (RN-PLAN-03). */
+export class EjercicioCircuitoDto {
+  @IsUUID()
+  ejercicioId: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  repeticiones?: number | null;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  segundos?: number | null;
+
+  @IsOptional()
+  @IsPositive()
+  pesoKg?: number | null;
+}
+
+/**
+ * Formato de entrada de un circuito (US09). `vueltas` no lleva @Min(1) y `ejercicios` no
+ * exige un mínimo, para que 0 vueltas o un solo ejercicio respondan RN-PLAN-03 desde el dominio.
+ */
+export class CircuitoDto {
+  @IsInt()
+  vueltas: number;
+
+  @IsInt()
+  @Min(0)
+  macropausaSegundos: number;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => EjercicioCircuitoDto)
+  ejercicios: EjercicioCircuitoDto[];
+}
+
+/**
+ * US06 y US09: bloques y circuitos en listas separadas, las dos opcionales. Sin ninguno,
+ * el dominio responde RN-PLAN-01.
+ */
 export class CrearRutinaDto {
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => BloqueDto)
-  bloques: BloqueDto[];
+  bloques?: BloqueDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CircuitoDto)
+  circuitos?: CircuitoDto[];
 }

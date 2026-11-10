@@ -19,7 +19,10 @@ export class RepositorioRutinasTypeorm extends RepositorioRutinas {
   }
 
   async buscarPorId(id: string): Promise<Rutina | null> {
-    const esquema = await this.repositorio.findOne({ where: { id }, relations: { bloques: true } });
+    const esquema = await this.repositorio.findOne({
+      where: { id },
+      relations: { bloques: true, circuitos: { ejercicios: true } },
+    });
     return esquema ? RutinaMapper.aDominio(esquema) : null;
   }
 }
