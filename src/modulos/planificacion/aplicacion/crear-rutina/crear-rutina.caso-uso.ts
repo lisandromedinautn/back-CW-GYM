@@ -15,11 +15,27 @@ export interface PedidoBloque {
   pesoKg?: number | null;
 }
 
-export interface PedidoRutina {
-  bloques: PedidoBloque[];
+/** Un ejercicio de un circuito: sin series ni pausas propias (RN-PLAN-03). */
+export interface PedidoEjercicioCircuito {
+  ejercicioId: string;
+  repeticiones?: number | null;
+  segundos?: number | null;
+  pesoKg?: number | null;
 }
 
-/** US06: el profesor crea una rutina por bloques. */
+export interface PedidoCircuito {
+  vueltas: number;
+  macropausaSegundos: number;
+  ejercicios: PedidoEjercicioCircuito[];
+}
+
+/** US06 y US09: bloques y circuitos llegan en listas separadas, las dos opcionales. */
+export interface PedidoRutina {
+  bloques?: PedidoBloque[];
+  circuitos?: PedidoCircuito[];
+}
+
+/** US06 y US09: el profesor crea una rutina por bloques y/o por circuitos. */
 export class CrearRutina {
   constructor(
     private readonly rutinas: RepositorioRutinas,
@@ -28,12 +44,23 @@ export class CrearRutina {
 
   async ejecutar(profesorUsuarioId: string, pedido: PedidoRutina): Promise<Rutina> {
     const bloques = await Promise.all(
-      pedido.bloques.map(async ({ ejercicioId, ...resto }) => ({
+      (pedido.bloques ?? []).map(async ({ ejercicioId, ...resto }) => ({
         ...resto,
         ejercicio: await this.buscarEjercicio(ejercicioId),
       })),
     );
-    const rutina = Rutina.crear({ profesorUsuarioId, bloques });
+    const circuitos = await Promise.all(
+      (pedido.circuitos ?? []).map(async ({ ejercicios, ...resto }) => ({
+        ...resto,
+        ejercicios: await Promise.all(
+          ejercicios.map(async ({ ejercicioId, ...objetivo }) => ({
+            ...objetivo,
+            ejercicio: await this.buscarEjercicio(ejercicioId),
+          })),
+        ),
+      })),
+    );
+    const rutina = Rutina.crear({ profesorUsuarioId, bloques, circuitos });
     await this.rutinas.guardar(rutina);
     return rutina;
   }

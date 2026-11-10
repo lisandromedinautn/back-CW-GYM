@@ -137,3 +137,13 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Ideas descartadas: nueva RN para el nombre de la rutina; validar los números como regla de dominio; mergear sin mover los archivos a carpetas por concepto.
 - Reglas afectadas: RN-PLAN-05 (aclaración: el peso es opcional).
 - Pendientes: editar-rutina (RN-PLAN-07) de US06; el editor de rutinas del front; replicar en el front la fila de US06 de la matriz de trazabilidad. Aviso: el PR #1 se mergeó en `main` (decisión 39) y después se revirtió con `7fb34c7`; `main` quedó con el contenido de `cb9cb89`.
+
+## 2026-11-10 — Crear rutina por circuitos (back) [US09]
+- Desarrollador: Ignacio
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5
+- Objetivo: implementar en el back la tarjeta US09 de Jira (CG-33): el profesor crea rutinas por circuitos (RN-PLAN-01, 03 y 04; criterio adicional: 2 o más ejercicios por circuito).
+- Qué hizo la IA: propuso el contrato y los casos de test (11 unitarios y 2 e2e, en archivos nuevos, sin tocar los de US06), registró la RN nueva y las fichas, vio el rojo y escribió la entidad `Circuito`, la derivación de `TipoRutina` (Bloques, Circuitos y Mixta), los circuitos en `Rutina` y en `CrearRutina`, las tablas `circuitos_rutina` y `ejercicios_circuito` con su mapper, el DTO y la respuesta del endpoint. Verificó con mutaciones que cada regla tiene un test que muerde, y verificó tsc, lint, Prettier y la suite completa (146 tests) con la cobertura sobre los umbrales.
+- Decisiones del desarrollador: los circuitos llegan en una lista `circuitos` aparte de `bloques` (US06 no cambia); Mixta se deriva pero se testea en US10; un circuito no repite ejercicios (nueva RN-PLAN-20); aprobar los casos de test.
+- Ideas descartadas: una lista única `elementos` con bloques y circuitos (rompía el contrato y los tests de US06); permitir ejercicios repetidos en un circuito.
+- Reglas afectadas: nueva RN-PLAN-20. RN-PLAN-03 pasa a tener tests.
+- Pendientes: US10 (orden entre bloques y circuitos y test de Mixta); el editor de circuitos del front (CG-36) y reflejar RN-PLAN-20 en `../front-CW-GYM/src/modulos/planificacion/CLAUDE.md`; sincronizar la matriz de trazabilidad con la del front, que tiene las columnas del front de US06.

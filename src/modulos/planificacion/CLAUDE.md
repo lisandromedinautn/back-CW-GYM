@@ -31,6 +31,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | RN-PLAN-17 | Un plan no se puede finalizar antes de sus 28 días: deja de estar vigente solo cuando pasa su fecha de fin | ZG-07 (se quitó US19) | Vigente |
 | RN-PLAN-18 | El alumno consulta la rutina del día de su plan vigente. Si es día de descanso, se informa descanso. Si no tiene plan vigente, se informa que no hay plan | US08 | Vigente |
 | RN-PLAN-19 | El alumno consulta su plan completo con los 28 días y sus fechas | US11 | Vigente |
+| RN-PLAN-20 | Un circuito no repite ejercicios: cada ejercicio del catálogo aparece una sola vez en el mismo circuito | US09, decisión del 10/11/2026 | Vigente |
 
 ## Casos de uso planificados
 
@@ -66,10 +67,12 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | 01/11/2026 | RN-PLAN-07 | Se quita el bloqueo de rutinas: se editan siempre | Lisandro |
 | 01/11/2026 | RN-PLAN-03, 08, 12, 15, 16, 17 | Se cierran ZG-06 y ZG-07: circuito con 2 o más ejercicios, cada profesor trabaja solo con sus rutinas, el plan puede quedar sin alumnos, no hay finalización anticipada (se quita US19 y el caso de uso finalizar-plan) | Lisandro |
 | 08/11/2026 | RN-PLAN-05 | Se aclara que el peso es opcional aunque la carga incluya Peso Extra (US06) | Ignacio |
+| 10/11/2026 | Nueva RN-PLAN-20 | Un circuito no repite ejercicios (US09) | Ignacio |
 
 ## Decisiones de implementación (US06)
 
 * El formato de los números (series enteras; repeticiones y segundos enteros ≥ 1; pausas enteras ≥ 0 s; peso > 0) se valida en el DTO de entrada (400 sin código RN), no en el dominio, porque no hay RN sobre eso. Las series se dejan llegar al dominio para que 0 responda RN-PLAN-02, y una lista de bloques vacía responde RN-PLAN-01. Decidido por Ignacio el 08/11/2026.
 * La rutina guarda el id del **usuario** profesor que la creó (`profesorUsuarioId`, el `sub` del JWT). La rutina no tiene nombre por ahora: se decide en US07.
 * RN-PLAN-06 responde 404 (`no-encontrado`) con código `RN-PLAN-06`.
+* US09 (10/11/2026, Ignacio): el body de `POST /planificacion/rutinas` acepta `bloques` y `circuitos` como listas separadas, las dos opcionales. US06 no cambia. El orden entre bloques y circuitos de una rutina mixta se resuelve en US10. Una rutina con bloques y circuitos se deriva como Mixta, pero se testea en US10. `vueltas` y la cantidad de ejercicios del circuito llegan al dominio sin validar en el DTO, para que respondan RN-PLAN-03.
 * El catálogo se consulta por `FachadaCatalogo` (`src/modulos/catalogo/fachada-catalogo.ts`) a través del puerto `ConsultaEjercicios`.

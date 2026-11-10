@@ -60,7 +60,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | catalogo | `cargar-dataset-ejercicios.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | T01 | ✅ |
 | catalogo | ~~`registrar-ejercicio.caso-uso.ts`~~ | ~~`POST /catalogo/ejercicios`~~ | US01 (fuera del MVP, DT-06) | — |
 | catalogo | `listar-ejercicios.caso-uso.ts` | `GET /catalogo/ejercicios` | T01, US06 | ✅ |
-| planificacion | `crear-rutina.caso-uso.ts` | `POST /planificacion/rutinas` | US06, US09, US10 | ✅ bloques (US06); circuitos y mixta 📄 |
+| planificacion | `crear-rutina.caso-uso.ts` | `POST /planificacion/rutinas` | US06, US09, US10 | ✅ bloques (US06) y circuitos (US09); mixta 📄 (US10) |
 | planificacion | `editar-rutina.caso-uso.ts` | `PUT /planificacion/rutinas/:id` | US06 | 📄 |
 | planificacion | `importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | 📄 |
 | planificacion | `crear-plan.caso-uso.ts` | `POST /planificacion/planes` | US07 | 📄 |
@@ -106,7 +106,7 @@ Hoy:
 | identidad | aplicacion | ingresar-al-sistema, sembrar-admin, sembrar-usuarios, dar-alta-profesor, codigo-profesor, vincular-alumno |
 | identidad | infraestructura | usuario, profesor, alumno |
 | identidad | presentacion | controlador, ingreso, alta-profesor, vinculo |
-| planificacion | dominio | rutina (con bloque y los puertos RepositorioRutinas y ConsultaEjercicios), objetivo-prescripto, pausa, tipo-rutina |
+| planificacion | dominio | rutina (con bloque, circuito y los puertos RepositorioRutinas y ConsultaEjercicios), objetivo-prescripto, pausa, tipo-rutina |
 | planificacion | aplicacion | crear-rutina |
 | planificacion | infraestructura | rutina |
 | planificacion | presentacion | controlador, crear-rutina |
