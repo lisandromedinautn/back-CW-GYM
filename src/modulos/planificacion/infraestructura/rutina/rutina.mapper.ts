@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import { Bloque } from '../../dominio/rutina/bloque.entidad.js';
 import { Circuito } from '../../dominio/rutina/circuito.entidad.js';
 import { Rutina } from '../../dominio/rutina/rutina.entidad.js';
@@ -9,6 +9,16 @@ import {
   RutinaEsquema,
 } from './rutina.esquema.js';
 
+/**
+ * El ejercicio prescripto de un circuito no tiene identidad en el dominio, pero la fila sí la necesita.
+ * Se deriva del circuito y la posición para que guardar de nuevo la misma rutina (por ejemplo al
+ * renombrarla) actualice las filas en vez de duplicarlas.
+ */
+const idDeEjercicioDeCircuito = (circuitoId: string, posicion: number): string => {
+  const hex = createHash('sha256').update(`${circuitoId}:${posicion}`).digest('hex');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
+};
+
 const porOrden = <T extends { orden: number }>(filas: T[] | undefined): T[] =>
   [...(filas ?? [])].sort((a, b) => a.orden - b.orden);
 
@@ -17,6 +27,7 @@ export const RutinaMapper = {
     const esquema = new RutinaEsquema();
     esquema.id = rutina.id;
     esquema.profesorUsuarioId = rutina.profesorUsuarioId;
+    esquema.nombre = rutina.nombre;
     esquema.bloques = rutina.bloques.map((bloque, indice) => {
       const fila = new BloqueRutinaEsquema();
       fila.id = bloque.id;
@@ -38,8 +49,7 @@ export const RutinaMapper = {
       fila.macropausaSegundos = circuito.macropausa.segundos;
       fila.ejercicios = circuito.ejercicios.map((ejercicio, posicion) => {
         const hija = new EjercicioCircuitoEsquema();
-        // El ejercicio prescripto no tiene identidad propia en el dominio: la fila sí la necesita.
-        hija.id = randomUUID();
+        hija.id = idDeEjercicioDeCircuito(circuito.id, posicion);
         hija.orden = posicion + 1;
         hija.ejercicioId = ejercicio.ejercicioId;
         hija.repeticiones = ejercicio.objetivo.repeticiones;
@@ -76,6 +86,12 @@ export const RutinaMapper = {
         })),
       }),
     );
-    return Rutina.reconstruir(esquema.id, esquema.profesorUsuarioId, bloques, circuitos);
+    return Rutina.reconstruir(
+      esquema.id,
+      esquema.profesorUsuarioId,
+      bloques,
+      circuitos,
+      esquema.nombre,
+    );
   },
 };

@@ -17,6 +17,33 @@ export class RepositorioRutinasEnMemoria extends RepositorioRutinas {
   async buscarPorId(id: string): Promise<Rutina | null> {
     return this.rutinas.find((rutina) => rutina.id === id) ?? null;
   }
+
+  /** Más nuevas primero: en memoria, las últimas guardadas. Devuelve { items, total }. */
+  async listarPorProfesor(
+    profesorUsuarioId: string,
+    pagina: number,
+    tamanio: number,
+  ): Promise<{ items: Rutina[]; total: number }> {
+    const delProfesor = this.rutinas
+      .filter((rutina) => rutina.profesorUsuarioId === profesorUsuarioId)
+      .reverse();
+    const inicio = (pagina - 1) * tamanio;
+    return { items: delProfesor.slice(inicio, inicio + tamanio), total: delProfesor.length };
+  }
+
+  /** Todas las rutinas de todos los profesores, de la más vieja a la más nueva (orden de inserción). */
+  async listarTodasPorAntiguedad(): Promise<Rutina[]> {
+    return this.rutinas;
+  }
+
+  /** Nombres de las rutinas del profesor, para detectar duplicados (RN-PLAN-21). */
+  async listarNombresPorProfesor(
+    profesorUsuarioId: string,
+  ): Promise<{ id: string; nombre: string }[]> {
+    return this.rutinas
+      .filter((rutina) => rutina.profesorUsuarioId === profesorUsuarioId)
+      .map((rutina) => ({ id: rutina.id, nombre: rutina.nombre }));
+  }
 }
 
 /** Catálogo fijo: solo existen los ejercicios que se le pasan. */

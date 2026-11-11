@@ -4,6 +4,7 @@ import {
   IsInt,
   IsOptional,
   IsPositive,
+  IsString,
   IsUUID,
   Min,
   ValidateNested,
@@ -87,6 +88,11 @@ export class CircuitoDto {
  * el dominio responde RN-PLAN-01.
  */
 export class CrearRutinaDto {
+  /** RN-PLAN-21: el largo lo valida el dominio (400 con código RN-PLAN-21). */
+  @IsOptional()
+  @IsString()
+  nombre?: string;
+
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
@@ -98,4 +104,10 @@ export class CrearRutinaDto {
   @ValidateNested({ each: true })
   @Type(() => CircuitoDto)
   circuitos?: CircuitoDto[];
+}
+
+/** T08: cuerpo de PATCH /planificacion/rutinas/:id/nombre. El largo lo valida el dominio (RN-PLAN-21). */
+export class RenombrarRutinaDto {
+  @IsString()
+  nombre: string;
 }
