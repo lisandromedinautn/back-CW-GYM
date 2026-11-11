@@ -60,7 +60,10 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | catalogo | `cargar-dataset-ejercicios.caso-uso.ts` | `yarn seed` (CLI, sin endpoint) | T01 | ✅ |
 | catalogo | ~~`registrar-ejercicio.caso-uso.ts`~~ | ~~`POST /catalogo/ejercicios`~~ | US01 (fuera del MVP, DT-06) | — |
 | catalogo | `listar-ejercicios.caso-uso.ts` | `GET /catalogo/ejercicios` | T01, US06 | ✅ |
-| planificacion | `crear-rutina.caso-uso.ts` | `POST /planificacion/rutinas` | US06, US09, US10 | ✅ bloques (US06) y circuitos (US09); mixta 📄 (US10) |
+| catalogo | `consultar-ejercicios.caso-uso.ts` | `GET /catalogo/ejercicios/consulta` | T06, T07 | ✅ |
+| planificacion | `crear-rutina.caso-uso.ts` | `POST /planificacion/rutinas` | US06, US09, US10, T09 | ✅ bloques (US06), circuitos (US09) y nombre (T09); mixta 📄 (US10) |
+| planificacion | `consultar-rutinas.caso-uso.ts` | `GET /planificacion/rutinas` | T06 | ✅ |
+| planificacion | `renombrar-rutina.caso-uso.ts` | `PATCH /planificacion/rutinas/:id/nombre` | T09 | ✅ |
 | planificacion | `editar-rutina.caso-uso.ts` | `PUT /planificacion/rutinas/:id` | US06 | 📄 |
 | planificacion | `importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | 📄 |
 | planificacion | `crear-plan.caso-uso.ts` | `POST /planificacion/planes` | US07 | 📄 |
@@ -98,19 +101,19 @@ Hoy:
 
 | Módulo | Capa | Carpetas |
 | :-- | :-- | :-- |
-| catalogo | dominio | ejercicio, factor-peso-corporal, musculo, tipo-carga, tipo-ejercicio, dataset |
-| catalogo | aplicacion | cargar-dataset-ejercicios, listar-ejercicios |
+| catalogo | dominio | ejercicio (con `FiltrosEjercicios`), factor-peso-corporal, musculo, tipo-carga, tipo-ejercicio, dataset |
+| catalogo | aplicacion | cargar-dataset-ejercicios, listar-ejercicios, consultar-ejercicios |
 | catalogo | infraestructura | ejercicio, dataset |
-| catalogo | presentacion | controlador |
+| catalogo | presentacion | controlador, consultar-ejercicios |
 | identidad | dominio | usuario, rol, documento, profesor, alumno |
 | identidad | aplicacion | ingresar-al-sistema, sembrar-admin, sembrar-usuarios, dar-alta-profesor, codigo-profesor, vincular-alumno |
 | identidad | infraestructura | usuario, profesor, alumno |
 | identidad | presentacion | controlador, ingreso, alta-profesor, vinculo |
-| planificacion | dominio | rutina (con bloque, circuito y los puertos RepositorioRutinas y ConsultaEjercicios), objetivo-prescripto, pausa, tipo-rutina |
-| planificacion | aplicacion | crear-rutina |
+| planificacion | dominio | rutina (con bloque, circuito, `NombreRutina` y los puertos RepositorioRutinas y ConsultaEjercicios), objetivo-prescripto, pausa, tipo-rutina |
+| planificacion | aplicacion | crear-rutina, consultar-rutinas, renombrar-rutina |
 | planificacion | infraestructura | rutina |
-| planificacion | presentacion | controlador, crear-rutina |
-| compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio |
+| planificacion | presentacion | controlador, crear-rutina (incluye `RenombrarRutinaDto`) |
+| compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio, paginacion (`dominio/paginacion/paginacion.ts` con `TAMANIOS_PAGINA` y `Pagina<T>`; `presentacion/paginacion/paginacion.dto.ts` con `PaginacionDto`) |
 
 ## Nombres de archivo
 
