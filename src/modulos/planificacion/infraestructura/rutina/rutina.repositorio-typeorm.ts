@@ -25,4 +25,37 @@ export class RepositorioRutinasTypeorm extends RepositorioRutinas {
     });
     return esquema ? RutinaMapper.aDominio(esquema) : null;
   }
+
+  async listarPorProfesor(
+    profesorUsuarioId: string,
+    pagina: number,
+    tamanio: number,
+  ): Promise<{ items: Rutina[]; total: number }> {
+    const [esquemas, total] = await this.repositorio.findAndCount({
+      where: { profesorUsuarioId },
+      relations: { bloques: true, circuitos: { ejercicios: true } },
+      order: { creadaEn: 'DESC', id: 'ASC' },
+      skip: (pagina - 1) * tamanio,
+      take: tamanio,
+    });
+    return { items: esquemas.map((esquema) => RutinaMapper.aDominio(esquema)), total };
+  }
+
+  async listarTodasPorAntiguedad(): Promise<Rutina[]> {
+    const esquemas = await this.repositorio.find({
+      relations: { bloques: true, circuitos: { ejercicios: true } },
+      order: { creadaEn: 'ASC', id: 'ASC' },
+    });
+    return esquemas.map((esquema) => RutinaMapper.aDominio(esquema));
+  }
+
+  async listarNombresPorProfesor(
+    profesorUsuarioId: string,
+  ): Promise<{ id: string; nombre: string }[]> {
+    const filas = await this.repositorio.find({
+      where: { profesorUsuarioId },
+      select: { id: true, nombre: true },
+    });
+    return filas.map(({ id, nombre }) => ({ id, nombre }));
+  }
 }

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CargarDatasetEjercicios } from './aplicacion/cargar-dataset-ejercicios/cargar-dataset-ejercicios.caso-uso.js';
+import { ConsultarEjercicios } from './aplicacion/consultar-ejercicios/consultar-ejercicios.caso-uso.js';
 import { ListarEjercicios } from './aplicacion/listar-ejercicios/listar-ejercicios.caso-uso.js';
 import { FuenteDatasetEjercicios } from './dominio/dataset/fuente-dataset-ejercicios.puerto.js';
 import { RepositorioEjercicios } from './dominio/ejercicio/repositorio-ejercicios.puerto.js';
@@ -25,6 +26,11 @@ import { FachadaCatalogo } from './fachada-catalogo.js';
     {
       provide: ListarEjercicios,
       useFactory: (repositorio: RepositorioEjercicios) => new ListarEjercicios(repositorio),
+      inject: [RepositorioEjercicios],
+    },
+    {
+      provide: ConsultarEjercicios,
+      useFactory: (repositorio: RepositorioEjercicios) => new ConsultarEjercicios(repositorio),
       inject: [RepositorioEjercicios],
     },
     FachadaCatalogo,

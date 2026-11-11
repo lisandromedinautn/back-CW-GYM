@@ -43,12 +43,19 @@ Contexto central. Contiene los ejercicios como materia prima. En el MVP el catá
 * **Músculo secundario:** el primero de `secondary_muscles` que tenga traducción y sea distinto del principal. Traducciones: shoulders, deltoids, rear deltoids, rotator cuff → Deltoides · hamstrings → Isquiotibiales · forearms, wrists, wrist flexors, wrist extensors, grip muscles, hands → Antebrazo · brachialis, biceps → Bíceps · triceps → Tríceps · quadriceps → Cuádriceps · calves → Gemelos · soleus → Sóleo · glutes → Glúteos · core, abdominals, lower abs → Abdominales · obliques → Oblicuos · chest, upper chest → Pectoral · lower back → Lumbar · rhomboids, trapezius, traps, upper back → Trapecio · back, latissimus dorsi, lats → Dorsal · inner thighs, groin → Aductores. Sin traducción (se ignoran): hip flexors, ankles, ankle stabilizers, feet, shins, sternocleidomastoid.
 * **Media:** se guarda la URL del GIF en GitHub (`https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/<gif_url>`) y la atribución del registro. Los datos del dataset son MIT; la media es © Gym visual y se muestra siempre con su atribución.
 
+## Consulta paginada y filtros (T06, T07)
+
+* `GET /catalogo/ejercicios/consulta` devuelve `{ items, total, pagina, tamanio }`, ordenado por nombre ascendente. Tamaños válidos 5, 10, 20, 50 o 100 (por defecto 20); página desde 1. Un tamaño o página inválidos responden 400 desde el DTO (sin código RN). `GET /catalogo/ejercicios` (sin paginar) no cambia: lo usa el editor de rutinas.
+* Filtros (RN-UI-LIS-01 y 02), todos opcionales y combinados con Y: `busqueda` (el texto está contenido en el nombre, sin mayúsculas), `grupo` (los músculos de ese grupo según RN-CAT-05), `musculo` (músculo principal exacto), `tipo` (RN-CAT-02) y `tipoCarga` (RN-CAT-03). `grupo`, `musculo`, `tipo` y `tipoCarga` salen de listas cerradas: otro valor responde 400.
+* El puerto `RepositorioEjercicios.consultar(filtros, pagina, tamanio)` trae una implementación por defecto que filtra `listar()` en memoria (la usan los dobles); el repositorio TypeORM la reemplaza con SQL.
+
 ## Casos de uso planificados
 
 | Archivo (`aplicacion/`) | US | RN |
 | :-- | :-- | :-- |
 | `cargar-dataset-ejercicios.caso-uso.ts` (semilla de `yarn seed`) | T01 | 01–09 |
-| `listar-ejercicios.caso-uso.ts` | T01, US06 (soporte) | — |
+| `listar-ejercicios.caso-uso.ts` ✅ | T01, US06 (soporte) | — |
+| `consultar-ejercicios/consultar-ejercicios.caso-uso.ts` ✅ | T06, T07 | 02, 03, 05 · RN-UI-LIS-01, 02 |
 | ~~`registrar-ejercicio.caso-uso.ts`~~ | US01 (fuera del MVP, DT-06) | — |
 
 ## Endpoints
@@ -56,6 +63,7 @@ Contexto central. Contiene los ejercicios como materia prima. En el MVP el catá
 | Método y ruta | Rol | Caso de uso |
 | :-- | :-- | :-- |
 | `GET /catalogo/ejercicios` | Admin, Profesor | listar-ejercicios |
+| `GET /catalogo/ejercicios/consulta?pagina&tamanio&busqueda&grupo&musculo&tipo&tipoCarga` ✅ | Admin, Profesor | consultar-ejercicios |
 
 ## Historial de cambios de reglas
 
@@ -64,3 +72,4 @@ Contexto central. Contiene los ejercicios como materia prima. En el MVP el catá
 | 01/11/2026 | Todas | Versión inicial | Lisandro |
 | 01/11/2026 | RN-CAT-01, 04, 05, 07 | Se cierran ZG-03, ZG-04 y ZG-05: secundario opcional, factor entre 0% (excluido) y 100%, lista cerrada de músculos (se agregó Sóleo), nombre único | Lisandro |
 | 08/11/2026 | RN-CAT-01, 05, 07; nuevas RN-CAT-08 y 09 | US01 sale del MVP (DT-06): el catálogo se carga desde el dataset hasaneyldrm/exercises-dataset. Se amplía la lista de músculos (Aductores, Abductores, Serrato, Elevador de la escápula), se fija el mapeo del dataset y la carga idempotente | Lisandro |
+| 11/11/2026 | RN-CAT-02, 03, 05 (uso) | Consulta paginada con buscador y filtros por grupo, músculo, tipo y tipo de carga (T06, T07; RN-UI-LIS-01 y 02). No cambia ninguna RN del catálogo | Lisandro |

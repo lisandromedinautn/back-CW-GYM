@@ -27,6 +27,20 @@ const GRUPO_DE_CADA_MUSCULO: Readonly<Record<string, GrupoMuscular>> = {
   Cardiovascular: 'Cardio',
 };
 
+/** RN-CAT-05: los músculos de la lista cerrada. */
+export const NOMBRES_MUSCULOS: readonly string[] = Object.keys(GRUPO_DE_CADA_MUSCULO);
+
+/** RN-CAT-05: los grupos musculares. */
+export const GRUPOS_MUSCULARES: readonly GrupoMuscular[] = [
+  ...new Set(Object.values(GRUPO_DE_CADA_MUSCULO)),
+];
+
+/** RN-CAT-05: los músculos que pertenecen a un grupo muscular (vacío si el grupo no existe). */
+export const musculosDelGrupo = (grupo: string): string[] =>
+  Object.entries(GRUPO_DE_CADA_MUSCULO)
+    .filter(([, delGrupo]) => delGrupo === grupo)
+    .map(([nombre]) => nombre);
+
 export class Musculo {
   private constructor(
     readonly nombre: string,

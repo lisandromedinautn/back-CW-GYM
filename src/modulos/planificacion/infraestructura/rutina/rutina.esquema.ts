@@ -1,4 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+} from 'typeorm';
 
 /** Esquema de persistencia de `Rutina`. No es la entidad de dominio: el mapper las traduce. */
 @Entity('rutinas')
@@ -9,6 +17,14 @@ export class RutinaEsquema {
   /** Usuario (rol Profesor) que creó la rutina, tal como viene en el JWT. */
   @Column({ name: 'profesor_usuario_id', type: 'uuid' })
   profesorUsuarioId!: string;
+
+  /** RN-PLAN-21. El default cubre las filas que ya existían. */
+  @Column({ type: 'varchar', length: 60, default: 'Rutina 1' })
+  nombre!: string;
+
+  /** Solo de persistencia: ordena la consulta paginada (más nuevas primero). */
+  @CreateDateColumn({ name: 'creada_en', type: 'timestamptz' })
+  creadaEn!: Date;
 
   @OneToMany(() => BloqueRutinaEsquema, (bloque) => bloque.rutina, { cascade: true })
   bloques!: BloqueRutinaEsquema[];

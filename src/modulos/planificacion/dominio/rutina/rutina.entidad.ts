@@ -2,12 +2,17 @@ import { randomUUID } from 'node:crypto';
 import { Bloque, type DatosBloque } from './bloque.entidad.js';
 import { TipoRutina } from '../tipo-rutina/tipo-rutina.valor.js';
 import { Circuito, type DatosCircuito } from './circuito.entidad.js';
+import { NombreRutina } from './nombre-rutina.valor.js';
 
 export type { DatosBloque } from './bloque.entidad.js';
 export type { DatosCircuito } from './circuito.entidad.js';
 
+const NOMBRE_POR_DEFECTO = 'Rutina 1';
+
 export interface DatosRutina {
   profesorUsuarioId: string;
+  /** RN-PLAN-21. Si falta, vale 'Rutina 1'; el caso de uso siempre lo calcula. */
+  nombre?: string;
   bloques?: DatosBloque[];
   circuitos?: DatosCircuito[];
 }
@@ -24,7 +29,18 @@ export class Rutina {
     readonly profesorUsuarioId: string,
     readonly bloques: readonly Bloque[],
     readonly circuitos: readonly Circuito[],
+    private nombreRutina: NombreRutina,
   ) {}
+
+  /** RN-PLAN-21. */
+  get nombre(): string {
+    return this.nombreRutina.valor;
+  }
+
+  /** RN-PLAN-21: el nuevo nombre cumple la misma regla que el de la creación. */
+  renombrar(nombre: string): void {
+    this.nombreRutina = NombreRutina.crear(nombre);
+  }
 
   get tipo(): TipoRutina {
     return TipoRutina.derivar(this.bloques.length, this.circuitos.length);
@@ -43,6 +59,7 @@ export class Rutina {
       datos.profesorUsuarioId,
       bloques.map((bloque) => Bloque.crear(bloque)),
       circuitos.map((circuito) => Circuito.crear(circuito)),
+      NombreRutina.crear(datos.nombre ?? NOMBRE_POR_DEFECTO),
     );
   }
 
@@ -52,7 +69,8 @@ export class Rutina {
     profesorUsuarioId: string,
     bloques: Bloque[],
     circuitos: Circuito[] = [],
+    nombre: string = NOMBRE_POR_DEFECTO,
   ): Rutina {
-    return new Rutina(id, profesorUsuarioId, bloques, circuitos);
+    return new Rutina(id, profesorUsuarioId, bloques, circuitos, NombreRutina.crear(nombre));
   }
 }
