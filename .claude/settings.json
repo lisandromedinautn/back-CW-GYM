@@ -6,6 +6,19 @@
       "Edit(**/*.e2e-spec.ts)",
       "Edit(**/FICHAS-TEST.md)",
       "Edit(**/vitest*.config*)",
+      "Write(**/*.spec.ts)",
+      "Write(**/*.int-spec.ts)",
+      "Write(**/*.e2e-spec.ts)",
+      "Edit(test/**)",
+      "Write(test/**)",
+      "Write(**/FICHAS-TEST.md)",
+      "Write(**/vitest*.config*)",
+      "Edit(.husky/**)",
+      "Write(.husky/**)",
+      "Edit(.claude/settings.json)",
+      "Write(.claude/settings.json)",
+      "Edit(scripts/proteger-tests.mjs)",
+      "Write(scripts/proteger-tests.mjs)",
       "Bash(yarn add:*)",
       "Bash(yarn upgrade:*)",
       "Bash(yarn global add:*)",
@@ -15,6 +28,10 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(git merge:*)"
+    ],
+    "deny": [
+      "Bash(git commit --no-verify:*)",
+      "Bash(git commit -n:*)"
     ]
   }
 }
