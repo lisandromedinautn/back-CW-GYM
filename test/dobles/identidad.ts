@@ -79,8 +79,20 @@ export class RepositorioProfesoresEnMemoria implements RepositorioProfesores {
 export class RepositorioAlumnosEnMemoria implements RepositorioAlumnos {
   readonly alumnos: Alumno[] = [];
 
+  async buscarPorId(id: string): Promise<Alumno | null> {
+    return this.alumnos.find((alumno) => alumno.id === id) ?? null;
+  }
+
   async buscarPorUsuarioId(usuarioId: string): Promise<Alumno | null> {
     return this.alumnos.find((alumno) => alumno.usuarioId === usuarioId) ?? null;
+  }
+
+  async listarPorProfesor(profesorId: string): Promise<Alumno[]> {
+    return this.alumnos
+      .filter((alumno) => alumno.profesorId === profesorId)
+      .sort((uno, otro) =>
+        `${uno.apellido} ${uno.nombre}`.localeCompare(`${otro.apellido} ${otro.nombre}`),
+      );
   }
 
   async existePorDocumento(documento: Documento): Promise<boolean> {

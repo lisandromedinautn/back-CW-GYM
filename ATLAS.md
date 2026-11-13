@@ -17,7 +17,7 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `.claude/skills/tdd`, `.claude/skills/coverage` | Skills de TDD y cobertura |
 | `test/datasets/` | Fixture del dataset de ejercicios (T01) ✅ |
 | `datos/` | Dataset de ejercicios reducido y su licencia (T01) ✅ |
-| `test/dobles/` | Dobles de los puertos para los tests unitarios (`identidad.ts`: repositorios, hasheador y emisor de tokens en memoria; `planificacion.ts`: repositorio de rutinas en memoria y catálogo fijo). Fuera de `src/`, no cuentan en la cobertura ✅ |
+| `test/dobles/` | Dobles de los puertos para los tests unitarios (`identidad.ts`: repositorios, hasheador y emisor de tokens en memoria; `planificacion.ts`: repositorio de rutinas y de planes en memoria, catálogo fijo, vínculos falsos y reloj fijo). Fuera de `src/`, no cuentan en la cobertura ✅ |
 | `package.json`, `yarn.lock` | Dependencias exactas, scripts y `resolutions` (regla de las 24 h) ✅ |
 | `docker-compose.yml` | Postgres 18 de desarrollo (5442) y de test (5443, en memoria) ✅ |
 | `.env.example`, `.env.test` | Variables de entorno: plantilla de desarrollo y valores de test ✅ |
@@ -66,7 +66,8 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | planificacion | `renombrar-rutina.caso-uso.ts` | `PATCH /planificacion/rutinas/:id/nombre` | T09 | ✅ |
 | planificacion | `editar-rutina.caso-uso.ts` | `PUT /planificacion/rutinas/:id` | US06 | 📄 |
 | planificacion | `importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | 📄 |
-| planificacion | `crear-plan.caso-uso.ts` | `POST /planificacion/planes` | US07 | 📄 |
+| planificacion | `crear-plan.caso-uso.ts` | `POST /planificacion/planes` | US07 | ✅ |
+| identidad | `listar-alumnos-del-profesor.caso-uso.ts` | `GET /identidad/alumnos` | US07 | ✅ |
 | planificacion | `agregar-alumno-a-plan.caso-uso.ts` | `POST /planificacion/planes/:id/alumnos` | US12 | 📄 |
 | planificacion | `quitar-alumno-de-plan.caso-uso.ts` | `DELETE /planificacion/planes/:id/alumnos/:alumnoId` | US12 | 📄 |
 | planificacion | `consultar-rutina-del-dia.caso-uso.ts` | `GET /planificacion/mi-rutina-del-dia` | US08 | 📄 |
@@ -82,7 +83,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 
 | Consumidor | Usa | Para qué |
 | :-- | :-- | :-- |
-| planificacion | Fachada de identidad | Validar el vínculo alumno-profesor (RN-PLAN-13) |
+| planificacion | Fachada de identidad | Validar el vínculo alumno-profesor (RN-PLAN-13). ✅ `src/modulos/identidad/fachada-identidad.ts`, por el puerto `ConsultaVinculos` (adaptador en `planificacion/infraestructura/plan/`) |
 | planificacion | Fachada de catalogo | Validar ejercicios referenciados y su tipo (RN-PLAN-04, 05, 06). ✅ `src/modulos/catalogo/fachada-catalogo.ts`, por el puerto `ConsultaEjercicios` (adaptador en `planificacion/infraestructura/rutina/`) |
 | entrenamiento | Fachada de planificacion | Copiar la rutina del día (RN-ENT-01, 02) |
 | entrenamiento | Fachada de identidad | Peso actual del alumno y su profesor (RN-ENT-02, 18) |
@@ -106,14 +107,14 @@ Hoy:
 | catalogo | infraestructura | ejercicio, dataset |
 | catalogo | presentacion | controlador, consultar-ejercicios |
 | identidad | dominio | usuario, rol, documento, profesor, alumno |
-| identidad | aplicacion | ingresar-al-sistema, sembrar-admin, sembrar-usuarios, dar-alta-profesor, codigo-profesor, vincular-alumno |
+| identidad | aplicacion | ingresar-al-sistema, sembrar-admin, sembrar-usuarios, dar-alta-profesor, codigo-profesor, vincular-alumno, listar-alumnos-del-profesor |
 | identidad | infraestructura | usuario, profesor, alumno |
 | identidad | presentacion | controlador, ingreso, alta-profesor, vinculo |
-| planificacion | dominio | rutina (con bloque, circuito, `NombreRutina` y los puertos RepositorioRutinas y ConsultaEjercicios), objetivo-prescripto, pausa, tipo-rutina |
-| planificacion | aplicacion | crear-rutina, consultar-rutinas, renombrar-rutina |
-| planificacion | infraestructura | rutina |
-| planificacion | presentacion | controlador, crear-rutina (incluye `RenombrarRutinaDto`) |
-| compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio, paginacion (`dominio/paginacion/paginacion.ts` con `TAMANIOS_PAGINA` y `Pagina<T>`; `presentacion/paginacion/paginacion.dto.ts` con `PaginacionDto`) |
+| planificacion | dominio | rutina (con bloque, circuito, `NombreRutina` y los puertos RepositorioRutinas y ConsultaEjercicios), plan (con `DiaPlan`, `ValidezPlan` y los puertos RepositorioPlanes y ConsultaVinculos), objetivo-prescripto, pausa, tipo-rutina |
+| planificacion | aplicacion | crear-rutina, consultar-rutinas, renombrar-rutina, crear-plan |
+| planificacion | infraestructura | rutina, plan |
+| planificacion | presentacion | controlador, crear-rutina (incluye `RenombrarRutinaDto`), crear-plan |
+| compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio, reloj, paginacion (`dominio/paginacion/paginacion.ts` con `TAMANIOS_PAGINA` y `Pagina<T>`; `presentacion/paginacion/paginacion.dto.ts` con `PaginacionDto`) |
 
 ## Nombres de archivo
 

@@ -181,10 +181,10 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | 1 | US06 | Modelar: Rutina, Bloque, Ejercicio Prescripto, Pausa | back | RN-PLAN-01, 02, 04, 05, 06, 07 | 3 | ⬜ |
 | 2 | US06 | Backend: crear y editar una rutina por bloques | back | RN-PLAN-01, 02, 04, 05, 06, 07 | 5 | ⬜ |
-| 2 | US07 | Modelar: Plan de Entrenamiento, Validez del plan, Día del plan | back | RN-PLAN-09…15, 17 | 3 | ⬜ |
+| 2 | US07 | Modelar: Plan de Entrenamiento, Validez del plan, Día del plan | back | RN-PLAN-09…15, 17 | 3 | 🟩 |
 | 3 | US06 | Frontend: editor de rutina (bloques) | front | RN-PLAN-01, 02, 04, 05, 06, 07 | 5 | ⬜ |
-| 3 | US07 | Backend: crear plan con alumnos y una rutina o descanso por día | back | RN-PLAN-09…15, 17 | 5 | ⬜ |
-| 4 | US07 | Frontend: página de creación de plan | front | RN-PLAN-09…15, 17 | 3 | ⬜ |
+| 3 | US07 | Backend: crear plan con alumnos y una rutina o descanso por día | back | RN-PLAN-09…15, 17 | 5 | 🟩 |
+| 4 | US07 | Frontend: página de creación de plan | front | RN-PLAN-09…15, 17 | 3 | 🟩 |
 | 4 | US08 | Backend: consultar la rutina del día | back | RN-PLAN-11, 15, 18 | 1 | ⬜ |
 | 5 | US08 | Frontend: página de la rutina del día | front | RN-PLAN-11, 15, 18 | 3 | ⬜ |
 

@@ -12,6 +12,10 @@ import {
   type Ingreso,
 } from '../../aplicacion/ingresar-al-sistema/ingresar-al-sistema.caso-uso.js';
 import {
+  ListarAlumnosDelProfesor,
+  type AlumnoDelProfesor,
+} from '../../aplicacion/listar-alumnos-del-profesor/listar-alumnos-del-profesor.caso-uso.js';
+import {
   VincularAlumno,
   type Vinculo,
 } from '../../aplicacion/vincular-alumno/vincular-alumno.caso-uso.js';
@@ -27,6 +31,8 @@ export class IdentidadControlador {
     @Inject(GenerarCodigoProfesor) private readonly generarCodigo: GenerarCodigoProfesor,
     @Inject(ConsultarCodigoProfesor) private readonly consultarCodigo: ConsultarCodigoProfesor,
     @Inject(VincularAlumno) private readonly vincularAlumno: VincularAlumno,
+    @Inject(ListarAlumnosDelProfesor)
+    private readonly listarAlumnos: ListarAlumnosDelProfesor,
   ) {}
 
   /** Público. RN-IDE-01. */
@@ -60,6 +66,15 @@ export class IdentidadControlador {
     @UsuarioActual() usuario: UsuarioAutenticado,
   ): Promise<{ codigo: string | null }> {
     return { codigo: await this.consultarCodigo.ejecutar(usuario.sub) };
+  }
+
+  /** Solo Profesor. US07: los alumnos vinculados que puede asignar a un plan (RN-PLAN-13). */
+  @Get('alumnos')
+  @Roles('Profesor')
+  async alumnosDelProfesor(
+    @UsuarioActual() usuario: UsuarioAutenticado,
+  ): Promise<AlumnoDelProfesor[]> {
+    return this.listarAlumnos.ejecutar(usuario.sub);
   }
 
   /** Solo Alumno. RN-IDE-09, 10, 11. */

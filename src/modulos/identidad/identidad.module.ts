@@ -10,7 +10,9 @@ import type { Repository } from 'typeorm';
 import { ConsultarCodigoProfesor } from './aplicacion/codigo-profesor/consultar-codigo-profesor.caso-uso.js';
 import { DarAltaProfesor } from './aplicacion/dar-alta-profesor/dar-alta-profesor.caso-uso.js';
 import { GenerarCodigoProfesor } from './aplicacion/codigo-profesor/generar-codigo-profesor.caso-uso.js';
+import { ListarAlumnosDelProfesor } from './aplicacion/listar-alumnos-del-profesor/listar-alumnos-del-profesor.caso-uso.js';
 import { VincularAlumno } from './aplicacion/vincular-alumno/vincular-alumno.caso-uso.js';
+import { FachadaIdentidad } from './fachada-identidad.js';
 import { IngresarAlSistema } from './aplicacion/ingresar-al-sistema/ingresar-al-sistema.caso-uso.js';
 import { SembrarAdmin } from './aplicacion/sembrar-admin/sembrar-admin.caso-uso.js';
 import { SembrarUsuarios } from './aplicacion/sembrar-usuarios/sembrar-usuarios.caso-uso.js';
@@ -112,6 +114,17 @@ import { IdentidadControlador } from './presentacion/controlador/identidad.contr
         new VincularAlumno(a, p, e),
     },
     {
+      provide: ListarAlumnosDelProfesor,
+      inject: [REPOSITORIO_ALUMNOS, REPOSITORIO_PROFESORES],
+      useFactory: (a: RepositorioAlumnos, p: RepositorioProfesores) =>
+        new ListarAlumnosDelProfesor(a, p),
+    },
+    {
+      provide: FachadaIdentidad,
+      inject: [REPOSITORIO_ALUMNOS, REPOSITORIO_PROFESORES],
+      useFactory: (a: RepositorioAlumnos, p: RepositorioProfesores) => new FachadaIdentidad(a, p),
+    },
+    {
       provide: SembrarAdmin,
       inject: [REPOSITORIO_USUARIOS, HASHEADOR_CONTRASENIAS, ConfigService],
       useFactory: (u: RepositorioUsuarios, h: HasheadorContrasenias, config: ConfigService) =>
@@ -141,5 +154,6 @@ import { IdentidadControlador } from './presentacion/controlador/identidad.contr
         }),
     },
   ],
+  exports: [FachadaIdentidad],
 })
 export class ModuloIdentidad {}

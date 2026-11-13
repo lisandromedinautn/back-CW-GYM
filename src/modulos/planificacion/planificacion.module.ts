@@ -2,11 +2,26 @@ import { Inject, Logger, Module, type OnApplicationBootstrap } from '@nestjs/com
 import { NormalizarNombresRutinas } from './aplicacion/normalizar-nombres-rutinas/normalizar-nombres-rutinas.caso-uso.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CatalogoModule } from '../catalogo/catalogo.module.js';
+import { ModuloIdentidad } from '../identidad/identidad.module.js';
 import { ConsultarRutinas } from './aplicacion/consultar-rutinas/consultar-rutinas.caso-uso.js';
 import { RenombrarRutina } from './aplicacion/renombrar-rutina/renombrar-rutina.caso-uso.js';
 import { CrearRutina } from './aplicacion/crear-rutina/crear-rutina.caso-uso.js';
+import { CrearPlan } from './aplicacion/crear-plan/crear-plan.caso-uso.js';
+import { PUBLICADOR_EVENTOS } from '../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
+import type { PublicadorEventos } from '../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
+import { Reloj } from '../../compartido/dominio/reloj/reloj.puerto.js';
+import { RelojSistema } from '../../compartido/infraestructura/reloj/reloj-sistema.js';
+import { ConsultaVinculos } from './dominio/plan/consulta-vinculos.puerto.js';
+import { RepositorioPlanes } from './dominio/plan/repositorio-planes.puerto.js';
 import { ConsultaEjercicios } from './dominio/rutina/consulta-ejercicios.puerto.js';
 import { RepositorioRutinas } from './dominio/rutina/repositorio-rutinas.puerto.js';
+import { ConsultaVinculosFachadaIdentidad } from './infraestructura/plan/consulta-vinculos.fachada-identidad.js';
+import {
+  DiaPlanEsquema,
+  PlanAlumnoEsquema,
+  PlanEsquema,
+} from './infraestructura/plan/plan.esquema.js';
+import { RepositorioPlanesTypeorm } from './infraestructura/plan/plan.repositorio-typeorm.js';
 import { ConsultaEjerciciosFachadaCatalogo } from './infraestructura/rutina/consulta-ejercicios.fachada-catalogo.js';
 import {
   BloqueRutinaEsquema,
@@ -25,13 +40,20 @@ import { PlanificacionControlador } from './presentacion/controlador/planificaci
       BloqueRutinaEsquema,
       CircuitoRutinaEsquema,
       EjercicioCircuitoEsquema,
+      PlanEsquema,
+      DiaPlanEsquema,
+      PlanAlumnoEsquema,
     ]),
     CatalogoModule,
+    ModuloIdentidad,
   ],
   controllers: [PlanificacionControlador],
   providers: [
     { provide: RepositorioRutinas, useClass: RepositorioRutinasTypeorm },
     { provide: ConsultaEjercicios, useClass: ConsultaEjerciciosFachadaCatalogo },
+    { provide: RepositorioPlanes, useClass: RepositorioPlanesTypeorm },
+    { provide: ConsultaVinculos, useClass: ConsultaVinculosFachadaIdentidad },
+    { provide: Reloj, useClass: RelojSistema },
     {
       provide: CrearRutina,
       inject: [RepositorioRutinas, ConsultaEjercicios],
@@ -52,6 +74,17 @@ import { PlanificacionControlador } from './presentacion/controlador/planificaci
       provide: NormalizarNombresRutinas,
       inject: [RepositorioRutinas],
       useFactory: (rutinas: RepositorioRutinas) => new NormalizarNombresRutinas(rutinas),
+    },
+    {
+      provide: CrearPlan,
+      inject: [RepositorioPlanes, RepositorioRutinas, ConsultaVinculos, Reloj, PUBLICADOR_EVENTOS],
+      useFactory: (
+        planes: RepositorioPlanes,
+        rutinas: RepositorioRutinas,
+        vinculos: ConsultaVinculos,
+        reloj: Reloj,
+        publicador: PublicadorEventos,
+      ) => new CrearPlan(planes, rutinas, vinculos, reloj, publicador),
     },
   ],
 })

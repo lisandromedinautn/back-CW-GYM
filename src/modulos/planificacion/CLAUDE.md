@@ -44,7 +44,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `renombrar-rutina/renombrar-rutina.caso-uso.ts` ✅ | T09 | 08, 21 |
 | `normalizar-nombres-rutinas/normalizar-nombres-rutinas.caso-uso.ts` ✅ (corre al arrancar, `PlanificacionModule.onApplicationBootstrap`) | T09 | 21 |
 | `importar-rutina.caso-uso.ts` | US20 | 08 |
-| `crear-plan.caso-uso.ts` | US07 | 09–14 |
+| `crear-plan/crear-plan.caso-uso.ts` ✅ | US07 | 08, 09–15, 17 |
 | `agregar-alumno-a-plan.caso-uso.ts` | US12 | 13, 14, 16 |
 | `quitar-alumno-de-plan.caso-uso.ts` | US12 | 12, 16 |
 | `consultar-rutina-del-dia.caso-uso.ts` | US08 | 11, 15, 18 |
@@ -59,7 +59,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `PATCH /planificacion/rutinas/:id/nombre` ✅ | Profesor | renombrar-rutina |
 | `PUT /planificacion/rutinas/:id` | Profesor | editar-rutina |
 | `POST /planificacion/rutinas/:id/importacion` | Profesor | importar-rutina |
-| `POST /planificacion/planes` | Profesor | crear-plan |
+| `POST /planificacion/planes` ✅ (respuesta con `id`, `fechaInicio`, `fechaFin`, `dias[{ numero, fecha, rutinaId, esDescanso }]` y `alumnoIds`) | Profesor | crear-plan |
 | `POST /planificacion/planes/:id/alumnos` | Profesor | agregar-alumno-a-plan |
 | `DELETE /planificacion/planes/:id/alumnos/:alumnoId` | Profesor | quitar-alumno-de-plan |
 | `GET /planificacion/mi-rutina-del-dia` | Alumno | consultar-rutina-del-dia |
@@ -86,3 +86,13 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 * T06 (11/11/2026): `GET /planificacion/rutinas` pagina con `PaginacionDto` (`src/compartido/presentacion/paginacion/`): tamaños 5, 10, 20, 50 o 100 (por defecto 10) y página desde 1; un valor inválido responde 400 desde el DTO, sin código RN. El caso de uso ya no acota valores. Orden: más nuevas primero.
 * RN-PLAN-21: la unicidad se comprueba en los casos de uso (crear y renombrar) con `listarNombresPorProfesor` del puerto; no hay índice único en la base. El largo lo valida `NombreRutina` (400 `RN-PLAN-21`), no el DTO. La columna `nombre` es `varchar(60)` con default `'Rutina 1'` para las filas que ya existían.
 * Al renombrar, el mapper deriva el id de las filas de ejercicios de circuito a partir del circuito y la posición, para que guardar de nuevo la rutina actualice esas filas en vez de duplicarlas.
+
+## Decisiones de implementación (US07)
+
+* El agregado `Plan` valida las invariantes propias (RN-PLAN-09, 10, 11, 12): 28 días exactos, números 1..28 sin repetir, fecha de cada día derivada del inicio, al menos un alumno y `alumnoIds` sin repetidos. `ValidezPlan` calcula el fin (inicio + 27) y la vigencia (RN-PLAN-15).
+* Las reglas que cruzan agregados quedan en el caso de uso: RN-PLAN-13 consulta `ConsultaVinculos` (fachada de identidad) y RN-PLAN-14 consulta `RepositorioPlanes.listarVigentesPorAlumno` con la fecha del `Reloj`. RN-PLAN-17 no agrega lógica: el plan no tiene operación de finalización.
+* Las rutinas referenciadas por los días se buscan con `RepositorioRutinas.buscarPorId`; si no existe o es de otro profesor responde `RN-PLAN-08` con categoría `no-encontrado` (404), igual que en el resto del módulo.
+* `fechaInicio` viaja como `AAAA-MM-DD` y se interpreta en UTC (`dominio/plan/fechas.ts`). El DTO no acepta `fechaFin`: el `ValidationPipe` global la descarta y el fin siempre sale de `ValidezPlan` (RN-PLAN-09).
+* `Reloj` es un puerto compartido (`src/compartido/dominio/reloj/reloj.puerto.ts`) con implementación `RelojSistema`; los tests usan `RelojFijo`. Así RN-PLAN-14 no depende de la fecha real.
+* Al crear se guardan `planes`, `dias_plan` y `plan_alumnos` en una transacción y se publica el evento `PlanCreado` por `PUBLICADOR_EVENTOS`.
+* La pantalla de crear plan necesita los alumnos del profesor: se agregó `GET /identidad/alumnos` (solo Profesor) en el módulo identidad, que devuelve `{ id, nombre, apellido }` de los vinculados. Planificación lo consume desde el front, no desde el back (no hay import cruzado).

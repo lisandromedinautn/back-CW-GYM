@@ -6,6 +6,12 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ## [Sin publicar]
 
+### Agregado
+
+- `POST /planificacion/planes` (Profesor): crea un plan de 28 días con la fecha de fin calculada (inicio + 27), una rutina o descanso por día y uno o más alumnos vinculados. Aplica RN-PLAN-08 a 15; el plan no se puede finalizar antes de tiempo (RN-PLAN-17) (US07).
+- `GET /identidad/alumnos` (Profesor): lista los alumnos vinculados al profesor, para asignarlos a un plan (US07).
+- Puerto compartido `Reloj` (`RelojSistema` en producción, `RelojFijo` en tests), para que la vigencia de un plan no dependa de la fecha real (US07).
+
 ## [1.1.0] — 2026-11-08
 
 Ingreso al sistema con roles, catálogo de ejercicios por dataset, alta de profesores, semilla de usuarios, código de profesor y vínculo alumno-profesor (fase 1: US00, T01, US02, US04, US05; T04 y T05 de planificación).

@@ -1,5 +1,9 @@
 // Dobles de los puertos de planificación para los tests unitarios (docs/TESTING.md: se mockea
 // solo en los bordes). Viven fuera de src/ para no contar en la cobertura.
+import { Reloj } from '../../src/compartido/dominio/reloj/reloj.puerto.js';
+import { ConsultaVinculos } from '../../src/modulos/planificacion/dominio/plan/consulta-vinculos.puerto.js';
+import { RepositorioPlanes } from '../../src/modulos/planificacion/dominio/plan/repositorio-planes.puerto.js';
+import type { Plan } from '../../src/modulos/planificacion/dominio/plan/plan.entidad.js';
 import { ConsultaEjercicios } from '../../src/modulos/planificacion/dominio/rutina/consulta-ejercicios.puerto.js';
 import type { EjercicioDelCatalogo } from '../../src/modulos/planificacion/dominio/rutina/ejercicio-del-catalogo.js';
 import { RepositorioRutinas } from '../../src/modulos/planificacion/dominio/rutina/repositorio-rutinas.puerto.js';
@@ -54,5 +58,50 @@ export class ConsultaEjerciciosFalsa extends ConsultaEjercicios {
 
   async buscarPorId(id: string): Promise<EjercicioDelCatalogo | null> {
     return this.ejercicios.find((ejercicio) => ejercicio.id === id) ?? null;
+  }
+}
+
+export class RepositorioPlanesEnMemoria extends RepositorioPlanes {
+  readonly planes: Plan[] = [];
+
+  async guardar(plan: Plan): Promise<void> {
+    const indice = this.planes.findIndex((existente) => existente.id === plan.id);
+    if (indice === -1) this.planes.push(plan);
+    else this.planes[indice] = plan;
+  }
+
+  /** RN-PLAN-14, 15: vigente con la fecha entre inicio y fin, ambos incluidos. */
+  async listarVigentesPorAlumno(alumnoId: string, fecha: string): Promise<Plan[]> {
+    return this.planes.filter(
+      (plan) =>
+        plan.alumnoIds.includes(alumnoId) && fecha >= plan.fechaInicio && fecha <= plan.fechaFin,
+    );
+  }
+}
+
+/** Vínculos alumno-profesor: solo los pares que se declaran existen (RN-PLAN-13). */
+export class ConsultaVinculosFalsa extends ConsultaVinculos {
+  private readonly pares: Set<string>;
+
+  constructor(pares: { alumnoId: string; profesorUsuarioId: string }[] = []) {
+    super();
+    this.pares = new Set(
+      pares.map(({ alumnoId, profesorUsuarioId }) => `${alumnoId}|${profesorUsuarioId}`),
+    );
+  }
+
+  async alumnoVinculadoAProfesor(alumnoId: string, profesorUsuarioId: string): Promise<boolean> {
+    return this.pares.has(`${alumnoId}|${profesorUsuarioId}`);
+  }
+}
+
+/** Reloj fijo: los tests de vigencia no dependen de la fecha real. */
+export class RelojFijo extends Reloj {
+  constructor(private readonly fecha: Date) {
+    super();
+  }
+
+  ahora(): Date {
+    return this.fecha;
   }
 }
