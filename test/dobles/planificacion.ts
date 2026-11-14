@@ -5,6 +5,10 @@ import { ConsultaVinculos } from '../../src/modulos/planificacion/dominio/plan/c
 import { RepositorioPlanes } from '../../src/modulos/planificacion/dominio/plan/repositorio-planes.puerto.js';
 import type { Plan } from '../../src/modulos/planificacion/dominio/plan/plan.entidad.js';
 import { ConsultaEjercicios } from '../../src/modulos/planificacion/dominio/rutina/consulta-ejercicios.puerto.js';
+import {
+  ConsultaNombresEjercicios,
+  type NombreDeEjercicio,
+} from '../../src/modulos/planificacion/dominio/rutina/consulta-nombres-ejercicios.puerto.js';
 import type { EjercicioDelCatalogo } from '../../src/modulos/planificacion/dominio/rutina/ejercicio-del-catalogo.js';
 import { RepositorioRutinas } from '../../src/modulos/planificacion/dominio/rutina/repositorio-rutinas.puerto.js';
 import type { Rutina } from '../../src/modulos/planificacion/dominio/rutina/rutina.entidad.js';
@@ -61,6 +65,17 @@ export class ConsultaEjerciciosFalsa extends ConsultaEjercicios {
   }
 }
 
+/** Nombres del catálogo: solo los que se declaran existen (US08). */
+export class ConsultaNombresEjerciciosFalsa extends ConsultaNombresEjercicios {
+  constructor(private readonly nombres: Record<string, string> = {}) {
+    super();
+  }
+
+  async buscarPorIds(ids: readonly string[]): Promise<NombreDeEjercicio[]> {
+    return ids.filter((id) => id in this.nombres).map((id) => ({ id, nombre: this.nombres[id] }));
+  }
+}
+
 export class RepositorioPlanesEnMemoria extends RepositorioPlanes {
   readonly planes: Plan[] = [];
 
@@ -83,7 +98,11 @@ export class RepositorioPlanesEnMemoria extends RepositorioPlanes {
 export class ConsultaVinculosFalsa extends ConsultaVinculos {
   private readonly pares: Set<string>;
 
-  constructor(pares: { alumnoId: string; profesorUsuarioId: string }[] = []) {
+  constructor(
+    pares: { alumnoId: string; profesorUsuarioId: string }[] = [],
+    /** Usuarios con ficha de alumno: el resto no tiene alumno asociado (US08). */
+    private readonly alumnosPorUsuario: Record<string, string> = {},
+  ) {
     super();
     this.pares = new Set(
       pares.map(({ alumnoId, profesorUsuarioId }) => `${alumnoId}|${profesorUsuarioId}`),
@@ -92,6 +111,10 @@ export class ConsultaVinculosFalsa extends ConsultaVinculos {
 
   async alumnoVinculadoAProfesor(alumnoId: string, profesorUsuarioId: string): Promise<boolean> {
     return this.pares.has(`${alumnoId}|${profesorUsuarioId}`);
+  }
+
+  async obtenerAlumnoIdPorUsuarioId(usuarioId: string): Promise<string | null> {
+    return this.alumnosPorUsuario[usuarioId] ?? null;
   }
 }
 

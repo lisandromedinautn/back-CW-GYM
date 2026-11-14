@@ -12,4 +12,9 @@ export class ConsultaVinculosFachadaIdentidad extends ConsultaVinculos {
   alumnoVinculadoAProfesor(alumnoId: string, profesorUsuarioId: string): Promise<boolean> {
     return this.identidad.alumnoVinculadoAProfesor(alumnoId, profesorUsuarioId);
   }
+
+  async obtenerAlumnoIdPorUsuarioId(usuarioId: string): Promise<string | null> {
+    const alumno = await this.identidad.obtenerAlumnoPorUsuarioId(usuarioId);
+    return alumno?.id ?? null;
+  }
 }

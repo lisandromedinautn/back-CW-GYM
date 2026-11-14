@@ -49,6 +49,14 @@ export class Plan {
     return this.validez.estaVigente(fecha);
   }
 
+  /**
+   * RN-PLAN-11: el día del plan cuya fecha es la indicada. `null` si la fecha no cae dentro de
+   * los 28 días (por ejemplo, un plan reconstruido con días incompletos).
+   */
+  diaPorFecha(fecha: string): DiaPlan | null {
+    return this.dias.find((dia) => dia.fecha === fecha) ?? null;
+  }
+
   /** RN-PLAN-09, 10, 11 y 12. */
   static crear(datos: DatosPlan): Plan {
     const validez = ValidezPlan.crear(datos.fechaInicio);
