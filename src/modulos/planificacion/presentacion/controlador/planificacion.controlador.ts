@@ -24,7 +24,9 @@ export interface RutinaRespuesta {
   /** RN-PLAN-21. */
   nombre: string;
   tipo: string;
+  /** US10: `orden` es la posición del bloque o circuito en la rutina (1..N, RN-PLAN-01). */
   bloques: {
+    orden: number;
     ejercicioId: string;
     series: number;
     micropausaSegundos: number;
@@ -35,6 +37,7 @@ export interface RutinaRespuesta {
   }[];
   /** US09. Un circuito no tiene micropausa (RN-PLAN-03). */
   circuitos: {
+    orden: number;
     vueltas: number;
     macropausaSegundos: number;
     ejercicios: {
@@ -88,6 +91,7 @@ const aRespuesta = (rutina: Rutina): RutinaRespuesta => ({
   nombre: rutina.nombre,
   tipo: rutina.tipo.valor,
   bloques: rutina.bloques.map((bloque) => ({
+    orden: rutina.ordenDe(bloque),
     ejercicioId: bloque.ejercicio.ejercicioId,
     series: bloque.series,
     micropausaSegundos: bloque.micropausa.segundos,
@@ -97,6 +101,7 @@ const aRespuesta = (rutina: Rutina): RutinaRespuesta => ({
     pesoKg: bloque.ejercicio.objetivo.pesoKg,
   })),
   circuitos: rutina.circuitos.map((circuito) => ({
+    orden: rutina.ordenDe(circuito),
     vueltas: circuito.vueltas,
     macropausaSegundos: circuito.macropausa.segundos,
     ejercicios: circuito.ejercicios.map((ejercicio) => ({
@@ -134,7 +139,7 @@ export class PlanificacionControlador {
     return { ...resultado, items: resultado.items.map(aRespuesta) };
   }
 
-  /** Solo Profesor (RN-IDE-03). US06: RN-PLAN-01, 02, 04, 05, 06. US09: RN-PLAN-03, 20. */
+  /** Solo Profesor (RN-IDE-03). US06: RN-PLAN-01, 02, 04, 05, 06. US09: RN-PLAN-03, 20. US10: RN-PLAN-01. */
   @Post('rutinas')
   @Roles('Profesor')
   async crear(

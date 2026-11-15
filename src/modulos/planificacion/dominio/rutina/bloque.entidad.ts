@@ -15,6 +15,8 @@ export interface EjercicioPrescripto {
 
 export interface DatosBloque extends DatosObjetivo {
   ejercicio: EjercicioDelCatalogo;
+  /** RN-PLAN-01 (US10): posición en la rutina (1..N). Opcional. */
+  orden?: number;
   series: number;
   micropausaSegundos: number;
   macropausaSegundos: number;

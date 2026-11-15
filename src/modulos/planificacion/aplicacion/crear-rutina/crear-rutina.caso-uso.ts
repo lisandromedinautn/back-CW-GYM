@@ -7,6 +7,8 @@ import { Rutina } from '../../dominio/rutina/rutina.entidad.js';
 
 /** Un bloque tal como llega del profesor: el ejercicio se referencia por id (RN-PLAN-06). */
 export interface PedidoBloque {
+  /** RN-PLAN-01 (US10): posición en la rutina (1..N). Sin orden, van los bloques primero. */
+  orden?: number;
   ejercicioId: string;
   series: number;
   micropausaSegundos: number;
@@ -25,12 +27,17 @@ export interface PedidoEjercicioCircuito {
 }
 
 export interface PedidoCircuito {
+  /** RN-PLAN-01 (US10): posición en la rutina (1..N). */
+  orden?: number;
   vueltas: number;
   macropausaSegundos: number;
   ejercicios: PedidoEjercicioCircuito[];
 }
 
-/** US06 y US09: bloques y circuitos llegan en listas separadas, las dos opcionales. */
+/**
+ * US06, US09 y US10: bloques y circuitos llegan en listas separadas, las dos opcionales. En una
+ * rutina mixta, `orden` indica la posición de cada uno en la secuencia (RN-PLAN-01).
+ */
 export interface PedidoRutina {
   /** RN-PLAN-21. Si falta, la rutina se llama "Rutina N". */
   nombre?: string;
@@ -38,7 +45,7 @@ export interface PedidoRutina {
   circuitos?: PedidoCircuito[];
 }
 
-/** US06 y US09: el profesor crea una rutina por bloques y/o por circuitos. */
+/** US06, US09 y US10: el profesor crea una rutina por bloques, por circuitos o mixta. */
 export class CrearRutina {
   constructor(
     private readonly rutinas: RepositorioRutinas,

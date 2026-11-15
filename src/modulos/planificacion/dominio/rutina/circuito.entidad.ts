@@ -13,6 +13,8 @@ export interface DatosEjercicioCircuito extends DatosObjetivo {
 }
 
 export interface DatosCircuito {
+  /** RN-PLAN-01 (US10): posición en la rutina (1..N). Opcional. */
+  orden?: number;
   ejercicios: DatosEjercicioCircuito[];
   vueltas: number;
   macropausaSegundos: number;
