@@ -34,6 +34,7 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `src/compartido/dominio/publicador-eventos/publicador-eventos.puerto.ts` | Puerto `PublicadorEventos` (publica un `EventoDominio`) y su símbolo de inyección ✅ |
 | `src/compartido/infraestructura/publicador-eventos/publicador-eventos-log.ts` | `PublicadorEventosLog`: implementación del puerto que solo registra el evento en el log, hasta que haya un suscriptor ✅ |
 | `CHANGELOG.md` | Cambios por versión (decisión 38) ✅ |
+| `src/modulos/planificacion/aplicacion/consultar-rutinas/resolver-rutina-para-alumno.ts` | Respuesta de rutina con nombres y objetivos para consultas del Alumno; extracción de US08 para reutilizar en US11 |
 
 ## Módulos
 

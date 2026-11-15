@@ -201,3 +201,12 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Verificación: cálculos de sumas, porcentajes, reglas referenciadas, fechas por redondeo al día superior y consistencia de las copias mediante comprobaciones Python. Sin reejecutar suites de la aplicación para cambios de documentación. Los 50 casos relacionados de US08 son resultados de la sesión anterior; no se sumaron a los conteos históricos de suite ni se presentó cobertura de código nueva.
 - Ideas descartadas: declarar US06 completa, sumar puntos retroactivos a T06–T10, llamar velocity formal a un sprint abierto, usar lapsos entre commits como horas reales, garantizar el 22/11 o el 01/12 con capacidad no registrada y aplicar recortes automáticamente.
 - Limitaciones: sin timesheets, compromiso semanal congelado, medición de demo ni verificación nueva de cobertura completa o tablero. Google Doc original y herramientas externas sin cambios. Publicaciones, tags, merges y commits no realizados.
+
+## 2026-11-14 — US11, bloque 1: reutilización del detalle de rutina
+- Desarrolladora: Martina. Confirmó consultar solo el plan vigente y los casos de 28 días, fechas, propiedad, permisos, descansos, detalles y errores; autorizó a Codex a hacer microcommits sin push.
+- Herramienta / modelo: Codex · GPT-6 · Ponytail ultra.
+- Cambio de este bloque: Extrae la resolución de nombres y el DTO del detalle de rutina a `aplicacion/consultar-rutinas/resolver-rutina-para-alumno.ts`; US08 delega en esa función sin cambiar su resultado.
+- Alcance: refactor de producción con las pruebas existentes de US08 intactas; todavía no agrega el endpoint ni la pantalla de US11. Los cuerpos de la transformación y del componente se conservaron literalmente durante la extracción.
+- Verificación del microcommit: hooks normales de lint-staged y commit-msg; el resultado se registra al completar el bloque. No se deshabilitan hooks ni se modifica su configuración.
+- Plan de los bloques siguientes: consulta de los 28 días con tests; endpoint con permisos y e2e; pantalla con detalles desplegables y tests. Test e implementación mínima de cada regla se confirman juntos; los refactors van aparte.
+- Sin dependencias nuevas del proyecto, cambios de esquema, pruebas existentes editadas, commits a main ni push.

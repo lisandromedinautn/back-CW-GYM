@@ -1,3 +1,7 @@
+import {
+  resolverRutinaParaAlumno,
+  type RutinaParaAlumnoRespuesta,
+} from '../consultar-rutinas/resolver-rutina-para-alumno.js';
 import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import type { Reloj } from '../../../../compartido/dominio/reloj/reloj.puerto.js';
 import { fechaIso } from '../../dominio/plan/fechas.js';
@@ -5,47 +9,13 @@ import type { ConsultaVinculos } from '../../dominio/plan/consulta-vinculos.puer
 import type { RepositorioPlanes } from '../../dominio/plan/repositorio-planes.puerto.js';
 import type { ConsultaNombresEjercicios } from '../../dominio/rutina/consulta-nombres-ejercicios.puerto.js';
 import type { RepositorioRutinas } from '../../dominio/rutina/repositorio-rutinas.puerto.js';
-import type { Rutina } from '../../dominio/rutina/rutina.entidad.js';
-
-/** Un ejercicio prescripto con el nombre del catálogo ya resuelto (US08). */
-export interface EjercicioDeLaRutinaRespuesta {
-  ejercicioId: string;
-  nombre: string;
-  repeticiones: number | null;
-  segundos: number | null;
-  pesoKg: number | null;
-}
-
-/** Un bloque de la rutina del día (RN-PLAN-02). */
-export interface BloqueDeLaRutinaRespuesta extends EjercicioDeLaRutinaRespuesta {
-  series: number;
-  micropausaSegundos: number;
-  macropausaSegundos: number;
-}
-
-/** Un circuito de la rutina del día (RN-PLAN-03). */
-export interface CircuitoDeLaRutinaRespuesta {
-  vueltas: number;
-  macropausaSegundos: number;
-  ejercicios: EjercicioDeLaRutinaRespuesta[];
-}
-
-/** La rutina del día con los nombres de sus ejercicios. */
-export interface RutinaDelDiaRespuesta {
-  id: string;
-  /** RN-PLAN-21. */
-  nombre: string;
-  tipo: string;
-  bloques: BloqueDeLaRutinaRespuesta[];
-  circuitos: CircuitoDeLaRutinaRespuesta[];
-}
 
 /**
  * US08, RN-PLAN-18: el alumno consulta la rutina del día de su plan vigente. La fecha sale del
  * `Reloj`. Unión discriminada por `estado` para que el front distinga los tres casos.
  */
 export type ResultadoRutinaDelDia =
-  | { estado: 'rutina'; fecha: string; numeroDia: number; rutina: RutinaDelDiaRespuesta }
+  | { estado: 'rutina'; fecha: string; numeroDia: number; rutina: RutinaParaAlumnoRespuesta }
   | { estado: 'descanso'; fecha: string; numeroDia: number }
   | { estado: 'sin-plan'; fecha: string };
 
@@ -88,47 +58,7 @@ export class ConsultarRutinaDelDia {
       estado: 'rutina',
       fecha,
       numeroDia: dia.numero,
-      rutina: await this.aRespuesta(rutina),
-    };
-  }
-
-  private async aRespuesta(rutina: Rutina): Promise<RutinaDelDiaRespuesta> {
-    const ids = [
-      ...rutina.bloques.map((bloque) => bloque.ejercicio.ejercicioId),
-      ...rutina.circuitos.flatMap((circuito) =>
-        circuito.ejercicios.map((ejercicio) => ejercicio.ejercicioId),
-      ),
-    ];
-    const nombres = new Map(
-      (await this.nombres.buscarPorIds(ids)).map(({ id, nombre }) => [id, nombre] as const),
-    );
-    const nombreDe = (ejercicioId: string): string => nombres.get(ejercicioId) ?? ejercicioId;
-
-    return {
-      id: rutina.id,
-      nombre: rutina.nombre,
-      tipo: rutina.tipo.valor,
-      bloques: rutina.bloques.map((bloque) => ({
-        ejercicioId: bloque.ejercicio.ejercicioId,
-        nombre: nombreDe(bloque.ejercicio.ejercicioId),
-        series: bloque.series,
-        micropausaSegundos: bloque.micropausa.segundos,
-        macropausaSegundos: bloque.macropausa.segundos,
-        repeticiones: bloque.ejercicio.objetivo.repeticiones,
-        segundos: bloque.ejercicio.objetivo.segundos,
-        pesoKg: bloque.ejercicio.objetivo.pesoKg,
-      })),
-      circuitos: rutina.circuitos.map((circuito) => ({
-        vueltas: circuito.vueltas,
-        macropausaSegundos: circuito.macropausa.segundos,
-        ejercicios: circuito.ejercicios.map((ejercicio) => ({
-          ejercicioId: ejercicio.ejercicioId,
-          nombre: nombreDe(ejercicio.ejercicioId),
-          repeticiones: ejercicio.objetivo.repeticiones,
-          segundos: ejercicio.objetivo.segundos,
-          pesoKg: ejercicio.objetivo.pesoKg,
-        })),
-      })),
+      rutina: await resolverRutinaParaAlumno(rutina, this.nombres),
     };
   }
 }
