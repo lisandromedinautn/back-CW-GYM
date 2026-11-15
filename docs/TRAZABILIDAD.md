@@ -27,7 +27,7 @@ Estados: ⬜ sin empezar · 🟥 test en rojo (TDD; solo en el working tree, nun
 | US09 | RN-PLAN-01, 03, 04, 05, 06, 20 | crear-rutina | EditorRutina | `src/modulos/planificacion/dominio/rutina/circuito.entidad.spec.ts`, `src/modulos/planificacion/aplicacion/crear-rutina/crear-rutina-circuitos.caso-uso.spec.ts` | — | `test/e2e/planificacion/crear-rutina-circuitos.e2e-spec.ts` | `src/modulos/planificacion/presentacion/editor-rutina/EditorRutinaCircuitos.int.test.tsx`, `src/modulos/planificacion/dominio/circuito/reglasCircuito.test.ts`, `e2e/planificacion/crear-rutina-circuitos.e2e.ts` | back 🟩, front 🟩 |
 | US10 | RN-PLAN-01 | crear-rutina | EditorRutina | — | — | — | — | ⬜ |
 | US20 | RN-PLAN-08 | importar-rutina | PaginaImportarRutina | — | — | — | — | ⬜ |
-| US11 | RN-PLAN-11, 19 | consultar-plan-del-alumno | PaginaMiPlan | — | — | — | — | ⬜ |
+| US11 | RN-PLAN-11, 15, 19 | consultar-plan-del-alumno | PaginaMiPlan | `src/modulos/planificacion/aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` (10 casos) | — | — | — | caso de uso 🟩; endpoint y front ⬜ |
 | US13 | RN-ENT-01, 02, 20 | iniciar-entrenamiento, consultar-entrenamiento-en-curso | PaginaEntrenamientoEnCurso | — | — | — | — | ⬜ |
 | US14 | RN-ENT-03, 04, 19, 20 | registrar-serie-realizada | PaginaEntrenamientoEnCurso | — | — | — | — | ⬜ |
 | US15 | RN-ENT-05, 06, 07, 08, 09, 17 | finalizar-entrenamiento | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
@@ -87,7 +87,7 @@ Toda RN vigente tiene que tener al menos un test. Una RN sin test es una brecha 
 | RN-PLAN-16 | — | ⬜ |
 | RN-PLAN-17 | — (regla negativa: no hay operación de finalización; se cumple por diseño) | 🟩 (por diseño, sin test propio) |
 | RN-PLAN-18 | `src/modulos/planificacion/aplicacion/consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.spec.ts`, `consultar-rutina-del-dia-alumnos.caso-uso.spec.ts`; `test/e2e/planificacion/consultar-rutina-del-dia.e2e-spec.ts`; `src/modulos/planificacion/presentacion/rutina-del-dia/PaginaRutinaDelDia.int.test.tsx`, `PaginaRutinaDelDiaDetalles.int.test.tsx` | 🟩 back y front (unitarios, API y pantalla) |
-| RN-PLAN-19 | — | ⬜ |
+| RN-PLAN-19 | `src/modulos/planificacion/aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` (10 casos) | 🟩 caso de uso; API y pantalla pendientes |
 | RN-PLAN-20 | `src/modulos/planificacion/dominio/rutina/circuito.entidad.spec.ts` (1 caso) · `src/modulos/planificacion/dominio/circuito/reglasCircuito.test.ts` (2 casos) · `src/modulos/planificacion/presentacion/editor-rutina/EditorRutinaCircuitos.int.test.tsx` (1 caso) | 🟩 |
 | RN-PLAN-21 | `src/modulos/planificacion/dominio/rutina/nombre-rutina.valor.spec.ts` (6 casos) · `src/modulos/planificacion/aplicacion/crear-rutina/crear-rutina-nombre.caso-uso.spec.ts` (5 casos) · `src/modulos/planificacion/aplicacion/renombrar-rutina/renombrar-rutina.caso-uso.spec.ts` (1 caso) · `test/e2e/planificacion/crear-rutina-nombre.e2e-spec.ts` (1 caso) · `test/e2e/planificacion/renombrar-rutina.e2e-spec.ts` (2 casos). Sin test: renombrar con el mismo nombre que ya tiene (permitido) · `src/modulos/planificacion/dominio/rutina/nombreRutina.test.ts` (4 casos) · `src/modulos/planificacion/presentacion/consultar-rutinas/PaginaRutinas.int.test.tsx` (3 casos de renombrar) | 🟩 |
 | RN-UI-LIS-01 | `src/modulos/catalogo/aplicacion/consultar-ejercicios/consultar-ejercicios.caso-uso.spec.ts` (1 caso, buscador) · `src/modulos/catalogo/presentacion/lista-ejercicios/ListaEjerciciosPaginada.int.test.tsx` (Limpiar filtros) | 🟩 |

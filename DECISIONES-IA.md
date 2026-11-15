@@ -210,3 +210,11 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Verificación del microcommit: hooks normales de lint-staged y commit-msg; el resultado se registra al completar el bloque. No se deshabilitan hooks ni se modifica su configuración.
 - Plan de los bloques siguientes: consulta de los 28 días con tests; endpoint con permisos y e2e; pantalla con detalles desplegables y tests. Test e implementación mínima de cada regla se confirman juntos; los refactors van aparte.
 - Sin dependencias nuevas del proyecto, cambios de esquema, pruebas existentes editadas, commits a main ni push.
+
+## 2026-11-14 — US11, bloque 2: consulta del plan completo
+- Martina confirmó el plan vigente y los casos de 28 fechas, rutinas o descansos, detalles, propiedad y permisos. Autorizó microcommits de Codex sin push.
+- `ConsultarPlanDelAlumno` usa los cinco puertos de US08; resuelve cada rutina distinta una vez, ordena días sin modificar el agregado y no expone identidades de alumnos ni profesor. El endpoint y la pantalla se conectan en bloques separados.
+- Verificación TDD: rojo inicial de aserción (se esperaba plan y se recibió sin-plan); 10 casos en verde; invertir el orden de los días produjo 3 fallos y se restauró el orden ascendente. Los límites y controles de propiedad reutilizan puertos existentes.
+- Refactor previo del back confirmado con hooks completos en `0c355f1`. Las verificaciones de tipos previas pasaron en ambos repos. El front tuvo errores de arranque de workers de Vitest sobre SSHFS, antes de ejecutar tests; no se consideran fallos de las reglas ni tests aprobados.
+- Actualizados atlas, fichas, trazabilidad y decisiones de implementación. Sin cambios de reglas, pruebas existentes, esquema o dependencias.
+- Descartado: recalcular vigencia o fechas en el navegador, exponer alumnos del plan y declarar cerrada US11 antes de verificar API y pantalla.

@@ -101,6 +101,21 @@ Ejercicios de los ejemplos (fixture `test/datasets/ejercicios-fixture.json`): `l
 | `test/e2e/planificacion/crear-plan.e2e-spec.ts` › responde 201 con la fecha de fin calculada y los 28 días | US07 | e2e | inicio hoy, rutina propia en el día 1, alumno01 | 201, `fechaFin` hoy + 27, 28 días; día 1 con rutina y día 28 descanso | = esperado (verde el 13/11/2026) | 13/11/2026 |
 | `test/e2e/planificacion/crear-plan.e2e-spec.ts` › con un segundo plan para el mismo alumno responde 409 con el código de la regla | RN-PLAN-14 | e2e | segundo `POST` para alumno01 con plan vigente | 409 `RN-PLAN-14` | = esperado (verde el 13/11/2026) | 13/11/2026 |
 
+## US11 — Casos confirmados por Martina el 14/11/2026
+
+Consulta pública del caso de uso y, en los siguientes bloques, endpoint y pantalla. Se consulta únicamente el plan vigente del alumno autenticado.
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` › devuelve los 28 días ordenados con fechas, rutinas completas y descansos | RN-PLAN-11, 19 | Unitario | alumno Ana; reloj 14/11/2026; plan 01/11–28/11 rehidratado en orden inverso; Piernas día 1, Circuito día 28, resto descanso | estado plan; fechas 01/11–28/11 ordenadas; press 3 series, 10 repeticiones, 20 kg, pausas 60/120 s; circuito 3 vueltas, press 10 repeticiones/20 kg y plancha 30 s, pausa 90 s; sin identidades de otros alumnos | = esperado (10 casos; Vitest en homelab, 14/11/2026) | 14/11/2026 |
+| `aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` › sin plan asignado informa sin-plan | RN-PLAN-19 | Unitario | Ana sin planes; reloj 14/11 | `{ estado: 'sin-plan', fecha: '2026-11-14' }` | = esperado (10 casos; Vitest en homelab, 14/11/2026) | 14/11/2026 |
+| `aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` › sin ficha de alumno informa sin-plan | RN-PLAN-19 | Unitario | usuario sin ficha; existe un plan de Ana | `{ estado: 'sin-plan', fecha: '2026-11-14' }` | = esperado (10 casos; Vitest en homelab, 14/11/2026) | 14/11/2026 |
+| `aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` › no muestra el plan de otro alumno | RN-PLAN-19 | Unitario | Bruno consulta; solo Ana tiene plan | `{ estado: 'sin-plan', fecha: '2026-11-14' }` | = esperado (10 casos; Vitest en homelab, 14/11/2026) | 14/11/2026 |
+| `aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` › cada alumno obtiene su propio plan | RN-PLAN-19 | Unitario | Ana y Bruno tienen planes distintos; Bruno consulta | id del plan de Bruno, sin datos del plan de Ana | = esperado (10 casos; Vitest en homelab, 14/11/2026) | 14/11/2026 |
+| `aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` › incluye ambos extremos de vigencia (2 casos) | RN-PLAN-11, 15, 19 | Unitario | plan 01/11–28/11; reloj 01/11 o 28/11 | plan completo de 28 días en ambas fechas | = esperado (10 casos; Vitest en homelab, 14/11/2026) | 14/11/2026 |
+| `aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` › fuera de vigencia informa sin-plan (2 casos) | RN-PLAN-15, 19 | Unitario | plan 01/11–28/11; reloj 31/10 o 29/11 | sin-plan con fecha 2026-10-31 o 2026-11-29 respectivamente | = esperado (10 casos; Vitest en homelab, 14/11/2026) | 14/11/2026 |
+| `aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` › una rutina inexistente no se presenta como descanso | RN-PLAN-08, 19 | Unitario | plan vigente con id de rutina inexistente | ErrorDominio, código RN-PLAN-08, categoría no-encontrado | = esperado (10 casos; Vitest en homelab, 14/11/2026) | 14/11/2026 |
+
 ## US08 — Casos confirmados por Martina el 14/11/2026
 
 | Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |

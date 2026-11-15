@@ -48,7 +48,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `agregar-alumno-a-plan.caso-uso.ts` | US12 | 13, 14, 16 |
 | `quitar-alumno-de-plan.caso-uso.ts` | US12 | 12, 16 |
 | `consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.ts` ✅ | US08 | 11, 15, 18 |
-| `consultar-plan-del-alumno.caso-uso.ts` | US11 | 11, 19 |
+| `consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.ts` ✅ (endpoint pendiente) | US11 | 11, 15, 19 |
 
 ## Endpoints tentativos
 
@@ -103,3 +103,10 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 * El resultado tiene `estado: rutina`, `descanso` o `sin-plan`. Incluye `fecha` (`AAAA-MM-DD`, UTC, como US07) y, si hay plan vigente, `numeroDia`. La fecha sale exclusivamente del puerto `Reloj`.
 * La vigencia incluye inicio y fin (RN-PLAN-15); `Plan.diaPorFecha` resuelve el día según RN-PLAN-11. La respuesta de rutina conserva series, vueltas, objetivos, peso y pausas, y resuelve nombres del catálogo por `ConsultaNombresEjercicios`, sin exponer el catálogo al rol Alumno.
 * Los tests de API fijan el reloj mediante el puerto, incluidos 31/10, 01/11, 28/11 y 29/11 para un plan que empieza el 01/11/2026. Casos confirmados por Martina el 14/11/2026. No cambian las reglas de negocio.
+
+## Decisiones de implementación (US11)
+
+* Martina confirmó el 14/11/2026 consultar únicamente el plan vigente del Alumno. La fecha se toma del `Reloj` y la identidad del usuario autenticado se resuelve con `ConsultaVinculos`, como en US08.
+* `ConsultarPlanDelAlumno` devuelve `{ estado: 'sin-plan', fecha }` o `{ estado: 'plan', fecha, plan: { id, fechaInicio, fechaFin, dias } }`. Cada día incluye `numero`, `fecha` y `rutina` (detalle con ejercicios y pausas, o `null` si es descanso). No expone profesor ni alumnos asignados.
+* Los días se ordenan por número sin modificar el agregado. Las fechas provienen de `DiaPlan`; las rutinas repetidas se resuelven una vez por consulta y comparten la transformación de US08. Una referencia a una rutina inexistente informa el error RN-PLAN-08, no descanso.
+* Este bloque implementa el caso de uso con sus pruebas; el endpoint se conecta en el siguiente microcommit. No cambia reglas, esquema ni dependencias.

@@ -8,6 +8,8 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ### Agregado
 
+- Consulta del plan vigente completo del Alumno: 28 días ordenados con sus fechas, rutinas y descansos, sin exponer otros alumnos. Caso de uso de US11; endpoint y pantalla se conectan en los siguientes bloques (RN-PLAN-11, 15, 19).
+
 - `GET /planificacion/mi-rutina-del-dia` (Alumno): consulta su plan vigente y devuelve la rutina con nombres y objetivos de ejercicios, descanso o ausencia de plan. La fecha y el número de día se resuelven en el back (RN-PLAN-11, 15, 18; US08).
 - `POST /planificacion/planes` (Profesor): crea un plan de 28 días con la fecha de fin calculada (inicio + 27), una rutina o descanso por día y uno o más alumnos vinculados. Aplica RN-PLAN-08 a 15; el plan no se puede finalizar antes de tiempo (RN-PLAN-17) (US07).
 - `GET /identidad/alumnos` (Profesor): lista los alumnos vinculados al profesor, para asignarlos a un plan (US07).
