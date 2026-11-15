@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { Bloque } from '../../dominio/rutina/bloque.entidad.js';
 import { Circuito } from '../../dominio/rutina/circuito.entidad.js';
-import { Rutina } from '../../dominio/rutina/rutina.entidad.js';
+import { type OrdenesGuardados, Rutina } from '../../dominio/rutina/rutina.entidad.js';
 import {
   BloqueRutinaEsquema,
   CircuitoRutinaEsquema,
@@ -22,16 +22,32 @@ const idDeEjercicioDeCircuito = (circuitoId: string, posicion: number): string =
 const porOrden = <T extends { orden: number }>(filas: T[] | undefined): T[] =>
   [...(filas ?? [])].sort((a, b) => a.orden - b.orden);
 
+/**
+ * Las rutinas de antes de US10 numeraban bloques y circuitos por separado (cada lista desde 1).
+ * Si los órdenes guardados no forman una secuencia 1..N, se rehidratan como antes: bloques
+ * primero y después circuitos.
+ */
+const ordenesGuardados = (
+  bloques: { orden: number }[],
+  circuitos: { orden: number }[],
+): OrdenesGuardados | undefined => {
+  const ordenes = [...bloques, ...circuitos].map((fila) => fila.orden).sort((a, b) => a - b);
+  return ordenes.every((orden, indice) => orden === indice + 1)
+    ? { bloques: bloques.map((f) => f.orden), circuitos: circuitos.map((f) => f.orden) }
+    : undefined;
+};
+
 export const RutinaMapper = {
   aEsquema(rutina: Rutina): RutinaEsquema {
     const esquema = new RutinaEsquema();
     esquema.id = rutina.id;
     esquema.profesorUsuarioId = rutina.profesorUsuarioId;
     esquema.nombre = rutina.nombre;
-    esquema.bloques = rutina.bloques.map((bloque, indice) => {
+    // US10: `orden` es la posición en la rutina, compartida entre bloques y circuitos (RN-PLAN-01).
+    esquema.bloques = rutina.bloques.map((bloque) => {
       const fila = new BloqueRutinaEsquema();
       fila.id = bloque.id;
-      fila.orden = indice + 1;
+      fila.orden = rutina.ordenDe(bloque);
       fila.ejercicioId = bloque.ejercicio.ejercicioId;
       fila.series = bloque.series;
       fila.micropausaSegundos = bloque.micropausa.segundos;
@@ -41,10 +57,10 @@ export const RutinaMapper = {
       fila.pesoKg = bloque.ejercicio.objetivo.pesoKg;
       return fila;
     });
-    esquema.circuitos = rutina.circuitos.map((circuito, indice) => {
+    esquema.circuitos = rutina.circuitos.map((circuito) => {
       const fila = new CircuitoRutinaEsquema();
       fila.id = circuito.id;
-      fila.orden = indice + 1;
+      fila.orden = rutina.ordenDe(circuito);
       fila.vueltas = circuito.vueltas;
       fila.macropausaSegundos = circuito.macropausa.segundos;
       fila.ejercicios = circuito.ejercicios.map((ejercicio, posicion) => {
@@ -63,7 +79,9 @@ export const RutinaMapper = {
   },
 
   aDominio(esquema: RutinaEsquema): Rutina {
-    const bloques = porOrden(esquema.bloques).map((fila) =>
+    const filasBloques = porOrden(esquema.bloques);
+    const filasCircuitos = porOrden(esquema.circuitos);
+    const bloques = filasBloques.map((fila) =>
       Bloque.reconstruir(fila.id, {
         ejercicioId: fila.ejercicioId,
         series: fila.series,
@@ -74,7 +92,7 @@ export const RutinaMapper = {
         pesoKg: fila.pesoKg,
       }),
     );
-    const circuitos = porOrden(esquema.circuitos).map((fila) =>
+    const circuitos = filasCircuitos.map((fila) =>
       Circuito.reconstruir(fila.id, {
         vueltas: fila.vueltas,
         macropausaSegundos: fila.macropausaSegundos,
@@ -92,6 +110,7 @@ export const RutinaMapper = {
       bloques,
       circuitos,
       esquema.nombre,
+      ordenesGuardados(filasBloques, filasCircuitos),
     );
   },
 };
