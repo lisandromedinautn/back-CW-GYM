@@ -8,7 +8,7 @@ export class TipoRutina {
 
   private constructor(readonly valor: string) {}
 
-  /** Mixta (bloques y circuitos) se testea con US10. */
+  /** Mixta: bloques y circuitos (US10). */
   static derivar(cantidadBloques: number, cantidadCircuitos = 0): TipoRutina {
     if (cantidadBloques + cantidadCircuitos < 1) {
       throw new ErrorDominio(
