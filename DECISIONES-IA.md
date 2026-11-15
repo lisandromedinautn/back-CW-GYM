@@ -201,3 +201,13 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Verificación: cálculos de sumas, porcentajes, reglas referenciadas, fechas por redondeo al día superior y consistencia de las copias mediante comprobaciones Python. Sin reejecutar suites de la aplicación para cambios de documentación. Los 50 casos relacionados de US08 son resultados de la sesión anterior; no se sumaron a los conteos históricos de suite ni se presentó cobertura de código nueva.
 - Ideas descartadas: declarar US06 completa, sumar puntos retroactivos a T06–T10, llamar velocity formal a un sprint abierto, usar lapsos entre commits como horas reales, garantizar el 22/11 o el 01/12 con capacidad no registrada y aplicar recortes automáticamente.
 - Limitaciones: sin timesheets, compromiso semanal congelado, medición de demo ni verificación nueva de cobertura completa o tablero. Google Doc original y herramientas externas sin cambios. Publicaciones, tags, merges y commits no realizados.
+
+## 2026-11-15 — Crear rutina mixta, back [US10]
+- Desarrollador: Ignacio
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 (orquestador, sin subagentes)
+- Objetivo: resolver el back de US10 (CG-38): rutina mixta con bloques y circuitos en un orden común (RN-PLAN-01).
+- Qué hizo la IA: propuso el contrato y los casos, y siguió TDD (rojo antes que verde). `Rutina` guarda una única secuencia (`elementos`) y deriva `bloques`, `circuitos` y `ordenDe`. Sumó `orden` opcional al DTO y al caso de uso, `orden` en la respuesta y el mapeo de la columna `orden` como posición en la rutina, sin cambiar el esquema. Tests: `rutina-mixta.entidad.spec.ts` (6), `crear-rutina-mixta.caso-uso.spec.ts` (1) y `crear-rutina-mixta.e2e-spec.ts` (3). Probó 4 mutaciones (sin ordenar, sin chequeo de repetidos o huecos, sin chequeo parcial, mapper sin órdenes) y todas hacen fallar un test. Actualizó fichas, CLAUDE.md del módulo, ATLAS y la matriz de trazabilidad en los dos repos.
+- Decisiones del desarrollador: `orden` opcional en cada bloque y circuito (sin orden, bloques primero); se rechazan con RN-PLAN-01 los órdenes repetidos, con huecos o parciales; `orden` va en la respuesta de crear, consultar y renombrar, pero no en la rutina del día (US08) por ahora; aprobó los casos.
+- Ideas descartadas: una lista única `elementos` con `tipo` en el body (rompía el contrato de US06 y US09); aceptar huecos y reordenar por valor; sumar `orden` a la rutina del día (exige modificar el test e2e de US08).
+- Reglas afectadas: ninguna cambia. RN-PLAN-01 suma tests de rutina mixta.
+- Pendientes: front de US10 (CG-39); `orden` en la rutina del día si se decide.

@@ -54,7 +54,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 
 | Método y ruta | Rol | Caso de uso |
 | :-- | :-- | :-- |
-| `POST /planificacion/rutinas` ✅ (acepta `nombre` opcional, RN-PLAN-21) | Profesor | crear-rutina |
+| `POST /planificacion/rutinas` ✅ (acepta `nombre` opcional, RN-PLAN-21, y `orden` opcional en cada bloque y circuito, US10) | Profesor | crear-rutina |
 | `GET /planificacion/rutinas?pagina=&tamanio=` ✅ (respuesta `{ items, total, pagina, tamanio }`; por defecto 1 y 10) | Profesor | consultar-rutinas |
 | `PATCH /planificacion/rutinas/:id/nombre` ✅ | Profesor | renombrar-rutina |
 | `PUT /planificacion/rutinas/:id` | Profesor | editar-rutina |
@@ -86,6 +86,14 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 * T06 (11/11/2026): `GET /planificacion/rutinas` pagina con `PaginacionDto` (`src/compartido/presentacion/paginacion/`): tamaños 5, 10, 20, 50 o 100 (por defecto 10) y página desde 1; un valor inválido responde 400 desde el DTO, sin código RN. El caso de uso ya no acota valores. Orden: más nuevas primero.
 * RN-PLAN-21: la unicidad se comprueba en los casos de uso (crear y renombrar) con `listarNombresPorProfesor` del puerto; no hay índice único en la base. El largo lo valida `NombreRutina` (400 `RN-PLAN-21`), no el DTO. La columna `nombre` es `varchar(60)` con default `'Rutina 1'` para las filas que ya existían.
 * Al renombrar, el mapper deriva el id de las filas de ejercicios de circuito a partir del circuito y la posición, para que guardar de nuevo la rutina actualice esas filas en vez de duplicarlas.
+
+## Decisiones de implementación (US10)
+
+* El body de `POST /planificacion/rutinas` sigue con `bloques` y `circuitos` separados, y cada uno acepta `orden` opcional: la posición en la rutina (1..N). Sin `orden` en ninguno, van los bloques y después los circuitos (US06 y US09 no cambian). Decidido por Ignacio el 15/11/2026.
+* Si se usa `orden`, tiene que venir en todos y ser exactamente 1..N, sin repetir ni saltear; si no, responde 400 `RN-PLAN-01`. El DTO solo valida que sea entero; la secuencia la valida el dominio. Decidido por Ignacio el 15/11/2026.
+* El agregado `Rutina` guarda una única secuencia (`elementos`, cada uno `bloque` o `circuito`); `bloques`, `circuitos` y `ordenDe` se derivan de ella.
+* La respuesta de crear, consultar y renombrar suma `orden` en cada bloque y circuito. La rutina del día (US08) no cambia por ahora: sumarle `orden` exige modificar su test e2e. Decidido por Ignacio el 15/11/2026.
+* Persistencia sin cambio de esquema: la columna `orden` de `bloques_rutina` y `circuitos_rutina` pasa a ser la posición en la rutina. Las rutinas de antes de US10 que tenían bloques y circuitos (numerados por separado) se leen como antes, bloques primero.
 
 ## Decisiones de implementación (US07)
 
