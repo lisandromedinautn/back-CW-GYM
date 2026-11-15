@@ -2,8 +2,9 @@ import type { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { DataSource } from 'typeorm';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { configurarAplicacion } from '../../../src/configurar-aplicacion.js';
+import { Reloj } from '../../../src/compartido/dominio/reloj/reloj.puerto.js';
 import { CargarDatasetEjercicios } from '../../../src/modulos/catalogo/aplicacion/cargar-dataset-ejercicios/cargar-dataset-ejercicios.caso-uso.js';
 import { FuenteDatasetEjercicios } from '../../../src/modulos/catalogo/dominio/dataset/fuente-dataset-ejercicios.puerto.js';
 import { FuenteDatasetEjerciciosArchivo } from '../../../src/modulos/catalogo/infraestructura/dataset/fuente-dataset-ejercicios.archivo.js';
@@ -11,7 +12,8 @@ import { SembrarAdmin } from '../../../src/modulos/identidad/aplicacion/sembrar-
 import { SembrarUsuarios } from '../../../src/modulos/identidad/aplicacion/sembrar-usuarios/sembrar-usuarios.caso-uso.js';
 import { ModuloRaiz } from '../../../src/modulo-raiz.module.js';
 
-const hoy = new Date().toISOString().slice(0, 10);
+const hoy = '2026-11-13';
+let fechaActual = new Date('2026-11-13T12:00:00Z');
 
 const sumarDias = (fecha: string, dias: number): string => {
   const [anio, mes, dia] = fecha.split('-').map(Number);
@@ -71,6 +73,8 @@ describe('GET /planificacion/mi-rutina-del-dia', () => {
 
   beforeAll(async () => {
     const modulo = await Test.createTestingModule({ imports: [ModuloRaiz] })
+      .overrideProvider(Reloj)
+      .useValue({ ahora: () => fechaActual })
       .overrideProvider(FuenteDatasetEjercicios)
       .useValue(new FuenteDatasetEjerciciosArchivo('test/datasets/ejercicios-fixture.json'))
       .compile();
@@ -131,12 +135,22 @@ describe('GET /planificacion/mi-rutina-del-dia', () => {
     ).body.id;
   });
 
+  beforeEach(() => {
+    fechaActual = new Date('2026-11-13T12:00:00Z');
+  });
+
   afterAll(async () => {
     await limpiar();
     await app.close();
   });
 
   describe('RN-IDE-03 · solo el Alumno puede consultar su rutina del día', () => {
+    it('sin token responde 401', async () => {
+      const respuesta = await request(app.getHttpServer()).get('/planificacion/mi-rutina-del-dia');
+
+      expect([respuesta.status, respuesta.body.codigo]).toEqual([401, 'RN-IDE-03']);
+    });
+
     it('con el token de un Profesor responde 403', async () => {
       const respuesta = await miRutina(tokenProfesor);
 
@@ -210,6 +224,42 @@ describe('GET /planificacion/mi-rutina-del-dia', () => {
 
       expect(respuesta.status).toBe(200);
       expect(respuesta.body).toEqual({ estado: 'sin-plan', fecha: hoy });
+    });
+  });
+
+  describe('RN-PLAN-18 · se usa el alumno del token, nunca el indicado en la consulta', () => {
+    it('ignora un alumno ajeno enviado por query', async () => {
+      const respuesta = await request(app.getHttpServer())
+        .get('/planificacion/mi-rutina-del-dia')
+        .query({ alumnoId: alumnoRutinaId })
+        .set('Authorization', `Bearer ${tokenAlumnoSinPlan}`);
+
+      expect(respuesta.status).toBe(200);
+      expect(respuesta.body).toEqual({ estado: 'sin-plan', fecha: hoy });
+    });
+  });
+
+  describe('RN-PLAN-11, 15, 18 · el plan del 01/11/2026 al 28/11/2026 incluye ambos extremos', () => {
+    beforeAll(async () => {
+      await crearPlan({
+        fechaInicio: '2026-11-01',
+        dias: dias(rutinaId),
+        alumnos: [await idDeAlumno('alumno01@cwgym.test')],
+      });
+    });
+
+    it.each([
+      { fecha: '2026-10-31', esperado: { estado: 'sin-plan', fecha: '2026-10-31' } },
+      { fecha: '2026-11-01', esperado: { estado: 'rutina', fecha: '2026-11-01', numeroDia: 1 } },
+      { fecha: '2026-11-28', esperado: { estado: 'rutina', fecha: '2026-11-28', numeroDia: 28 } },
+      { fecha: '2026-11-29', esperado: { estado: 'sin-plan', fecha: '2026-11-29' } },
+    ])('con fecha $fecha devuelve $esperado.estado', async ({ fecha, esperado }) => {
+      fechaActual = new Date(`${fecha}T12:00:00Z`);
+
+      const respuesta = await miRutina(tokenAlumnoSinPlan);
+
+      expect(respuesta.status).toBe(200);
+      expect(respuesta.body).toMatchObject(esperado);
     });
   });
 });

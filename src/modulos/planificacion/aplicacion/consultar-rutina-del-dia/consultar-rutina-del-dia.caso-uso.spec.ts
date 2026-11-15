@@ -27,7 +27,7 @@ const dias = (rutinaId: string | null = null): DatosDiaPlan[] =>
 const conRutinaEnElDia = (numero: number, rutinaId: string): DatosDiaPlan[] =>
   dias().map((dia) => (dia.numero === numero ? { ...dia, rutinaId } : dia));
 
-describe('US08 · consultar la rutina del día', () => {
+describe('RN-PLAN-11, 15, 18 · consultar la rutina del día', () => {
   let planes: RepositorioPlanesEnMemoria;
   let rutinas: RepositorioRutinasEnMemoria;
   let vinculos: ConsultaVinculosFalsa;

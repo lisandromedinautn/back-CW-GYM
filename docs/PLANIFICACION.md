@@ -1,6 +1,8 @@
 # Sistema de Entrenamiento de Gimnasio — Planificación, lenguaje ubicuo, US y modelo DDD
 
 Versión 3 · 02/11/2026 · Lisandro (Licha)
+**Corte vigente de métricas y estimaciones: 14/11/2026.** [Informe del sprint 2](METRICAS-SPRINT-2.md): US06 parcial confirmado por Martina, 26 puntos técnicos en el sprint abierto, 52/129 acumulados y 91 puntos residuales V2 incluyendo cierre. No hay horas efectivas registradas. Las reestimaciones del 08/11 se conservan como antecedentes.
+
 Original: Google Doc "Sistema de Entrenamiento de Gimnasio — Lenguaje ubicuo, US y modelo DDD" (31/10/2026). Este archivo es la copia versionada; existe igual en `back-CW-GYM` y `front-CW-GYM`. Si cambia, se actualizan los dos repos y el Google Doc.
 
 **Cambios respecto de la versión 2:** en T02 el back pasó de Jest a Vitest (decisión 21) y se fijaron las versiones del stack (decisión 17). Se agregaron la regla de microcommits (decisión 37), el versionado semántico del sistema (decisión 38) y el calendario con dos escenarios: ideal al 22/11 y pesimista al 01/12 (decisión 39). Se cerró ZG-14: el Admin inicial se crea con un seed (decisión 40). La decisión 41 (08/11/2026) saca US01 del MVP (pasa a DT-06), carga el catálogo desde un dataset público de ejercicios (T01) y crea los alumnos y profesores de prueba con una semilla de usuarios; el total baja a 127 pts. El orden de trabajo y el checklist de cada fase están en [`docs/PLAN-IMPLEMENTACION.md`](PLAN-IMPLEMENTACION.md).
@@ -59,6 +61,7 @@ Hay tres roles: **Profesor**, **Alumno** y **Admin**.
 | 40 | Admin inicial | Se crea con un seed idempotente que toma el email y la contraseña de variables de entorno (ZG-14) |
 | 41 | Catálogo y usuarios de prueba (08/11/2026) | US01 sale del MVP y pasa a DT-06. El catálogo se carga con T01 desde el dataset de ejercicios [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) (1324 ejercicios; datos MIT, GIFs © Gym visual con atribución). Los alumnos y profesores de prueba se crean con la semilla de usuarios (`sembrar-usuarios`, dentro de US00). Total: 127 pts; fase 1: 20 pts |
 | 42 | Métricas con IA (08/11/2026) | La planificación se mide en **puntos por hora de sesión** y **horas de sesión por semana**; la velocity semanal es el producto de las dos. La velocity histórica (37 pts/semana, sin IA) queda solo como piso del escenario pesimista. Se suman T04 (reestimación) y T05 (ajuste de métricas), 1 pt cada una: el backlog pasa a 129 pts. Detalle en "Reestimación del 08/11/2026" |
+| 43 | Corte y reestimación del sprint 2 (14/11/2026) | A pedido de Martina: US06 se mantiene parcial; las horas y productividad horaria quedan ND. Se conservan los 129 puntos de V1 y se estima un residual V2 de 91, con escenarios condicionales y trazabilidad de fuentes en `docs/METRICAS-SPRINT-2.md`. No cambia el alcance de las RN ni las fechas objetivo acordadas |
 
 ## Glosario de lenguaje ubicuo
 
@@ -222,7 +225,9 @@ Se usa versionado semántico `MAJOR.MINOR.PATCH` (decisión 38). Como el sistema
 | **MINOR** | Al cerrar un hito funcional, es decir, una fase de `docs/PLAN-IMPLEMENTACION.md`. Las fases no coinciden con los sprints: en una semana se pueden cerrar dos. Una US terminada no sube la versión por sí sola: se acumula en la minor del hito | 1.2.0 |
 | **PATCH** | Al publicar arreglos sobre una versión ya publicada (bugs encontrados en la demo, en la revisión o en uso). Los bugs que se corrigen antes del cierre del hito son parte de esa minor y no suben patch | 1.2.1 |
 
-**Hoja de ruta de versiones**
+**Hoja de ruta de versiones — fechas históricas, anteriores al corte del 14/11**
+
+El pronóstico vigente por hito está en `docs/METRICAS-SPRINT-2.md`; esta tabla conserva los objetivos anteriores.
 
 | Versión | Hito | Fase | Fin ideal | Fin pesimista |
 | :-- | :-- | :-- | :-- | :-- |
@@ -252,6 +257,8 @@ Se usa versionado semántico `MAJOR.MINOR.PATCH` (decisión 38). Como el sistema
 **`main`** (decisión 39). No se toca hasta el 22/11. Ese día, con el permiso del desarrollador, se hace merge `--no-ff` de `develop` a `main` con la última versión publicada (en el escenario ideal, 1.5.0). Si se da el escenario pesimista, hay un segundo merge al cerrar, como tarde el 01/12. Después de la entrega, cada versión nueva pasa por `main`.
 
 ## Historias de usuario
+
+Los puntos siguientes son la **base histórica V1**. El esfuerzo restante y el trabajo de cierre se reestiman en [Métricas del sprint 2](METRICAS-SPRINT-2.md), sin modificar retroactivamente los puntos de historias realizadas.
 
 El backlog suma 129 puntos (US19 se quitó por la decisión 31, US01 sale del MVP por la decisión 41: 9 pts, DT-06, y se suman T04 y T05 por la decisión 42: 2 pts). Escala: L = 5, M = 3, S = 1. Cada historia suma sus tareas Modelar, Backend y Frontend.
 
@@ -322,12 +329,14 @@ US19 (finalizar un plan antes de sus 28 días) se eliminó del backlog: un plan 
 | DT-04 | Más de un profesor por alumno | Como **Alumno** quiero entrenar con más de un profesor para combinar disciplinas | La regla actual es un solo profesor |
 | DT-05 | Atlas generado por script | Regenerar `ATLAS.md` desde el código | Por ahora el atlas se mantiene a mano |
 | DT-06 | Registro de ejercicios | Como **Admin** quiero registrar un ejercicio con su tipo, carga, factor de peso corporal y músculos para ampliar el catálogo | El catálogo del MVP se carga desde un dataset. En el front queda solo un botón "Registrar ejercicio" deshabilitado (decisión 41) |
-| DT-07 | Paginación en todos los listados (T06, CG-73) | Como **usuario** quiero elegir cuántos ítems ver por página (5, 10, 20, 50 o 100) para recorrer listados largos, como los 1318 ejercicios | Pedido el 08/11/2026. Está en el backlog de Jira con la etiqueta `verificacion`, sin puntos ni fase: se estima y se le asigna fase cuando se replanifique. Antes de testear hace falta una RN-UI de paginación |
-| DT-08 | Reglas de filtros por atributo en los listados (T07, CG-74; RN-UI-LIS-01 a 04, a confirmar en `src/compartido/CLAUDE.md` del front) | Como **usuario** quiero filtrar los listados por sus atributos (grupo muscular, tipo de carga, legajo, documento, etc.) para encontrar rápido lo que busco | Pedido el 08/11/2026. Depende de DT-07. Mismo estado: backlog con `verificacion`, sin puntos ni fase |
+| DT-07 | Paginación en todos los listados (T06, CG-73) | Como **usuario** quiero elegir cuántos ítems ver por página (5, 10, 20, 50 o 100) para recorrer listados largos, como los 1318 ejercicios | Actualización 14/11: T06 implementó paginación en los listados existentes de catálogo y rutinas (11/11). No tenía puntos previos registrados y no se agregan retroactivamente. La adopción en otros listados futuros sigue pendiente; no se declara paginado todo el sistema |
+| DT-08 | Reglas de filtros por atributo en los listados (T07, CG-74; RN-UI-LIS-01 a 04, vigentes desde el 11/11 en `src/compartido/CLAUDE.md` del front) | Como **usuario** quiero filtrar los listados por sus atributos (grupo muscular, tipo de carga, legajo, documento, etc.) para encontrar rápido lo que busco | Actualización 14/11: T07 implementó los filtros del catálogo (11/11), sin puntos previos registrados. Las RN-UI están confirmadas; los filtros de otros listados futuros no se declaran implementados. Se conserva el alcance pendiente sin asignar puntos retroactivos |
 
 El modelo de Alumno no debe depender de quién lo creó. Así, pagar DT-01 y DT-02 solo cambia quién ejecuta el alta.
 
 ## Métricas y estimación
+
+**Vigente desde el 14/11:** ver [Métricas del sprint 2 y residual V2](METRICAS-SPRINT-2.md). Corte provisional: 26 puntos técnicos de US completas en sprint 2, 52/129 acumulados (40,3%), 74 puntos de US por terminar y 17 de cierre = 91 pendientes. El pronóstico central condicional es 09/12 a 26 pts/semana; favorable 02/12 a 37 y conservador 16/12 a 20. No son nuevas fechas comprometidas. Horas, productividad horaria y velocity formal de cierre: ND. Las tablas anteriores al corte que siguen se conservan como registro histórico.
 
 La velocity del proyecto anterior fue de 37 puntos por semana: el promedio de tres semanas completas en el tablero de Trello (L = 5, M = 3, S = 1).
 
@@ -364,24 +373,24 @@ Si en un corte lo acumulado queda por debajo de la línea pesimista, se le consu
 
 **Estimación paramétrica (COCOMO II, puntos de aplicación).** Para los sprints 1 y 2 hay 6 pantallas simples (1 punto cada una) y 2 medias (editor de rutina y creación de plan, 2 puntos cada una): 10 puntos de aplicación. Con productividad baja (7 NAP por persona-mes), el esfuerzo es de unas 1,4 personas-mes. Comparar esa cifra con las horas reales es parte del análisis de desvío.
 
-### Reestimación del 08/11/2026 (T04) y ajuste de métricas (T05)
+### Reestimación del 08/11/2026 (T04) y ajuste de métricas (T05) — histórica
 
 **Qué pasó en el sprint 1.** Del 01 al 02/11 se hicieron la planificación y la base técnica (fase 0, 4 pts). La implementación arrancó recién el **domingo 08/11**: entre el 03 y el 07/11 no hubo commits. Ese día, en una sola sesión con IA (Opus 5.5 orquestando, Sonnet 5.5 y Haiku 5.5 como subagentes), se terminó la fase 1 completa en back y front: 20 pts, más T04 y T05 (2 pts). El sprint 1 cierra con **26 pts reales**, contra 45 de la línea ideal y 37 de la pesimista originales. El atraso no viene del ritmo, sino de que hubo un solo día de trabajo.
 
-**Datos medidos en la fase 1**
+**Datos del registro histórico de la fase 1 (las horas son ventanas Git, no esfuerzo efectivo medido)**
 
 | Dato | Valor | Cómo se midió |
 | :-- | :-- | :-- |
 | Puntos terminados | 22 (20 de la fase + T04 y T05) | Tarjetas en DONE |
-| Horas de sesión | ≈ 1,3 h (15:10 a 16:30) | Primer y último commit del día en los dos repos, más la redacción de la reestimación |
-| Productividad | ≈ 17 pts por hora de sesión | 22 / 1,3 |
-| Backend de la fase (14 pts) | ≈ 45 min | 15:22 a 16:01, commits del back |
+| Ventana Git de la sesión | ≈ 1,3 h (15:10 a 16:30) | Proxy histórico; no registra pausas ni horas efectivas |
+| Cociente por ventana Git, no productividad real | ≈ 17 pts/h de ventana | 22 / 1,3; no usar como capacidad medida (corte 14/11) |
+| Ventana Git del backend de la fase (14 pts) | 39 min entre 15:22 y 16:01 | Intervalo de commits; esfuerzo efectivo ND |
 | Tests | 113 en el back (99,2% de líneas), 28 en el front (93,2%) | `yarn test:cov` |
 | Bugs en demo | Pendiente | La demo de la fase 1 todavía no se hizo |
 
 **Por qué cambia la métrica (decisión 42).** La velocity de 37 pts/semana se midió en un proyecto sin agentes de IA. Con IA, el cuello de botella deja de ser escribir código y pasa a ser el tiempo del desarrollador: confirmar fichas por tarjeta, decidir zonas grises, revisar los reportes de los subagentes y hacer las demos. Por eso se mide:
 
-* **Puntos por hora de sesión**, por fase, a partir del primer y el último commit de cada sesión.
+* **Criterio histórico sustituido el 14/11:** inferir puntos por hora a partir del primer y último commit. La medición vigente exige horas efectivas registradas; hasta tenerlas, ND.
 * **Horas de sesión por semana**, que dependen de la disponibilidad del desarrollador.
 * **Velocity semanal = puntos por hora × horas por semana.** Se sigue comparando con las líneas del calendario.
 
@@ -406,7 +415,7 @@ Si en un corte lo acumulado queda por debajo de la línea pesimista, se le consu
 
 **Recortes.** Lo real del 08/11 (26) quedó debajo de la línea pesimista original (37), y la regla dice consultar un recorte. Con el ritmo medido no hace falta recortar: la propuesta es **no recortar** y volver a mirar el corte del 15/11. Las candidatas siguen siendo US20, US10, US18 y US12, en ese orden. La decisión es del desarrollador.
 
-**COCOMO II.** Los puntos de aplicación de los sprints 1 y 2 siguen siendo 10 NAP, porque la lista de ejercicios reemplaza a la pantalla de registro (DT-06). Con productividad muy alta (50 NAP por persona-mes) el modelo da 0,2 personas-mes, unas 32 h, y para las 5 pantallas de la fase 1 unas 16 h. El real fue de unas 1,3 h: COCOMO sobreestima unas 12 veces, porque no modela agentes de IA. Se mantiene como referencia del esfuerzo "sin IA" para el informe, pero no se usa para planificar.
+**COCOMO II.** Los puntos de aplicación de los sprints 1 y 2 siguen siendo 10 NAP, porque la lista de ejercicios reemplaza a la pantalla de registro (DT-06). Con productividad muy alta (50 NAP por persona-mes) el modelo da 0,2 personas-mes, unas 32 h, y para las 5 pantallas de la fase 1 unas 16 h. La comparación del 08/11 llamó «real» a una ventana Git de unas 1,3 h y concluyó un factor aproximado de 12. **Corrección del 14/11:** esa ventana no mide esfuerzo efectivo; el factor frente a horas reales queda ND. COCOMO se conserva como referencia histórica, sin usarlo para comprometer fechas del equipo.
 
 **Estado de los OKR al 08/11**
 

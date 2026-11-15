@@ -1,6 +1,8 @@
 # Plan de implementación por fases
 
 Versión 2 · 02/11/2026 · Lisandro (Licha)
+
+**Actualización de avance y estimaciones: 14/11/2026, solicitada por Martina.** Corte provisional del sprint calendario 2; cálculos y supuestos en [METRICAS-SPRINT-2.md](METRICAS-SPRINT-2.md).
 Existe igual en `back-CW-GYM` y `front-CW-GYM`. Se basa en [`docs/PLANIFICACION.md`](PLANIFICACION.md) (v3): de ahí salen las historias, los puntos, el versionado (decisión 38), los microcommits (decisión 37) y el calendario (decisión 39). Este documento fija el orden de trabajo y lleva el registro de avance.
 
 **Cómo se usa**
@@ -41,44 +43,48 @@ Existe igual en `back-CW-GYM` y `front-CW-GYM`. Se basa en [`docs/PLANIFICACION.
 | 3 | lun 16/11 al dom 22/11 | Los dos. **Fin del ideal** y primer merge a `main` |
 | 4 | lun 23/11 al mar 01/12 | Solo el pesimista. **Fin del pesimista** |
 
-**Reestimado el 08/11/2026 (T04, decisión 42).** La implementación arrancó el 08/11 y la fase 1 se terminó en una sesión de ≈ 1,3 h con IA (≈ 17 pts/h). Lo que falta (103 pts) se estima a 7,5 pts/h por la mayor complejidad del dominio: unas 14 h de sesión. Detalle en `docs/PLANIFICACION.md`, "Reestimación del 08/11/2026".
+**Reestimación vigente al 14/11/2026.** La base original sigue en 129 puntos; hay 52 puntos técnicos acumulados y 26 corresponden al sprint 2 abierto. US06 sigue parcial por edición pendiente, confirmado por Martina. Fase 2: 15/28 puntos de historias completas; US09 adelanta 11 de la fase 3. No hay registro de horas efectivas ni un cierre formal del sprint; las horas y la velocity formal quedan ND.
 
-| Escenario | Ritmo | Horas de sesión por semana | Fin | Viabilidad |
-| :-- | :-- | :-- | :-- | :-- |
-| **Ideal** | 51,5 pts/semana (7,4 pts/día) | ≈ 7 h | dom 22/11 | Viable con unas 3 sesiones de 2 a 2,5 h por semana |
-| **Pesimista** | 37 pts/semana (5,3 pts/día) | ≈ 5 h | sáb 28/11, con margen hasta el mar 01/12 | Viable con holgura. El margen (~16 pts) cubre los e2e de Playwright, los ajustes y el informe |
+En las tablas de tareas de US se conserva la columna de puntos de V1; los cambios de residual se indican en el estado y se detallan en el informe. Las filas de cierre llevan su cifra V2 explícita.
 
-**Control al cierre de cada sprint**
+El residual V2 es **74 puntos de US + 17 de cierre = 91**. Los 17 incluyen regularización del trabajo ya implementado y los flujos finales/informe antes sin estimar, sin duplicar los tests ordinarios de las US. Los puntos de historias ya realizadas no se modifican retroactivamente.
 
-| Corte | Acumulado ideal | Acumulado pesimista | Real |
-| :-- | :-- | :-- | :-- |
-| dom 08/11 | 45 (plan original) | 37 (plan original) | **26** |
-| dom 15/11 | 78 | 63 | |
-| dom 22/11 | 129 | 100 | |
-| sáb 28/11 | — | 129 | |
-| mar 01/12 | — | margen | |
+| Escenario condicional | Capacidad supuesta | Fin funcional de las US | Fin con cierre |
+| :-- | --: | :-- | :-- |
+| Favorable | 37 pts/semana, referencia histórica no garantizada | 28/11 | 02/12 |
+| Central provisional | 26 pts/semana, repetición del avance técnico ya acumulado en este sprint parcial | 04/12 | 09/12 |
+| Conservador | 20 pts/semana, hipótesis de menor capacidad | 10/12 | 16/12 |
 
-Al 08/11 lo real quedó debajo de la línea pesimista original. Con el ritmo medido, la propuesta es no recortar y revisar en el corte del 15/11 (lo decide el desarrollador).
+Se cuentan días calendario desde el 15/11 y se redondea hacia arriba. Son pronósticos de capacidad, no fechas acordadas ni percentiles estadísticos. Para terminar los 91 puntos al 22/11 harían falta 79,6 pts/semana; al 01/12, 37,5. La afirmación del 08/11 de llegada «con holgura» queda sustituida por esta revisión. No se recortó ninguna US ni se autorizó modificar `main`.
 
-Si lo real queda por debajo de la línea pesimista, se le consulta al desarrollador un recorte. Las candidatas, en este orden, son US20 (6), US10 (6), US18 (6) y US12 (4): ninguna bloquea a otra.
+**Control respecto de las metas anteriores**
 
-**`main`.** No se toca hasta el 22/11. Ese día, con permiso, se mergea `develop` con la última versión publicada. Si se da el escenario pesimista, hay un segundo merge al cerrar, como tarde el 01/12.
+| Corte | Acumulado ideal anterior | Acumulado pesimista anterior | Real / estado |
+| :-- | --: | --: | :-- |
+| 08/11 | 45 | 37 | 26 según el registro histórico |
+| 14/11, provisional | — | — | 52 técnicos acumulados |
+| 15/11 | 78 | 63 | Pendiente de cierre; al 14/11 la diferencia es −26 / −11 |
+| 22/11 | 129 | 100 | Sin resultado real aún |
+| 28/11 | — | 129 | Sin resultado real aún |
+| 01/12 | — | Margen anterior | Objetivo conservado; requiere revisar capacidad o alcance |
+
+El cierre del 15/11 debe distinguir implementación técnica, cumplimiento de DoD e integración/publicación. La lista de compromiso semanal y el estado del tablero no se verificaron; no se inventa un porcentaje de cumplimiento semanal.
 
 ## Resumen
 
-| Fase | Versión | Puntos | Acumulado | Fin ideal | Fin pesimista | Estado |
-| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| 0. Base técnica | 1.0.0 | 4 | 4 | lun 03/11 | lun 03/11 | ✅ |
-| 1. Ingreso, catálogo y vínculo (incluye T04 y T05) | 1.1.0 | 22 | 26 | vie 07/11 | dom 08/11 | ✅ (falta la demo y el tag) |
-| 2. Planificación básica | 1.2.0 | 28 | 54 | jue 12/11 | sáb 14/11 | ⬜ |
-| 3. Más rutinas e inicio del entrenamiento | 1.3.0 | 36 | 90 | mar 17/11 | vie 20/11 | ⬜ |
-| 4. Registro, resumen y récords | 1.4.0 | 33 | 123 | sáb 21/11 | vie 27/11 | ⬜ |
-| 5. Seguimiento y cierre del MVP | 1.5.0 | 6 | 129 | dom 22/11 | sáb 28/11 (margen hasta 01/12) | ⬜ |
-| **Total** | | **129** | | | | |
+Actualizado al corte del 14/11/2026.
 
-Fechas reestimadas el 08/11 (T04): desde el lunes 09/11, a 7,4 pts/día en el ideal y 5,3 pts/día en el pesimista, contados de lunes a domingo. En pts por hora de sesión: 7,5 pts/h estimados para las fases 2 a 4.
+| Fase | Versión prevista | Base V1 | Implementado V1 | Residual V2 | Pronóstico central | Estado observado |
+| :-- | :-- | --: | --: | --: | :-- | :-- |
+| 0. Base técnica | 1.0.0 | 4 | 4 | 0 | Registro: 02/11 | Implementada según registro histórico |
+| 1. Ingreso, catálogo y vínculo | 1.1.0 | 22 | 22 | 0 | Registro: 08/11 | Tag v1.1.0 verificado localmente; demo no medida |
+| 2. Planificación básica | 1.2.0 | 28 | 15 | 9 | 17/11 | US06 parcial; US07 y US08 técnicas completas; incluye 3 de regularización |
+| 3. Más rutinas e inicio del entrenamiento | 1.3.0 | 36 | 11 | 29 | 25/11 | US09 implementada; demás historias pendientes |
+| 4. Registro, resumen y récords | 1.4.0 | 33 | 0 | 33 | 04/12 | Pendiente |
+| 5. Seguimiento y cierre | 1.5.0 | 6 | 0 | 20 | 09/12 | US18 6 + cierre global 14 |
+| **Total** | | **129** | **52** | **91** | | V1 y residual V2 son contabilidades distintas |
 
-**Nota (decisión 41, 08/11/2026):** el recorte de US01 deja 9 pts de margen. El total pasa de 136 a 127 y la fase 1 de 29 a 20. Las tablas de control y de velocity de la planificación se dejan con las cifras originales.
+Las fechas centrales suponen fases consecutivas y 26 pts/semana. El residual se reconcilia así: 77 nominales − 7 de reutilización en US06 + 2 de US10 + 2 de US13 + 17 de cierre = 91. Las estimaciones anteriores del 08/11 quedan conservadas en la planificación histórica y comparadas en el informe de métricas. Los objetivos de no tocar `main` antes del 22/11 y de pedir autorización para publicar se mantienen.
 
 ---
 
@@ -179,14 +185,14 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 
 | Orden | Tarjeta | Tarea | Repo | RN | Pts | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| 1 | US06 | Modelar: Rutina, Bloque, Ejercicio Prescripto, Pausa | back | RN-PLAN-01, 02, 04, 05, 06, 07 | 3 | ⬜ |
-| 2 | US06 | Backend: crear y editar una rutina por bloques | back | RN-PLAN-01, 02, 04, 05, 06, 07 | 5 | ⬜ |
+| 1 | US06 | Modelar: Rutina, Bloque, Ejercicio Prescripto, Pausa | back | RN-PLAN-01, 02, 04, 05, 06, 07 | 3 | ✅ modelado de creación; RN-PLAN-07 pendiente de edición |
+| 2 | US06 | Backend: crear y editar una rutina por bloques | back | RN-PLAN-01, 02, 04, 05, 06, 07 | 5 | 🔄 creación implementada; edición pendiente (residual back V2: 3) |
 | 2 | US07 | Modelar: Plan de Entrenamiento, Validez del plan, Día del plan | back | RN-PLAN-09…15, 17 | 3 | 🟩 |
-| 3 | US06 | Frontend: editor de rutina (bloques) | front | RN-PLAN-01, 02, 04, 05, 06, 07 | 5 | ⬜ |
+| 3 | US06 | Frontend: editor de rutina (bloques) | front | RN-PLAN-01, 02, 04, 05, 06, 07 | 5 | 🔄 creación implementada; edición pendiente (residual front V2: 3) |
 | 3 | US07 | Backend: crear plan con alumnos y una rutina o descanso por día | back | RN-PLAN-09…15, 17 | 5 | 🟩 |
 | 4 | US07 | Frontend: página de creación de plan | front | RN-PLAN-09…15, 17 | 3 | 🟩 |
-| 4 | US08 | Backend: consultar la rutina del día | back | RN-PLAN-11, 15, 18 | 1 | ⬜ |
-| 5 | US08 | Frontend: página de la rutina del día | front | RN-PLAN-11, 15, 18 | 3 | ⬜ |
+| 4 | US08 | Backend: consultar la rutina del día | back | RN-PLAN-11, 15, 18 | 1 | 🟩 |
+| 5 | US08 | Frontend: página de la rutina del día | front | RN-PLAN-11, 15, 18 | 3 | 🟩 |
 
 **Punto de atención:** el editor de rutina es la pantalla más compleja del proyecto (COCOMO: 2 puntos de aplicación). Conviene armarlo para que la fase 3 le sume circuitos sin reescribirlo.
 
@@ -196,7 +202,7 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 
 | Inicio real | Fin real | Puntos terminados | Horas reales | Desvío | Bugs en demo | Notas |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| | | | | | | |
+| Back de creación: 08–09/11; front: 10/11 según cierres Git | Fase abierta al 14/11; US08 verificada el 14/11 | 15/28 de historias completas; US06 parcial | ND: sin registro efectivo | US08: +1 día frente al 13/11 informado; fase sin desvío final medible | ND | Sprint calendario 2 lleva 26 pts al incluir US09 de fase 3; integración/publicación y edición pendientes |
 
 ---
 
@@ -206,20 +212,20 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 
 | Orden | Tarjeta | Tarea | Repo | RN | Pts | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| 1 | US09 | Modelar: Circuito (2 o más ejercicios, macropausa por vuelta) | back | RN-PLAN-01, 03, 04 | 3 | ⬜ |
+| 1 | US09 | Modelar: Circuito (2 o más ejercicios, macropausa por vuelta) | back | RN-PLAN-01, 03, 04 | 3 | ✅ implementado e integrado; evidencia de pruebas en auditoría |
 | 1 | US11 | Backend: consultar el plan del alumno | back | RN-PLAN-11, 19 | 1 | ⬜ |
 | 1 | US13 | Modelar: Entrenamiento (copia de la rutina, peso del día, abandonado) | back | RN-ENT-01, 02, 20 | 3 | ⬜ |
-| 2 | US09 | Backend: crear rutina por circuitos | back | RN-PLAN-01, 03, 04 | 5 | ⬜ |
+| 2 | US09 | Backend: crear rutina por circuitos | back | RN-PLAN-01, 03, 04 | 5 | ✅ implementado e integrado; evidencia de pruebas en auditoría |
 | 2 | US11 | Frontend: página "Mi plan" | front | RN-PLAN-11, 19 | 3 | ⬜ |
-| 2 | US13 | Backend: iniciar entrenamiento y consultar el que está en curso | back | RN-ENT-01, 02, 20 | 3 | ⬜ |
-| 3 | US09 | Frontend: circuitos en el editor de rutina | front | RN-PLAN-01, 03, 04 | 3 | ⬜ |
-| 3 | US10 | Backend: rutina mixta | back | RN-PLAN-01 | 3 | ⬜ |
+| 2 | US13 | Backend: iniciar entrenamiento y consultar el que está en curso | back | RN-ENT-01, 02, 20 | 3 | ⬜ residual V2: 5 (copia, propiedad e inicio único) |
+| 3 | US09 | Frontend: circuitos en el editor de rutina | front | RN-PLAN-01, 03, 04 | 3 | ✅ implementado e integrado; evidencia de pruebas en auditoría |
+| 3 | US10 | Backend: rutina mixta | back | RN-PLAN-01 | 3 | ⬜ residual V2: 5 (orden combinado y persistencia) |
 | 3 | US20 | Backend: importar rutina (copia, solo las propias) | back | RN-PLAN-08 | 3 | ⬜ |
 | 3 | US13 | Frontend: página del entrenamiento en curso (inicio y contador) | front | RN-ENT-01, 02, 20 · RN-UI-ENT-02 | 3 | ⬜ |
 | 4 | US10 | Frontend: rutina mixta en el editor | front | RN-PLAN-01 | 3 | ⬜ |
 | 4 | US20 | Frontend: página de importar rutina | front | RN-PLAN-08 | 3 | ⬜ |
 
-**Punto de atención:** es la fase más cargada (36 pts) y cruza el corte del 15/11. Si en ese corte el acumulado queda por debajo de 74, la primera candidata a recortar o postergar es US20, porque nada depende de ella.
+**Punto de atención:** es la fase más cargada (36 pts) y cruza el corte del 15/11. El corte vigente compara con la meta pesimista del 15/11 de 63 acumulados; al 14/11 hay 52. US20 sigue como candidata a postergar, sin aplicar un recorte automático.
 
 **Criterio de cierre:** el profesor arma una rutina mixta e importa una rutina a otro plan. El alumno ve sus 28 días e inicia el entrenamiento de hoy, y no puede iniciar otro el mismo día (RN-ENT-01). Están los tags `v1.3.0`.
 
@@ -227,7 +233,7 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 
 | Inicio real | Fin real | Puntos terminados | Horas reales | Desvío | Bugs en demo | Notas |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| | | | | | | |
+| US09: cierres del 10/11 | Fase abierta al 14/11 | 11/36 originales por US09 | ND | No se cerró la fase | ND | Residual V2: 29 (US10 8, US20 6, US11 4, US13 11); pronóstico central 25/11 |
 
 ---
 
@@ -269,12 +275,12 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | 1 | US18 | Backend: consultar los entrenamientos de mis alumnos | back | RN-ENT-18 | 3 | ⬜ |
 | 2 | US18 | Frontend: página de entrenamientos de alumnos | front | RN-ENT-18 | 3 | ⬜ |
-| 2 | — | e2e de API de los flujos completos (back) | back | todas | sin estimar (margen) | ⬜ |
-| 2 | — | e2e de navegador con Playwright de los flujos principales (front) | front | todas | sin estimar (margen) | ⬜ |
-| 3 | — | Patches pendientes de las versiones 1.1 a 1.4 y revisión de la deuda técnica (DT-01 a DT-05) | ambos | — | sin estimar (margen) | ⬜ |
-| 4 | — | Informe: matriz de trazabilidad completa, OKR con puntaje, velocity y desvío de COCOMO | ambos | — | sin estimar (margen) | ⬜ |
+| 2 | — | e2e de API de los flujos completos (back) | back | todas | 3 (V2) | ⬜ |
+| 2 | — | e2e de navegador con Playwright de los flujos principales (front) | front | todas | 5 (V2) | ⬜ |
+| 3 | — | Patches pendientes y revisión final de calidad | ambos | — | 3 (V2; reserva) | ⬜ |
+| 4 | — | Informe, matriz, métricas y cierres de versión futuros | ambos | — | 3 (V2) | ⬜ |
 
-**Punto de atención:** las tareas sin estimar no entran en los 136 pts. En el escenario ideal no hay margen para ellas, así que se hacen en el margen del pesimista (hasta el 01/12). Si se quiere llegar al 22/11 con todo, se tienen que estimar y sumar.
+**Punto de atención actualizado:** el cierre global antes sin estimar suma 14 puntos V2 (3 + 5 + 3 + 3). Se agregan 3 de regularización actual en el residual de fase 2, total 17. No se duplican los tests y revisión ordinaria de cada US ni se contabilizan dos veces en los pronósticos. No se implementa la deuda DT-01 a DT-05 dentro de esta reserva; solamente se revisa y prioriza.
 
 **Criterio de cierre:** ninguna RN vigente sin test, cobertura dentro de los umbrales en los dos repos, e2e de los cuatro flujos (ingreso y vínculo, planificación, entrenamiento, seguimiento) en verde, los tags `v1.5.0` y, con permiso, el merge de `develop` a `main`. Si se decide declarar terminado el MVP, se evalúa con el desarrollador si corresponde publicar 2.0.0.
 

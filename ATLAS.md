@@ -12,6 +12,7 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `docs/PLANIFICACION.md` | Glosario, decisiones, modelo DDD, US, deuda técnica, OKR y zonas grises |
 | `docs/TESTING.md` | Protocolo de testing y TDD |
 | `docs/TRAZABILIDAD.md` | Matriz US → RN → caso de uso → test |
+| `docs/METRICAS-SPRINT-2.md` | Corte del 14/11: métricas del sprint 2, residual V2, fuentes y pronósticos condicionales |
 | `docs/MODELOS-IA.md` | Modelos, delegación y plantillas de prompt |
 | `.claude/settings.json` | Permisos: confirmación al editar tests e instalar paquetes |
 | `.claude/skills/tdd`, `.claude/skills/coverage` | Skills de TDD y cobertura |
@@ -70,7 +71,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | identidad | `listar-alumnos-del-profesor.caso-uso.ts` | `GET /identidad/alumnos` | US07 | ✅ |
 | planificacion | `agregar-alumno-a-plan.caso-uso.ts` | `POST /planificacion/planes/:id/alumnos` | US12 | 📄 |
 | planificacion | `quitar-alumno-de-plan.caso-uso.ts` | `DELETE /planificacion/planes/:id/alumnos/:alumnoId` | US12 | 📄 |
-| planificacion | `consultar-rutina-del-dia.caso-uso.ts` | `GET /planificacion/mi-rutina-del-dia` | US08 | 📄 |
+| planificacion | `consultar-rutina-del-dia.caso-uso.ts` | `GET /planificacion/mi-rutina-del-dia` (solo Alumno) | US08 | ✅ `consultar-rutina-del-dia.caso-uso.spec.ts`, `consultar-rutina-del-dia-alumnos.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-rutina-del-dia.e2e-spec.ts` |
 | planificacion | `consultar-plan-del-alumno.caso-uso.ts` | `GET /planificacion/mi-plan` | US11 | 📄 |
 | entrenamiento | `iniciar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos` | US13 | 📄 |
 | entrenamiento | `consultar-entrenamiento-en-curso.caso-uso.ts` | `GET /entrenamiento/mi-entrenamiento-en-curso` | US13 | 📄 |
@@ -110,8 +111,8 @@ Hoy:
 | identidad | aplicacion | ingresar-al-sistema, sembrar-admin, sembrar-usuarios, dar-alta-profesor, codigo-profesor, vincular-alumno, listar-alumnos-del-profesor |
 | identidad | infraestructura | usuario, profesor, alumno |
 | identidad | presentacion | controlador, ingreso, alta-profesor, vinculo |
-| planificacion | dominio | rutina (con bloque, circuito, `NombreRutina` y los puertos RepositorioRutinas y ConsultaEjercicios), plan (con `DiaPlan`, `ValidezPlan` y los puertos RepositorioPlanes y ConsultaVinculos), objetivo-prescripto, pausa, tipo-rutina |
-| planificacion | aplicacion | crear-rutina, consultar-rutinas, renombrar-rutina, crear-plan |
+| planificacion | dominio | rutina (con bloque, circuito, `NombreRutina` y los puertos RepositorioRutinas, ConsultaEjercicios y ConsultaNombresEjercicios), plan (con `DiaPlan`, `ValidezPlan` y los puertos RepositorioPlanes y ConsultaVinculos), objetivo-prescripto, pausa, tipo-rutina |
+| planificacion | aplicacion | crear-rutina, consultar-rutinas, renombrar-rutina, crear-plan, consultar-rutina-del-dia |
 | planificacion | infraestructura | rutina, plan |
 | planificacion | presentacion | controlador, crear-rutina (incluye `RenombrarRutinaDto`), crear-plan |
 | compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio, reloj, paginacion (`dominio/paginacion/paginacion.ts` con `TAMANIOS_PAGINA` y `Pagina<T>`; `presentacion/paginacion/paginacion.dto.ts` con `PaginacionDto`) |

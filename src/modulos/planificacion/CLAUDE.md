@@ -47,7 +47,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `crear-plan/crear-plan.caso-uso.ts` ✅ | US07 | 08, 09–15, 17 |
 | `agregar-alumno-a-plan.caso-uso.ts` | US12 | 13, 14, 16 |
 | `quitar-alumno-de-plan.caso-uso.ts` | US12 | 12, 16 |
-| `consultar-rutina-del-dia.caso-uso.ts` | US08 | 11, 15, 18 |
+| `consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.ts` ✅ | US08 | 11, 15, 18 |
 | `consultar-plan-del-alumno.caso-uso.ts` | US11 | 11, 19 |
 
 ## Endpoints tentativos
@@ -62,7 +62,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `POST /planificacion/planes` ✅ (respuesta con `id`, `fechaInicio`, `fechaFin`, `dias[{ numero, fecha, rutinaId, esDescanso }]` y `alumnoIds`) | Profesor | crear-plan |
 | `POST /planificacion/planes/:id/alumnos` | Profesor | agregar-alumno-a-plan |
 | `DELETE /planificacion/planes/:id/alumnos/:alumnoId` | Profesor | quitar-alumno-de-plan |
-| `GET /planificacion/mi-rutina-del-dia` | Alumno | consultar-rutina-del-dia |
+| `GET /planificacion/mi-rutina-del-dia` ✅ | Alumno | consultar-rutina-del-dia |
 | `GET /planificacion/mi-plan` | Alumno | consultar-plan-del-alumno |
 
 ## Historial de cambios de reglas
@@ -96,3 +96,10 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 * `Reloj` es un puerto compartido (`src/compartido/dominio/reloj/reloj.puerto.ts`) con implementación `RelojSistema`; los tests usan `RelojFijo`. Así RN-PLAN-14 no depende de la fecha real.
 * Al crear se guardan `planes`, `dias_plan` y `plan_alumnos` en una transacción y se publica el evento `PlanCreado` por `PUBLICADOR_EVENTOS`.
 * La pantalla de crear plan necesita los alumnos del profesor: se agregó `GET /identidad/alumnos` (solo Profesor) en el módulo identidad, que devuelve `{ id, nombre, apellido }` de los vinculados. Planificación lo consume desde el front, no desde el back (no hay import cruzado).
+
+## Decisiones de implementación (US08)
+
+* `GET /planificacion/mi-rutina-del-dia` admite solo Alumno. El caso de uso recibe el `sub` del JWT y obtiene la ficha del alumno a través de `ConsultaVinculos` y la Fachada de identidad; no recibe un alumno elegido por el cliente.
+* El resultado tiene `estado: rutina`, `descanso` o `sin-plan`. Incluye `fecha` (`AAAA-MM-DD`, UTC, como US07) y, si hay plan vigente, `numeroDia`. La fecha sale exclusivamente del puerto `Reloj`.
+* La vigencia incluye inicio y fin (RN-PLAN-15); `Plan.diaPorFecha` resuelve el día según RN-PLAN-11. La respuesta de rutina conserva series, vueltas, objetivos, peso y pausas, y resuelve nombres del catálogo por `ConsultaNombresEjercicios`, sin exponer el catálogo al rol Alumno.
+* Los tests de API fijan el reloj mediante el puerto, incluidos 31/10, 01/11, 28/11 y 29/11 para un plan que empieza el 01/11/2026. Casos confirmados por Martina el 14/11/2026. No cambian las reglas de negocio.
