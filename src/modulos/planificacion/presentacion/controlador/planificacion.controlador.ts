@@ -14,6 +14,10 @@ import {
   type ResultadoRutinaDelDia,
 } from '../../aplicacion/consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.js';
 import type { Plan } from '../../dominio/plan/plan.entidad.js';
+import {
+  ConsultarPlanDelAlumno,
+  type ResultadoPlanDelAlumno,
+} from '../../aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.js';
 import type { Rutina } from '../../dominio/rutina/rutina.entidad.js';
 import { CrearPlanDto } from '../crear-plan/crear-plan.dto.js';
 import { CrearRutinaDto, RenombrarRutinaDto } from '../crear-rutina/crear-rutina.dto.js';
@@ -117,6 +121,8 @@ export class PlanificacionControlador {
     @Inject(CrearPlan) private readonly crearPlan: CrearPlan,
     @Inject(ConsultarRutinaDelDia)
     private readonly consultarRutinaDelDia: ConsultarRutinaDelDia,
+    @Inject(ConsultarPlanDelAlumno)
+    private readonly consultarPlanDelAlumno: ConsultarPlanDelAlumno,
   ) {}
 
   /** Solo Profesor (RN-IDE-03). T06: consulta paginada de sus propias rutinas (RN-PLAN-08). */
@@ -177,5 +183,12 @@ export class PlanificacionControlador {
     @UsuarioActual() usuario: UsuarioAutenticado,
   ): Promise<ResultadoRutinaDelDia> {
     return this.consultarRutinaDelDia.ejecutar(usuario.sub);
+  }
+
+  /** Solo Alumno (RN-IDE-03). US11: RN-PLAN-11, 15 y 19. */
+  @Get('mi-plan')
+  @Roles('Alumno')
+  async miPlan(@UsuarioActual() usuario: UsuarioAutenticado): Promise<ResultadoPlanDelAlumno> {
+    return this.consultarPlanDelAlumno.ejecutar(usuario.sub);
   }
 }

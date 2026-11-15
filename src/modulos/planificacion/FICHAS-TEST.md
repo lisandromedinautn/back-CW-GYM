@@ -116,6 +116,18 @@ Consulta pública del caso de uso y, en los siguientes bloques, endpoint y panta
 | `aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` › fuera de vigencia informa sin-plan (2 casos) | RN-PLAN-15, 19 | Unitario | plan 01/11–28/11; reloj 31/10 o 29/11 | sin-plan con fecha 2026-10-31 o 2026-11-29 respectivamente | = esperado (10 casos; Vitest en homelab, 14/11/2026) | 14/11/2026 |
 | `aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` › una rutina inexistente no se presenta como descanso | RN-PLAN-08, 19 | Unitario | plan vigente con id de rutina inexistente | ErrorDominio, código RN-PLAN-08, categoría no-encontrado | = esperado (10 casos; Vitest en homelab, 14/11/2026) | 14/11/2026 |
 
+### US11 — Endpoint (casos confirmados por Martina)
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `test/e2e/planificacion/consultar-plan-del-alumno.e2e-spec.ts` › devuelve los 28 días con fechas, rutinas y descansos | RN-PLAN-11, 19 | e2e API | Alumno 01 autenticado; plan 01/11–28/11; reloj 14/11; bloque día 1 y circuito día 28 | 200; 28 fechas ordenadas desde 2026-11-01 hasta 2026-11-28; detalle del press (3 series, 10 repeticiones, 20 kg, pausas 60/120 s), circuito (3 vueltas, pausa 90 s, press 10 repeticiones/20 kg y plancha 30 s); 26 descansos; sin identidades de otros alumnos | = esperado (laptop: 9 aprobados, 15/11/2026; mordida del permiso: 8 fallos, restaurada) | 15/11/2026 |
+| `test/e2e/planificacion/consultar-plan-del-alumno.e2e-spec.ts` › sin token responde 401 | RN-IDE-03 | e2e API | GET mi-plan sin sesión | 401, código RN-IDE-03 | = esperado (laptop: 9 aprobados, 15/11/2026; permiso restaurado tras mordida) | 15/11/2026 |
+| `test/e2e/planificacion/consultar-plan-del-alumno.e2e-spec.ts` › un Profesor recibe 403 | RN-IDE-03 | e2e API | GET mi-plan con token Profesor | 403, código RN-IDE-03 | = esperado (laptop: 9 aprobados, 15/11/2026; permiso restaurado tras mordida) | 15/11/2026 |
+| `test/e2e/planificacion/consultar-plan-del-alumno.e2e-spec.ts` › sin plan vigente informa sin-plan | RN-PLAN-19 | e2e API | Alumno 02 sin plan; reloj 14/11 | 200, `{ estado: 'sin-plan', fecha: '2026-11-14' }` | = esperado (laptop: 9 aprobados, 15/11/2026; permiso restaurado tras mordida) | 15/11/2026 |
+| `test/e2e/planificacion/consultar-plan-del-alumno.e2e-spec.ts` › ignora el alumno ajeno indicado por query | RN-PLAN-19 | e2e API | Alumno 02 solicita alumnoId del Alumno 01, que sí tiene plan | 200, sin-plan con fecha 2026-11-14; no se expone el plan ajeno | = esperado (laptop: 9 aprobados, 15/11/2026; permiso restaurado tras mordida) | 15/11/2026 |
+| `test/e2e/planificacion/consultar-plan-del-alumno.e2e-spec.ts` › incluye ambos extremos (2 casos) | RN-PLAN-11, 15, 19 | e2e API | Alumno 01; reloj 01/11 o 28/11; plan 01/11–28/11 | 200, plan completo de 28 días en ambas fechas | = esperado (laptop: 9 aprobados, 15/11/2026; permiso restaurado tras mordida) | 15/11/2026 |
+| `test/e2e/planificacion/consultar-plan-del-alumno.e2e-spec.ts` › fuera de vigencia informa sin-plan (2 casos) | RN-PLAN-15, 19 | e2e API | Alumno 01; reloj 31/10 o 29/11 | 200, sin-plan con fecha 2026-10-31 o 2026-11-29 respectivamente | = esperado (laptop: 9 aprobados, 15/11/2026; permiso restaurado tras mordida) | 15/11/2026 |
+
 ## US08 — Casos confirmados por Martina el 14/11/2026
 
 | Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |

@@ -48,7 +48,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `agregar-alumno-a-plan.caso-uso.ts` | US12 | 13, 14, 16 |
 | `quitar-alumno-de-plan.caso-uso.ts` | US12 | 12, 16 |
 | `consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.ts` ✅ | US08 | 11, 15, 18 |
-| `consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.ts` ✅ (endpoint pendiente) | US11 | 11, 15, 19 |
+| `consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.ts` ✅ | US11 | 11, 15, 19 |
 
 ## Endpoints tentativos
 
@@ -63,7 +63,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `POST /planificacion/planes/:id/alumnos` | Profesor | agregar-alumno-a-plan |
 | `DELETE /planificacion/planes/:id/alumnos/:alumnoId` | Profesor | quitar-alumno-de-plan |
 | `GET /planificacion/mi-rutina-del-dia` ✅ | Alumno | consultar-rutina-del-dia |
-| `GET /planificacion/mi-plan` | Alumno | consultar-plan-del-alumno |
+| `GET /planificacion/mi-plan` ✅ | Alumno | consultar-plan-del-alumno |
 
 ## Historial de cambios de reglas
 
@@ -109,4 +109,4 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 * Martina confirmó el 14/11/2026 consultar únicamente el plan vigente del Alumno. La fecha se toma del `Reloj` y la identidad del usuario autenticado se resuelve con `ConsultaVinculos`, como en US08.
 * `ConsultarPlanDelAlumno` devuelve `{ estado: 'sin-plan', fecha }` o `{ estado: 'plan', fecha, plan: { id, fechaInicio, fechaFin, dias } }`. Cada día incluye `numero`, `fecha` y `rutina` (detalle con ejercicios y pausas, o `null` si es descanso). No expone profesor ni alumnos asignados.
 * Los días se ordenan por número sin modificar el agregado. Las fechas provienen de `DiaPlan`; las rutinas repetidas se resuelven una vez por consulta y comparten la transformación de US08. Una referencia a una rutina inexistente informa el error RN-PLAN-08, no descanso.
-* Este bloque implementa el caso de uso con sus pruebas; el endpoint se conecta en el siguiente microcommit. No cambia reglas, esquema ni dependencias.
+* `GET /planificacion/mi-plan` usa exclusivamente `usuario.sub` y requiere rol Alumno. Ignora un alumno enviado por query. No cambia reglas, esquema ni dependencias.

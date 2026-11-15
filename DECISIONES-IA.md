@@ -218,3 +218,11 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Refactor previo del back confirmado con hooks completos en `0c355f1`. Las verificaciones de tipos previas pasaron en ambos repos. El front tuvo errores de arranque de workers de Vitest sobre SSHFS, antes de ejecutar tests; no se consideran fallos de las reglas ni tests aprobados.
 - Actualizados atlas, fichas, trazabilidad y decisiones de implementación. Sin cambios de reglas, pruebas existentes, esquema o dependencias.
 - Descartado: recalcular vigencia o fechas en el navegador, exponer alumnos del plan y declarar cerrada US11 antes de verificar API y pantalla.
+
+## 2026-11-15 — US11, bloque 3: endpoint del plan completo
+- Primer rojo de API verificado por Martina en la laptop: 1 test fallido, `expected 404 to be 200`, en la consulta de los 28 días; Vitest 5.0.5, duración 1.79 s. No fue un error de importación ni de preparación.
+- Cambio mínimo: fábrica de `ConsultarPlanDelAlumno` en `PlanificacionModule` y `GET /planificacion/mi-plan` en el controlador, protegido para Alumno y resuelto exclusivamente con `usuario.sub`. Sin parámetros de alumno, cambios de esquema o dependencias.
+- La verificación HTTP continúa con los casos confirmados de permisos, propiedad y vigencia. Los resultados finales se registran antes de confirmar este bloque.
+- Entorno: los procesos largos de herramientas del homelab se cortaban entre turnos. Sus registros y estado se guardan en `.git/codex-us11/` y se ejecutan separados de la terminal para conservar resultados; sin copias del proyecto fuera de SSHFS.
+- Primer verde HTTP: el caso completo pasó en el homelab (1 test, 1528.23 s, principalmente importaciones sobre SSHFS) y en la laptop (salida de Martina, 1 test, 1.88 s, 15/11/2026). Después se agregaron los 8 casos de regresión confirmados para completar 9, con verificación en curso.
+- Verificación completa de API en laptop (salida compartida por Martina, 15/11): 9/9 aprobados, duración 1.92 s. Incluye 401, 403, identidad del token frente a query ajena y los cuatro límites de vigencia. Mordida del permiso: cambiar temporalmente Alumno por Profesor produjo 8 fallos y 1 aprobado (1.84 s). Se restauró Alumno y el SHA-256 del controlador coincide con el archivo anterior a la mordida que pasó los 9 tests.

@@ -8,6 +8,7 @@ import { RenombrarRutina } from './aplicacion/renombrar-rutina/renombrar-rutina.
 import { CrearRutina } from './aplicacion/crear-rutina/crear-rutina.caso-uso.js';
 import { CrearPlan } from './aplicacion/crear-plan/crear-plan.caso-uso.js';
 import { ConsultarRutinaDelDia } from './aplicacion/consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.js';
+import { ConsultarPlanDelAlumno } from './aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.js';
 import { PUBLICADOR_EVENTOS } from '../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
 import type { PublicadorEventos } from '../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
 import { Reloj } from '../../compartido/dominio/reloj/reloj.puerto.js';
@@ -106,6 +107,23 @@ import { PlanificacionControlador } from './presentacion/controlador/planificaci
         nombres: ConsultaNombresEjercicios,
         reloj: Reloj,
       ) => new ConsultarRutinaDelDia(planes, rutinas, vinculos, nombres, reloj),
+    },
+    {
+      provide: ConsultarPlanDelAlumno,
+      inject: [
+        RepositorioPlanes,
+        RepositorioRutinas,
+        ConsultaVinculos,
+        ConsultaNombresEjercicios,
+        Reloj,
+      ],
+      useFactory: (
+        planes: RepositorioPlanes,
+        rutinas: RepositorioRutinas,
+        vinculos: ConsultaVinculos,
+        nombres: ConsultaNombresEjercicios,
+        reloj: Reloj,
+      ) => new ConsultarPlanDelAlumno(planes, rutinas, vinculos, nombres, reloj),
     },
   ],
 })
