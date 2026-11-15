@@ -213,10 +213,10 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 | Orden | Tarjeta | Tarea | Repo | RN | Pts | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | 1 | US09 | Modelar: Circuito (2 o más ejercicios, macropausa por vuelta) | back | RN-PLAN-01, 03, 04 | 3 | ✅ implementado e integrado; evidencia de pruebas en auditoría |
-| 1 | US11 | Backend: consultar el plan del alumno | back | RN-PLAN-11, 19 | 1 | ✅ implementado en rama; 10 unitarios y 9 e2e API verificados el 15/11, integración pendiente |
+| 1 | US11 | Backend: consultar el plan del alumno | back | RN-PLAN-11, 19 | 1 | ✅ implementado en rama; 10 unitarios (14/11) y 9 e2e API (15/11); integración pendiente |
 | 1 | US13 | Modelar: Entrenamiento (copia de la rutina, peso del día, abandonado) | back | RN-ENT-01, 02, 20 | 3 | ⬜ |
 | 2 | US09 | Backend: crear rutina por circuitos | back | RN-PLAN-01, 03, 04 | 5 | ✅ implementado e integrado; evidencia de pruebas en auditoría |
-| 2 | US11 | Frontend: página "Mi plan" | front | RN-PLAN-11, 19 | 3 | ⬜ |
+| 2 | US11 | Frontend: página "Mi plan" | front | RN-PLAN-11, 19 | 3 | ✅ implementado en rama; 9 Vitest y build verificados el 15/11; integración pendiente |
 | 2 | US13 | Backend: iniciar entrenamiento y consultar el que está en curso | back | RN-ENT-01, 02, 20 | 3 | ⬜ residual V2: 5 (copia, propiedad e inicio único) |
 | 3 | US09 | Frontend: circuitos en el editor de rutina | front | RN-PLAN-01, 03, 04 | 3 | ✅ implementado e integrado; evidencia de pruebas en auditoría |
 | 3 | US10 | Backend: rutina mixta | back | RN-PLAN-01 | 3 | ⬜ residual V2: 5 (orden combinado y persistencia) |
