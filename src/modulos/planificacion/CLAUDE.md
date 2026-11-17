@@ -43,7 +43,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `consultar-rutinas.caso-uso.ts` ✅ | T06 | 08 |
 | `renombrar-rutina/renombrar-rutina.caso-uso.ts` ✅ | T09 | 08, 21 |
 | `normalizar-nombres-rutinas/normalizar-nombres-rutinas.caso-uso.ts` ✅ (corre al arrancar, `PlanificacionModule.onApplicationBootstrap`) | T09 | 21 |
-| `importar-rutina.caso-uso.ts` | US20 | 08 |
+| `importar-rutina/importar-rutina.caso-uso.ts` ✅ | US20 | 08, 21 |
 | `crear-plan/crear-plan.caso-uso.ts` ✅ | US07 | 08, 09–15, 17 |
 | `agregar-alumno-a-plan.caso-uso.ts` | US12 | 13, 14, 16 |
 | `quitar-alumno-de-plan.caso-uso.ts` | US12 | 12, 16 |
@@ -58,7 +58,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `GET /planificacion/rutinas?pagina=&tamanio=` ✅ (respuesta `{ items, total, pagina, tamanio }`; por defecto 1 y 10) | Profesor | consultar-rutinas |
 | `PATCH /planificacion/rutinas/:id/nombre` ✅ | Profesor | renombrar-rutina |
 | `PUT /planificacion/rutinas/:id` | Profesor | editar-rutina |
-| `POST /planificacion/rutinas/:id/importacion` | Profesor | importar-rutina |
+| `POST /planificacion/rutinas/:id/importacion` ✅ | Profesor | importar-rutina |
 | `POST /planificacion/planes` ✅ (respuesta con `id`, `fechaInicio`, `fechaFin`, `dias[{ numero, fecha, rutinaId, esDescanso }]` y `alumnoIds`) | Profesor | crear-plan |
 | `POST /planificacion/planes/:id/alumnos` | Profesor | agregar-alumno-a-plan |
 | `DELETE /planificacion/planes/:id/alumnos/:alumnoId` | Profesor | quitar-alumno-de-plan |
@@ -87,6 +87,12 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 * T06 (11/11/2026): `GET /planificacion/rutinas` pagina con `PaginacionDto` (`src/compartido/presentacion/paginacion/`): tamaños 5, 10, 20, 50 o 100 (por defecto 10) y página desde 1; un valor inválido responde 400 desde el DTO, sin código RN. El caso de uso ya no acota valores. Orden: más nuevas primero.
 * RN-PLAN-21: la unicidad se comprueba en los casos de uso (crear y renombrar) con `listarNombresPorProfesor` del puerto; no hay índice único en la base. El largo lo valida `NombreRutina` (400 `RN-PLAN-21`), no el DTO. La columna `nombre` es `varchar(60)` con default `'Rutina 1'` para las filas que ya existían.
 * Al renombrar, el mapper deriva el id de las filas de ejercicios de circuito a partir del circuito y la posición, para que guardar de nuevo la rutina actualice esas filas en vez de duplicarlas.
+
+## Decisiones de implementación (US20)
+
+* Importar crea una rutina independiente con nuevos IDs de rutina, bloques y circuitos, conservando datos, referencias al catálogo y orden. No modifica ni asigna automáticamente un plan.
+* El nombre se genera por profesor como `Nombre - Copia`, `Nombre - Copia 2`, etc.; se recorta el nombre original si hace falta para respetar los 60 caracteres (RN-PLAN-21).
+* Una rutina ajena o inexistente responde 404 con `RN-PLAN-08`. No se solicita confirmación sobre si la copia es una rutina nueva.
 
 ## Decisiones de implementación (US10)
 

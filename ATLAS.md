@@ -66,7 +66,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | planificacion | `consultar-rutinas.caso-uso.ts` | `GET /planificacion/rutinas` | T06 | ✅ |
 | planificacion | `renombrar-rutina.caso-uso.ts` | `PATCH /planificacion/rutinas/:id/nombre` | T09 | ✅ |
 | planificacion | `editar-rutina.caso-uso.ts` | `PUT /planificacion/rutinas/:id` | US06 | 📄 |
-| planificacion | `importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | 📄 copia independiente, sin pregunta al modificar (RN-PLAN-08 actualizada el 17/11/2026) |
+| planificacion | `importar-rutina/importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | ✅ copia independiente de rutina propia |
 | planificacion | `crear-plan.caso-uso.ts` | `POST /planificacion/planes` | US07 | ✅ |
 | identidad | `listar-alumnos-del-profesor.caso-uso.ts` | `GET /identidad/alumnos` | US07 | ✅ |
 | planificacion | `agregar-alumno-a-plan.caso-uso.ts` | `POST /planificacion/planes/:id/alumnos` | US12 | 📄 |
@@ -112,7 +112,7 @@ Hoy:
 | identidad | infraestructura | usuario, profesor, alumno |
 | identidad | presentacion | controlador, ingreso, alta-profesor, vinculo |
 | planificacion | dominio | rutina (con bloque, circuito, `NombreRutina` y los puertos RepositorioRutinas, ConsultaEjercicios y ConsultaNombresEjercicios), plan (con `DiaPlan`, `ValidezPlan` y los puertos RepositorioPlanes y ConsultaVinculos), objetivo-prescripto, pausa, tipo-rutina |
-| planificacion | aplicacion | crear-rutina, consultar-rutinas, renombrar-rutina, crear-plan, consultar-rutina-del-dia |
+| planificacion | aplicacion | crear-rutina, consultar-rutinas, renombrar-rutina, importar-rutina, crear-plan, consultar-rutina-del-dia |
 | planificacion | infraestructura | rutina, plan |
 | planificacion | presentacion | controlador, crear-rutina (incluye `RenombrarRutinaDto`), crear-plan |
 | compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio, reloj, paginacion (`dominio/paginacion/paginacion.ts` con `TAMANIOS_PAGINA` y `Pagina<T>`; `presentacion/paginacion/paginacion.dto.ts` con `PaginacionDto`) |

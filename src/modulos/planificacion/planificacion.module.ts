@@ -6,6 +6,7 @@ import { ModuloIdentidad } from '../identidad/identidad.module.js';
 import { ConsultarRutinas } from './aplicacion/consultar-rutinas/consultar-rutinas.caso-uso.js';
 import { RenombrarRutina } from './aplicacion/renombrar-rutina/renombrar-rutina.caso-uso.js';
 import { CrearRutina } from './aplicacion/crear-rutina/crear-rutina.caso-uso.js';
+import { ImportarRutina } from './aplicacion/importar-rutina/importar-rutina.caso-uso.js';
 import { CrearPlan } from './aplicacion/crear-plan/crear-plan.caso-uso.js';
 import { ConsultarRutinaDelDia } from './aplicacion/consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.js';
 import { PUBLICADOR_EVENTOS } from '../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
@@ -73,6 +74,11 @@ import { PlanificacionControlador } from './presentacion/controlador/planificaci
       provide: RenombrarRutina,
       inject: [RepositorioRutinas],
       useFactory: (rutinas: RepositorioRutinas) => new RenombrarRutina(rutinas),
+    },
+    {
+      provide: ImportarRutina,
+      inject: [RepositorioRutinas],
+      useFactory: (rutinas: RepositorioRutinas) => new ImportarRutina(rutinas),
     },
     {
       provide: NormalizarNombresRutinas,
