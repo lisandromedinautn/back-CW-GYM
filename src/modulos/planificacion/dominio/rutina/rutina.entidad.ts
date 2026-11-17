@@ -105,6 +105,37 @@ export class Rutina {
     this.nombreRutina = NombreRutina.crear(nombre);
   }
 
+  /** RN-PLAN-08: copia el agregado y da identidad nueva a cada entidad interna. */
+  copiar(nombre: string): Rutina {
+    const bloques = this.bloques.map((bloque) =>
+      Bloque.reconstruir(randomUUID(), {
+        ejercicioId: bloque.ejercicio.ejercicioId,
+        series: bloque.series,
+        micropausaSegundos: bloque.micropausa.segundos,
+        macropausaSegundos: bloque.macropausa.segundos,
+        repeticiones: bloque.ejercicio.objetivo.repeticiones,
+        segundos: bloque.ejercicio.objetivo.segundos,
+        pesoKg: bloque.ejercicio.objetivo.pesoKg,
+      }),
+    );
+    const circuitos = this.circuitos.map((circuito) =>
+      Circuito.reconstruir(randomUUID(), {
+        vueltas: circuito.vueltas,
+        macropausaSegundos: circuito.macropausa.segundos,
+        ejercicios: circuito.ejercicios.map((ejercicio) => ({
+          ejercicioId: ejercicio.ejercicioId,
+          repeticiones: ejercicio.objetivo.repeticiones,
+          segundos: ejercicio.objetivo.segundos,
+          pesoKg: ejercicio.objetivo.pesoKg,
+        })),
+      }),
+    );
+    return Rutina.reconstruir(randomUUID(), this.profesorUsuarioId, bloques, circuitos, nombre, {
+      bloques: this.bloques.map((bloque) => this.ordenDe(bloque)),
+      circuitos: this.circuitos.map((circuito) => this.ordenDe(circuito)),
+    });
+  }
+
   get tipo(): TipoRutina {
     return TipoRutina.derivar(this.bloques.length, this.circuitos.length);
   }

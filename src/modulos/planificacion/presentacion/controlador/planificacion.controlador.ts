@@ -8,6 +8,7 @@ import {
 import { PaginacionDto } from '../../../../compartido/presentacion/paginacion/paginacion.dto.js';
 import { RenombrarRutina } from '../../aplicacion/renombrar-rutina/renombrar-rutina.caso-uso.js';
 import { CrearRutina } from '../../aplicacion/crear-rutina/crear-rutina.caso-uso.js';
+import { ImportarRutina } from '../../aplicacion/importar-rutina/importar-rutina.caso-uso.js';
 import { CrearPlan } from '../../aplicacion/crear-plan/crear-plan.caso-uso.js';
 import {
   ConsultarRutinaDelDia,
@@ -117,6 +118,7 @@ const aRespuesta = (rutina: Rutina): RutinaRespuesta => ({
 export class PlanificacionControlador {
   constructor(
     @Inject(CrearRutina) private readonly crearRutina: CrearRutina,
+    @Inject(ImportarRutina) private readonly importarRutina: ImportarRutina,
     @Inject(ConsultarRutinas) private readonly consultarRutinas: ConsultarRutinas,
     @Inject(RenombrarRutina) private readonly renombrarRutina: RenombrarRutina,
     @Inject(CrearPlan) private readonly crearPlan: CrearPlan,
@@ -158,6 +160,16 @@ export class PlanificacionControlador {
     @Body() datos: RenombrarRutinaDto,
   ): Promise<RutinaRespuesta> {
     return aRespuesta(await this.renombrarRutina.ejecutar(usuario.sub, id, datos.nombre));
+  }
+
+  /** RN-PLAN-08: copia independiente de una rutina propia. */
+  @Post('rutinas/:id/importacion')
+  @Roles('Profesor')
+  async importar(
+    @UsuarioActual() usuario: UsuarioAutenticado,
+    @Param('id') id: string,
+  ): Promise<RutinaRespuesta> {
+    return aRespuesta(await this.importarRutina.ejecutar(usuario.sub, id));
   }
 
   /** Solo Profesor (RN-IDE-03). US07: RN-PLAN-09 a 15 y 17. */

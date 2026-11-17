@@ -211,3 +211,19 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Ideas descartadas: una lista única `elementos` con `tipo` en el body (rompía el contrato de US06 y US09); aceptar huecos y reordenar por valor; sumar `orden` a la rutina del día (exige modificar el test e2e de US08).
 - Reglas afectadas: ninguna cambia. RN-PLAN-01 suma tests de rutina mixta.
 - Pendientes: front de US10 (CG-39); `orden` en la rutina del día si se decide.
+
+## 2026-11-17 — Actualizar RN-PLAN-08 [CG-40, US20]
+- Solicitante: Julián; consideró obsoleta la pregunta sobre si una copia modificada es una rutina nueva y pidió eliminarla.
+- Herramienta / modelo: OpenCode · GPT-6.1 Terra.
+- Qué hizo la IA: revisó el flujo de planes y rutinas en ambos repositorios y actualizó la regla, su historial, la decisión 8, la trazabilidad, los atlas y los changelogs. No modificó código ni tests.
+- Decisión: se conserva que importar crea una copia independiente y que cada profesor solo ve, edita e importa sus propias rutinas; no se pregunta si la copia modificada es una rutina nueva.
+- Ideas descartadas: definir acciones de sí/no o crear una tercera rutina a partir de la pregunta eliminada.
+- Pendientes: implementar y probar US20 en back y front; la edición completa de rutinas también sigue pendiente. Sin commits ni publicaciones.
+
+## 2026-11-17 — Importar rutina como copia [CG-40, US20]
+- Desarrollador: Julián. Aprobó los casos de copia, nombres, seguridad, persistencia, interfaz y asignación a plan.
+- Herramienta / modelo: OpenCode · GPT-6.1 Terra.
+- Qué hizo la IA: implementó el endpoint de importación, copia del agregado con IDs nuevos y nombres únicos, y la acción en el listado del front. Agregó tests unitarios, e2e de API con PostgreSQL de test e integración de interfaz; actualizó documentación y trazabilidad.
+- Decisiones de Julián: acción "Importar como copia" en la lista de rutinas; sufijos ` - Copia`, ` - Copia 2`, etc.; volver a la primera página tras importar.
+- Verificación: 195 tests unitarios del back, 121 tests del front, 3 e2e de API de US20 y lint en ambos repositorios aprobados. El primer ciclo unitario y el primer ciclo de interfaz se observaron en rojo antes de implementar; los e2e se agregaron después. No se ejecutaron pruebas de mutación ni e2e de navegador.
+- Pendientes: revisión del desarrollador y commits; edición completa de rutinas y e2e de navegador de US20. No se hizo push.

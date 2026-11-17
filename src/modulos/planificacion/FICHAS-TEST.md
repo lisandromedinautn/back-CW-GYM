@@ -6,6 +6,12 @@ Ejercicios de los ejemplos (fixture `test/datasets/ejercicios-fixture.json`): `l
 
 | Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `importar-rutina.caso-uso.spec.ts` › contenido e identidad | RN-PLAN-08 | Unitario | rutinas de bloques, circuitos y mixta | copia independiente con orden y datos originales | = esperado | 17/11/2026 |
+| `importar-rutina.caso-uso.spec.ts` › propiedad y ausencia | RN-PLAN-08 | Unitario | rutina ajena o inexistente | error RN-PLAN-08 sin guardar | = esperado | 17/11/2026 |
+| `importar-rutina.caso-uso.spec.ts` › nombres | RN-PLAN-21 | Unitario | colisiones, 60 caracteres y otro profesor | nombre libre dentro del límite por profesor | = esperado | 17/11/2026 |
+| `test/e2e/planificacion/importar-rutina.e2e-spec.ts` › persistencia y nombres | RN-PLAN-08, 21 | e2e | importar rutina mixta y renombrar original y copia | IDs distintos, datos conservados y renombrados independientes | = esperado | 17/11/2026 |
+| `test/e2e/planificacion/importar-rutina.e2e-spec.ts` › acceso | RN-PLAN-08, RN-IDE-03 | e2e | rutina ajena o inexistente, alumno y sin sesión | 404, 404, 403 y 401, sin copias adicionales | = esperado | 17/11/2026 |
+| `test/e2e/planificacion/importar-rutina.e2e-spec.ts` › plan | RN-PLAN-08 | e2e | copia asignada al primer día | plan creado con ID de la copia | = esperado | 17/11/2026 |
 | `dominio/rutina/rutina.entidad.spec.ts` › con un bloque de lever chest press la rutina es de Bloques | RN-PLAN-01 | Unitario | `Rutina.crear` con 1 bloque de lever chest press, 3 series, 10 reps | tipo `Bloques` | tipo `Bloques` | 09/11/2026 |
 | `dominio/rutina/rutina.entidad.spec.ts` › sin bloques se rechaza con RN-PLAN-01 | RN-PLAN-01 | Unitario | `Rutina.crear` con `bloques: []` | `ErrorDominio` código `RN-PLAN-01` | `ErrorDominio` código `RN-PLAN-01` | 09/11/2026 |
 | `dominio/rutina/rutina.entidad.spec.ts` › dos bloques respetan el orden dado | RN-PLAN-01 | Unitario | bloques lever chest press y weighted front plank, en ese orden | ejercicios `[lever chest press, weighted front plank]` | ejercicios `[lever chest press, weighted front plank]` | 09/11/2026 |

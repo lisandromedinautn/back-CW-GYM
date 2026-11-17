@@ -26,7 +26,7 @@ Hay tres roles: **Profesor**, **Alumno** y **Admin**.
 | 5 | Circuito | Cada vuelta es una serie y termina con macropausa. No hay micropausas entre ejercicios |
 | 6 | Entrenamiento | Es una copia independiente de la rutina en la que se basó y solo se usa para comparar |
 | 7 | Profesor por alumno | Un alumno tiene un solo profesor |
-| 8 | Reutilizar rutinas | Se reutilizan por importación. Si se modifica la importada, se pregunta si es una rutina nueva |
+| 8 | Reutilizar rutinas | Se reutilizan por importación como copia independiente. Actualización del 17/11/2026 (CG-40): se elimina la pregunta sobre si la copia modificada es una rutina nueva |
 | 9 | Cambios en rutinas | No afectan los entrenamientos ya realizados |
 | 10 | Planes vigentes | Un alumno tiene como máximo un plan vigente |
 | 11 | Validez del plan | Fija: 28 días desde la fecha de inicio, no configurable |
