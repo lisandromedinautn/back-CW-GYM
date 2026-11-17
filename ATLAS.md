@@ -66,7 +66,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | planificacion | `consultar-rutinas.caso-uso.ts` | `GET /planificacion/rutinas` | T06 | ✅ |
 | planificacion | `renombrar-rutina.caso-uso.ts` | `PATCH /planificacion/rutinas/:id/nombre` | T09 | ✅ |
 | planificacion | `editar-rutina.caso-uso.ts` | `PUT /planificacion/rutinas/:id` | US06 | 📄 |
-| planificacion | `importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | 📄 |
+| planificacion | `importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | 📄 copia independiente, sin pregunta al modificar (RN-PLAN-08 actualizada el 17/11/2026) |
 | planificacion | `crear-plan.caso-uso.ts` | `POST /planificacion/planes` | US07 | ✅ |
 | identidad | `listar-alumnos-del-profesor.caso-uso.ts` | `GET /identidad/alumnos` | US07 | ✅ |
 | planificacion | `agregar-alumno-a-plan.caso-uso.ts` | `POST /planificacion/planes/:id/alumnos` | US12 | 📄 |

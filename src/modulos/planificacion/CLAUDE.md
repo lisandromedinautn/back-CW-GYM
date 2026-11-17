@@ -19,7 +19,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | RN-PLAN-05 | El peso del ejercicio prescripto se indica solo si su tipo de carga incluye Peso Extra. Aun así es opcional: se puede prescribir sin peso | Glosario ("si corresponde"), decisión del 08/11/2026 | Vigente |
 | RN-PLAN-06 | Una rutina referencia ejercicios del catálogo por id, y esos ejercicios tienen que existir | Modelo | Vigente |
 | RN-PLAN-07 | Una rutina se puede editar siempre. Los cambios no alteran los entrenamientos ya realizados | Decisiones 9 y 14, invariante 5 | Vigente |
-| RN-PLAN-08 | Importar una rutina crea una copia independiente. Si se modifica la copia importada, se pregunta si es una rutina nueva. Un profesor solo ve, edita e importa sus propias rutinas | Decisión 8, US20, ZG-06 | Vigente |
+| RN-PLAN-08 | Importar una rutina crea una copia independiente. Un profesor solo ve, edita e importa sus propias rutinas | Decisión 8, US20, ZG-06 | Vigente |
 | RN-PLAN-09 | El plan tiene fecha de inicio y 28 días. La fecha de fin es siempre inicio + 27 días y no es configurable | Invariante 1, decisión 11, US07 | Vigente |
 | RN-PLAN-10 | Cada día del plan tiene una rutina o es de descanso | US07 | Vigente |
 | RN-PLAN-11 | El Día N del plan corresponde a la fecha inicio + (N − 1) días | Glosario | Vigente |
@@ -75,6 +75,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | 08/11/2026 | RN-PLAN-05 | Se aclara que el peso es opcional aunque la carga incluya Peso Extra (US06) | Ignacio |
 | 10/11/2026 | Nueva RN-PLAN-20 | Un circuito no repite ejercicios (US09) | Ignacio |
 | 11/11/2026 | Nueva RN-PLAN-21 | La rutina tiene nombre (1 a 60 caracteres, recortado), por defecto `Rutina N`, único por profesor sin distinguir mayúsculas, y se puede renombrar (T08, T09) | Lisandro |
+| 17/11/2026 | RN-PLAN-08 | Se elimina la pregunta sobre si la copia modificada es una rutina nueva; se conserva la copia independiente y el acceso a las rutinas propias (CG-40, US20) | Desarrollador |
 
 ## Decisiones de implementación (US06)
 

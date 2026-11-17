@@ -15,6 +15,7 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ### Cambiado
 
+- RN-PLAN-08: se elimina la pregunta sobre si una rutina importada modificada es una rutina nueva; se mantiene la copia independiente y la restricción a rutinas propias (CG-40, US20). Importar sigue pendiente.
 - Métricas del sprint 2 al 14/11: US06 parcial, 26 puntos técnicos del sprint y 52/129 acumulados; residual V2 de 91 puntos con cierre explícito y pronósticos por capacidad. Se conserva la base histórica y se retiran como medición las horas inferidas de commits. Informe en `docs/METRICAS-SPRINT-2.md`.
 
 ## [1.1.0] — 2026-11-08
