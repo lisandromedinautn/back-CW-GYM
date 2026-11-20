@@ -16,6 +16,11 @@ import {
  * `series` no lleva @Min(1) para que 0 llegue al dominio y responda RN-PLAN-02.
  */
 export class BloqueDto {
+  /** US10: posición en la rutina. Que sea 1..N sin repetir ni saltear lo valida el dominio (RN-PLAN-01). */
+  @IsOptional()
+  @IsInt()
+  orden?: number;
+
   @IsUUID()
   ejercicioId: string;
 
@@ -70,6 +75,11 @@ export class EjercicioCircuitoDto {
  * exige un mínimo, para que 0 vueltas o un solo ejercicio respondan RN-PLAN-03 desde el dominio.
  */
 export class CircuitoDto {
+  /** US10: posición en la rutina. Que sea 1..N sin repetir ni saltear lo valida el dominio (RN-PLAN-01). */
+  @IsOptional()
+  @IsInt()
+  orden?: number;
+
   @IsInt()
   vueltas: number;
 
@@ -84,8 +94,8 @@ export class CircuitoDto {
 }
 
 /**
- * US06 y US09: bloques y circuitos en listas separadas, las dos opcionales. Sin ninguno,
- * el dominio responde RN-PLAN-01.
+ * US06, US09 y US10: bloques y circuitos en listas separadas, las dos opcionales. Sin ninguno,
+ * el dominio responde RN-PLAN-01. En una rutina mixta, `orden` ubica cada uno en la secuencia.
  */
 export class CrearRutinaDto {
   /** RN-PLAN-21: el largo lo valida el dominio (400 con código RN-PLAN-21). */

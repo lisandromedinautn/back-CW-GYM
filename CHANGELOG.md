@@ -9,7 +9,7 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 ### Agregado
 
 - `GET /planificacion/mi-plan` (Alumno): consulta su plan vigente completo con los 28 días ordenados, fechas, rutinas con ejercicios y pausas o descansos. Usa la identidad del token y no expone otros alumnos (RN-PLAN-11, 15, 19; US11).
-
+- `POST /planificacion/rutinas/:id/importacion` crea una copia independiente de una rutina propia con nombre disponible (CG-40, US20).
 - `GET /planificacion/mi-rutina-del-dia` (Alumno): consulta su plan vigente y devuelve la rutina con nombres y objetivos de ejercicios, descanso o ausencia de plan. La fecha y el número de día se resuelven en el back (RN-PLAN-11, 15, 18; US08).
 - `POST /planificacion/planes` (Profesor): crea un plan de 28 días con la fecha de fin calculada (inicio + 27), una rutina o descanso por día y uno o más alumnos vinculados. Aplica RN-PLAN-08 a 15; el plan no se puede finalizar antes de tiempo (RN-PLAN-17) (US07).
 - `GET /identidad/alumnos` (Profesor): lista los alumnos vinculados al profesor, para asignarlos a un plan (US07).
@@ -18,7 +18,7 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 ### Cambiado
 
 - Reutilización del detalle de rutina con nombres en las consultas del Alumno; refactor preparatorio de US11, sin cambiar el contrato de US08.
-
+- RN-PLAN-08: se elimina la pregunta sobre si una rutina importada modificada es una rutina nueva; se mantiene la copia independiente y la restricción a rutinas propias (CG-40, US20).
 - Métricas del sprint 2 al 14/11: US06 parcial, 26 puntos técnicos del sprint y 52/129 acumulados; residual V2 de 91 puntos con cierre explícito y pronósticos por capacidad. Se conserva la base histórica y se retiran como medición las horas inferidas de commits. Informe en `docs/METRICAS-SPRINT-2.md`.
 
 ## [1.1.0] — 2026-11-08

@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import { Bloque, type DatosBloque } from './bloque.entidad.js';
 import { TipoRutina } from '../tipo-rutina/tipo-rutina.valor.js';
 import { Circuito, type DatosCircuito } from './circuito.entidad.js';
@@ -17,20 +18,82 @@ export interface DatosRutina {
   circuitos?: DatosCircuito[];
 }
 
+/** Un paso de la secuencia de la rutina (RN-PLAN-01): un bloque o un circuito. */
+export type ElementoRutina =
+  { tipo: 'bloque'; bloque: Bloque } | { tipo: 'circuito'; circuito: Circuito };
+
+/** Posición (1..N) de cada bloque y circuito dentro de la rutina, tal como se guardó. */
+export interface OrdenesGuardados {
+  bloques: number[];
+  circuitos: number[];
+}
+
+/**
+ * RN-PLAN-01 (US10): arma la secuencia con la posición de cada bloque y circuito. Sin posiciones,
+ * van los bloques y después los circuitos, cada lista en su orden. Con posiciones, tienen que
+ * venir en todos y ser exactamente 1..N, sin repetir ni saltear.
+ */
+function secuenciar(
+  bloques: Bloque[],
+  ordenesBloques: (number | undefined)[],
+  circuitos: Circuito[],
+  ordenesCircuitos: (number | undefined)[],
+): ElementoRutina[] {
+  const elementos: ElementoRutina[] = [
+    ...bloques.map((bloque) => ({ tipo: 'bloque' as const, bloque })),
+    ...circuitos.map((circuito) => ({ tipo: 'circuito' as const, circuito })),
+  ];
+  const ordenes = [...ordenesBloques, ...ordenesCircuitos];
+  if (ordenes.every((orden) => orden === undefined)) return elementos;
+
+  const completos = ordenes.filter((orden): orden is number => orden !== undefined);
+  const esperados = elementos.map((_, indice) => indice + 1);
+  const ordenados = [...completos].sort((a, b) => a - b);
+  if (
+    completos.length !== elementos.length ||
+    ordenados.some((orden, indice) => orden !== esperados[indice])
+  ) {
+    throw new ErrorDominio(
+      'RN-PLAN-01',
+      'El orden de bloques y circuitos tiene que ir de 1 a N, sin repetir ni saltear',
+    );
+  }
+  return elementos
+    .map((elemento, indice) => ({ elemento, orden: completos[indice] }))
+    .sort((a, b) => a.orden - b.orden)
+    .map(({ elemento }) => elemento);
+}
+
 /**
  * Agregado Rutina. RN-PLAN-01: secuencia ordenada de bloques y/o circuitos, con al menos uno.
- * El tipo se deriva del contenido. Hoy bloques y circuitos se guardan en listas separadas,
- * cada una en su orden; el orden entre ellos (rutina mixta) se resuelve en US10.
+ * El tipo se deriva del contenido. US10: bloques y circuitos comparten una única secuencia.
  */
 export class Rutina {
   private constructor(
     readonly id: string,
     /** Usuario con rol Profesor que la creó (sale del JWT). */
     readonly profesorUsuarioId: string,
-    readonly bloques: readonly Bloque[],
-    readonly circuitos: readonly Circuito[],
+    /** RN-PLAN-01: bloques y circuitos en el orden de la rutina. */
+    readonly elementos: readonly ElementoRutina[],
     private nombreRutina: NombreRutina,
   ) {}
+
+  /** Los bloques de la rutina, en su orden relativo. */
+  get bloques(): readonly Bloque[] {
+    return this.elementos.flatMap((e) => (e.tipo === 'bloque' ? [e.bloque] : []));
+  }
+
+  /** Los circuitos de la rutina, en su orden relativo. */
+  get circuitos(): readonly Circuito[] {
+    return this.elementos.flatMap((e) => (e.tipo === 'circuito' ? [e.circuito] : []));
+  }
+
+  /** Posición (1..N) del bloque o circuito dentro de la rutina (RN-PLAN-01). */
+  ordenDe(parte: Bloque | Circuito): number {
+    return (
+      this.elementos.findIndex((e) => (e.tipo === 'bloque' ? e.bloque : e.circuito) === parte) + 1
+    );
+  }
 
   /** RN-PLAN-21. */
   get nombre(): string {
@@ -40,6 +103,37 @@ export class Rutina {
   /** RN-PLAN-21: el nuevo nombre cumple la misma regla que el de la creación. */
   renombrar(nombre: string): void {
     this.nombreRutina = NombreRutina.crear(nombre);
+  }
+
+  /** RN-PLAN-08: copia el agregado y da identidad nueva a cada entidad interna. */
+  copiar(nombre: string): Rutina {
+    const bloques = this.bloques.map((bloque) =>
+      Bloque.reconstruir(randomUUID(), {
+        ejercicioId: bloque.ejercicio.ejercicioId,
+        series: bloque.series,
+        micropausaSegundos: bloque.micropausa.segundos,
+        macropausaSegundos: bloque.macropausa.segundos,
+        repeticiones: bloque.ejercicio.objetivo.repeticiones,
+        segundos: bloque.ejercicio.objetivo.segundos,
+        pesoKg: bloque.ejercicio.objetivo.pesoKg,
+      }),
+    );
+    const circuitos = this.circuitos.map((circuito) =>
+      Circuito.reconstruir(randomUUID(), {
+        vueltas: circuito.vueltas,
+        macropausaSegundos: circuito.macropausa.segundos,
+        ejercicios: circuito.ejercicios.map((ejercicio) => ({
+          ejercicioId: ejercicio.ejercicioId,
+          repeticiones: ejercicio.objetivo.repeticiones,
+          segundos: ejercicio.objetivo.segundos,
+          pesoKg: ejercicio.objetivo.pesoKg,
+        })),
+      }),
+    );
+    return Rutina.reconstruir(randomUUID(), this.profesorUsuarioId, bloques, circuitos, nombre, {
+      bloques: this.bloques.map((bloque) => this.ordenDe(bloque)),
+      circuitos: this.circuitos.map((circuito) => this.ordenDe(circuito)),
+    });
   }
 
   get tipo(): TipoRutina {
@@ -57,20 +151,33 @@ export class Rutina {
     return new Rutina(
       randomUUID(),
       datos.profesorUsuarioId,
-      bloques.map((bloque) => Bloque.crear(bloque)),
-      circuitos.map((circuito) => Circuito.crear(circuito)),
+      secuenciar(
+        bloques.map((bloque) => Bloque.crear(bloque)),
+        bloques.map((bloque) => bloque.orden),
+        circuitos.map((circuito) => Circuito.crear(circuito)),
+        circuitos.map((circuito) => circuito.orden),
+      ),
       NombreRutina.crear(datos.nombre ?? NOMBRE_POR_DEFECTO),
     );
   }
 
-  /** Rehidrata desde la base sin volver a validar contra el catálogo. */
+  /**
+   * Rehidrata desde la base sin volver a validar contra el catálogo. Sin `ordenes`, van los
+   * bloques y después los circuitos.
+   */
   static reconstruir(
     id: string,
     profesorUsuarioId: string,
     bloques: Bloque[],
     circuitos: Circuito[] = [],
     nombre: string = NOMBRE_POR_DEFECTO,
+    ordenes?: OrdenesGuardados,
   ): Rutina {
-    return new Rutina(id, profesorUsuarioId, bloques, circuitos, NombreRutina.crear(nombre));
+    return new Rutina(
+      id,
+      profesorUsuarioId,
+      secuenciar(bloques, ordenes?.bloques ?? [], circuitos, ordenes?.circuitos ?? []),
+      NombreRutina.crear(nombre),
+    );
   }
 }
