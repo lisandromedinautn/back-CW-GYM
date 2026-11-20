@@ -74,8 +74,8 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | planificacion | `quitar-alumno-de-plan.caso-uso.ts` | `DELETE /planificacion/planes/:id/alumnos/:alumnoId` | US12 | 📄 |
 | planificacion | `consultar-rutina-del-dia.caso-uso.ts` | `GET /planificacion/mi-rutina-del-dia` (solo Alumno) | US08 | ✅ `consultar-rutina-del-dia.caso-uso.spec.ts`, `consultar-rutina-del-dia-alumnos.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-rutina-del-dia.e2e-spec.ts` |
 | planificacion | `consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.ts` | `GET /planificacion/mi-plan` (solo Alumno) | US11 | ✅ caso de uso, `consultar-plan-del-alumno.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-plan-del-alumno.e2e-spec.ts` |
-| entrenamiento | `iniciar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos` | US13 | 📄 |
-| entrenamiento | `consultar-entrenamiento-en-curso.caso-uso.ts` | `GET /entrenamiento/mi-entrenamiento-en-curso` | US13 | 📄 |
+| entrenamiento | `iniciar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos` | US13 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` |
+| entrenamiento | `consultar-entrenamiento-en-curso.caso-uso.ts` | `GET /entrenamiento/mi-entrenamiento-en-curso` | US13 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` |
 | entrenamiento | `registrar-serie-realizada.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/series` | US14 | 📄 |
 | entrenamiento | `finalizar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/finalizacion` | US15, US16 | 📄 |
 | entrenamiento | `registrar-percepcion.caso-uso.ts` | `PUT /entrenamiento/entrenamientos/:id/percepcion` | US17 | 📄 |
@@ -87,8 +87,8 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | :-- | :-- | :-- |
 | planificacion | Fachada de identidad | Validar el vínculo alumno-profesor (RN-PLAN-13). ✅ `src/modulos/identidad/fachada-identidad.ts`, por el puerto `ConsultaVinculos` (adaptador en `planificacion/infraestructura/plan/`) |
 | planificacion | Fachada de catalogo | Validar ejercicios referenciados y su tipo (RN-PLAN-04, 05, 06). ✅ `src/modulos/catalogo/fachada-catalogo.ts`, por el puerto `ConsultaEjercicios` (adaptador en `planificacion/infraestructura/rutina/`) |
-| entrenamiento | Fachada de planificacion | Copiar la rutina del día (RN-ENT-01, 02) |
-| entrenamiento | Fachada de identidad | Peso actual del alumno y su profesor (RN-ENT-02, 18) |
+| entrenamiento | Fachada de planificacion | ✅ `fachada-planificacion.ts`: copiar la rutina del día con su orden (RN-ENT-01, 02) |
+| entrenamiento | Fachada de identidad | ✅ Peso actual del alumno (RN-ENT-02); profesor para RN-ENT-18 📄 |
 | entrenamiento | Fachada de catalogo | Tipo, tipo de carga, factor y grupo de cada ejercicio (RN-ENT-07, 09, 10) |
 
 ## Carpetas por concepto
@@ -116,6 +116,10 @@ Hoy:
 | planificacion | aplicacion | crear-rutina, consultar-rutinas (incluye `resolver-rutina-para-alumno.ts`), renombrar-rutina, crear-plan, consultar-rutina-del-dia, consultar-plan-del-alumno |
 | planificacion | infraestructura | rutina, plan |
 | planificacion | presentacion | controlador, crear-rutina (incluye `RenombrarRutinaDto`), crear-plan |
+| entrenamiento | dominio | entrenamiento (con `CopiaRutina`, `EntrenamientoIniciado`, puertos y `entrenamiento.entidad.spec.ts`) |
+| entrenamiento | aplicacion | iniciar-entrenamiento, consultar-entrenamiento-en-curso |
+| entrenamiento | infraestructura | entrenamiento (esquema y repositorio TypeORM) |
+| entrenamiento | presentacion | controlador |
 | compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio, reloj, paginacion (`dominio/paginacion/paginacion.ts` con `TAMANIOS_PAGINA` y `Pagina<T>`; `presentacion/paginacion/paginacion.dto.ts` con `PaginacionDto`) |
 
 ## Nombres de archivo

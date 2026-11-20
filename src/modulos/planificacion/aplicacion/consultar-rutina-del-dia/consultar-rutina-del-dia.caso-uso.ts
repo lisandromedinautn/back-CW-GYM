@@ -10,6 +10,11 @@ import type { RepositorioPlanes } from '../../dominio/plan/repositorio-planes.pu
 import type { ConsultaNombresEjercicios } from '../../dominio/rutina/consulta-nombres-ejercicios.puerto.js';
 import type { RepositorioRutinas } from '../../dominio/rutina/repositorio-rutinas.puerto.js';
 
+type RutinaDelDiaOrdenada = RutinaParaAlumnoRespuesta & {
+  bloques: (RutinaParaAlumnoRespuesta['bloques'][number] & { orden: number })[];
+  circuitos: (RutinaParaAlumnoRespuesta['circuitos'][number] & { orden: number })[];
+};
+
 /**
  * US08, RN-PLAN-18: el alumno consulta la rutina del día de su plan vigente. La fecha sale del
  * `Reloj`. Unión discriminada por `estado` para que el front distinga los tres casos.
@@ -35,10 +40,29 @@ export class ConsultarRutinaDelDia {
 
   async ejecutar(usuarioId: string): Promise<ResultadoRutinaDelDia> {
     const fecha = fechaIso(this.reloj.ahora());
-
     const alumnoId = await this.vinculos.obtenerAlumnoIdPorUsuarioId(usuarioId);
     if (alumnoId === null) return { estado: 'sin-plan', fecha };
 
+    const resultado = await this.consultarPorAlumnoYFecha(alumnoId, fecha);
+    if (resultado.estado !== 'rutina') return resultado;
+    const sinOrden = <T extends { orden: number }>({ orden: _orden, ...parte }: T) => parte;
+    return {
+      ...resultado,
+      rutina: {
+        ...resultado.rutina,
+        bloques: resultado.rutina.bloques.map(sinOrden),
+        circuitos: resultado.rutina.circuitos.map(sinOrden),
+      },
+    };
+  }
+
+  async consultarPorAlumnoYFecha(
+    alumnoId: string,
+    fecha: string,
+  ): Promise<
+    | Exclude<ResultadoRutinaDelDia, { estado: 'rutina' }>
+    | { estado: 'rutina'; fecha: string; numeroDia: number; rutina: RutinaDelDiaOrdenada }
+  > {
     const [plan] = await this.planes.listarVigentesPorAlumno(alumnoId, fecha);
     if (!plan) return { estado: 'sin-plan', fecha };
 
@@ -54,11 +78,23 @@ export class ConsultarRutinaDelDia {
       throw new ErrorDominio('RN-PLAN-08', 'La rutina del día no existe', 'no-encontrado');
     }
 
+    const detalle = await resolverRutinaParaAlumno(rutina, this.nombres);
+    const { bloques, circuitos } = rutina;
     return {
       estado: 'rutina',
       fecha,
       numeroDia: dia.numero,
-      rutina: await resolverRutinaParaAlumno(rutina, this.nombres),
+      rutina: {
+        ...detalle,
+        bloques: detalle.bloques.map((bloque, indice) => ({
+          ...bloque,
+          orden: rutina.ordenDe(bloques[indice]),
+        })),
+        circuitos: detalle.circuitos.map((circuito, indice) => ({
+          ...circuito,
+          orden: rutina.ordenDe(circuitos[indice]),
+        })),
+      },
     };
   }
 }

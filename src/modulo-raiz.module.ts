@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CatalogoModule } from './modulos/catalogo/catalogo.module.js';
+import { EntrenamientoModule } from './modulos/entrenamiento/entrenamiento.module.js';
 import { ModuloCompartido } from './compartido/compartido.module.js';
 import { ModuloIdentidad } from './modulos/identidad/identidad.module.js';
 import { PlanificacionModule } from './modulos/planificacion/planificacion.module.js';
@@ -36,6 +37,7 @@ import { PlanificacionModule } from './modulos/planificacion/planificacion.modul
     ModuloIdentidad,
     CatalogoModule,
     PlanificacionModule,
+    EntrenamientoModule,
   ],
 })
 export class ModuloRaiz {}

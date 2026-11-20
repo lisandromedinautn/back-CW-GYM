@@ -40,6 +40,11 @@ export class FachadaIdentidad {
     return alumno ? aAlumnoPublico(alumno) : null;
   }
 
+  async obtenerAlumnoConPeso(usuarioId: string): Promise<{ id: string; pesoKg: number } | null> {
+    const alumno = await this.alumnos.buscarPorUsuarioId(usuarioId);
+    return alumno ? { id: alumno.id, pesoKg: alumno.salud.pesoKg } : null;
+  }
+
   /** RN-PLAN-13: el alumno está vinculado al profesor que recibe el usuario del JWT. */
   async alumnoVinculadoAProfesor(alumnoId: string, profesorUsuarioId: string): Promise<boolean> {
     const [alumno, profesor] = await Promise.all([

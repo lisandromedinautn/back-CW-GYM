@@ -36,6 +36,7 @@ import {
 } from './infraestructura/rutina/rutina.esquema.js';
 import { RepositorioRutinasTypeorm } from './infraestructura/rutina/rutina.repositorio-typeorm.js';
 import { PlanificacionControlador } from './presentacion/controlador/planificacion.controlador.js';
+import { FachadaPlanificacion } from './fachada-planificacion.js';
 
 /** Planificación. Los casos de uso no conocen Nest: se arman acá con fábricas. */
 @Module({
@@ -54,6 +55,7 @@ import { PlanificacionControlador } from './presentacion/controlador/planificaci
   ],
   controllers: [PlanificacionControlador],
   providers: [
+    FachadaPlanificacion,
     { provide: RepositorioRutinas, useClass: RepositorioRutinasTypeorm },
     { provide: ConsultaEjercicios, useClass: ConsultaEjerciciosFachadaCatalogo },
     { provide: ConsultaNombresEjercicios, useClass: ConsultaNombresEjerciciosFachadaCatalogo },
@@ -132,6 +134,7 @@ import { PlanificacionControlador } from './presentacion/controlador/planificaci
       ) => new ConsultarPlanDelAlumno(planes, rutinas, vinculos, nombres, reloj),
     },
   ],
+  exports: [FachadaPlanificacion],
 })
 export class PlanificacionModule implements OnApplicationBootstrap {
   private readonly registro = new Logger('Planificacion');

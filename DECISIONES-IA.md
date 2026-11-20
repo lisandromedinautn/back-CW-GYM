@@ -232,3 +232,12 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Frontend: refactor db40646 con hooks completos en laptop; pantalla con 9 pruebas de integración y build aprobados. Se observaron los rojos previos a la implementación y se verificó que las pruebas detectan fallos introducidos temporalmente. Los cambios temporales de permisos y número de día se restauraron y sus archivos coinciden por SHA-256 con las versiones verificadas.
 - Se sincronizan trazabilidad y plan operativo en ambos repos. Se marca implementación en rama, no integración ni publicación; el corte de métricas del 14/11 queda conservado. Sin push.
 - Se cerró y eliminó PostgreSQL temporal del homelab. Los registros de ejecución permanecen dentro de .git/codex-us11; las fuentes se guardaron directamente en SSHFS.
+
+## 2026-11-20 — Iniciar y retomar un entrenamiento [CG-46]
+
+- Desarrollador: Julián.
+- Herramienta / modelo: OpenCode · GPT-6.2 Sol.
+- Objetivo: implementar el modelado, la API y la pantalla de US13.
+- Qué hizo la IA: implementó el agregado, la copia de la prescripción, el inicio único en PostgreSQL y la consulta autenticada. Se reutilizó Planificación sin cambiar el contrato de US08.
+- Decisiones del desarrollador: confirmó UTC, los estados de consulta y los casos de dominio, API y UI.
+- Ideas descartadas: un proceso programado para medianoche y adelantar el registro de series o la finalización.
