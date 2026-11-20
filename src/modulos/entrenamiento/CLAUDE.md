@@ -37,8 +37,8 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 
 | Archivo (`aplicacion/`) | US | RN |
 | :-- | :-- | :-- |
-| `iniciar-entrenamiento.caso-uso.ts` | US13 | 01, 02 |
-| `consultar-entrenamiento-en-curso.caso-uso.ts` | US13 | 20 |
+| `iniciar-entrenamiento.caso-uso.ts` ✅ | US13 | 01, 02 |
+| `consultar-entrenamiento-en-curso.caso-uso.ts` ✅ | US13 | 20 |
 | `registrar-serie-realizada.caso-uso.ts` | US14 | 03, 04, 19, 20 |
 | `finalizar-entrenamiento.caso-uso.ts` | US15, US16 | 05–13, 17, 19, 20 |
 | `registrar-percepcion.caso-uso.ts` | US17 | 14, 15, 16 |
@@ -48,8 +48,8 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 
 | Método y ruta | Rol | Caso de uso |
 | :-- | :-- | :-- |
-| `POST /entrenamiento/entrenamientos` | Alumno | iniciar-entrenamiento |
-| `GET /entrenamiento/mi-entrenamiento-en-curso` | Alumno | consultar-entrenamiento-en-curso |
+| `POST /entrenamiento/entrenamientos` ✅ | Alumno | iniciar-entrenamiento |
+| `GET /entrenamiento/mi-entrenamiento-en-curso` ✅ | Alumno | consultar-entrenamiento-en-curso |
 | `POST /entrenamiento/entrenamientos/:id/series` | Alumno | registrar-serie-realizada |
 | `POST /entrenamiento/entrenamientos/:id/finalizacion` | Alumno | finalizar-entrenamiento |
 | `PUT /entrenamiento/entrenamientos/:id/percepcion` | Alumno | registrar-percepcion |
@@ -62,3 +62,10 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | 01/11/2026 | Todas | Versión inicial | Lisandro |
 | 01/11/2026 | RN-ENT-15 | Escala de sensación de fuerza fijada de 1 a 5 | Lisandro |
 | 01/11/2026 | RN-ENT-01, 09, 13, 16; nueva RN-ENT-20 | Se cierran ZG-08 a ZG-12: solo la rutina de hoy y una vez por día, los grupos incluyen el secundario, récord estrictamente mayor sin anunciar la primera marca, RPE y sensación opcionales y cargables después, entrenamiento abandonado a la medianoche | Lisandro |
+
+## Decisiones de implementación (CG-46, US13)
+
+* El alumno sale del JWT. El inicio no recibe rutina ni fecha del cliente: ambas se resuelven en el servidor, con el mismo instante del `Reloj` y la fecha UTC de Planificación.
+* `POST` devuelve `201` con `{ id, alumnoId, inicio, pesoCorporalKg, rutina }`. Sin plan, descanso o inicio duplicado devuelve `409` con `RN-ENT-01`. PostgreSQL garantiza la unicidad por alumno y fecha UTC; solo se publica `EntrenamientoIniciado` después de insertar.
+* La prescripción se guarda como una copia JSON independiente, conservando `orden` entre bloques y circuitos. La fachada interna de Planificación lo expone sin cambiar el contrato HTTP de US08.
+* `GET` devuelve `200` con `{ estado: 'en-curso' | 'abandonado', entrenamiento }` o `{ estado: 'sin-entrenamiento' }`. El estado se calcula al consultar el último entrenamiento del alumno: a las 00:00 UTC deja de estar en curso. No hace falta una tarea programada. El abandono no impide iniciar la rutina del nuevo día.
