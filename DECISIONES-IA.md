@@ -261,3 +261,14 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Ideas descartadas: marcar US06 como parcial en Jira o reabrirla sin consultar; mover US12 al sprint 4 aunque ya figura en curso.
 - Reglas afectadas: ninguna.
 - Pendientes: decidir US06 (Listo en Jira, edición RN-PLAN-07 sin código; subtareas CG-24 y CG-25 en Por hacer). CG-23 y CG-27 (Modelar de US06 y US07) no se pudieron pasar a Listo: el permiso de la herramienta lo bloqueó. Publicar `v1.2.0` y `v1.3.0`.
+
+## 2026-11-21 — Consultar planes del profesor [CG-84, T13]
+- Desarrollador: Lisandro
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 bajo (orquestador) + Haiku 5.5 (2 subagentes: tests en rojo de back y front) + Sonnet 5.5 (2 subagentes: implementación de back y front, en paralelo)
+- Objetivo: que el profesor vea los planes que creó; mismo estilo que el listado de rutinas, con filtros y paginación.
+- Qué hizo la IA: verificó en Jira y en los repos que nadie tenía la tarea (US12, de Martina, la va a necesitar para elegir un plan). Propuso la regla RN-PLAN-22, el contrato, los filtros y los casos de test. Haiku escribió 9 unitarios y 13 e2e en el back y 8 tests de integración en el front, en rojo. Sonnet implementó `GET /planificacion/planes` (filtros y orden en la base, estado calculado con `ValidezPlan` y el `Reloj`) y `PaginaPlanes` con `usarConsultarPlanes`. El orquestador revisó, movió la creación a `/profesor/planes/nuevo` y actualizó la trazabilidad, que había quedado desfasada en el front.
+- Decisiones del desarrollador: filtros por estado, alumno y rango de fecha de inicio; RN-PLAN-22 y los casos de test aprobados; listado con botón "Nuevo plan"; creación en `/profesor/planes/nuevo`. Aprobó (`Tests-aprobados-por`) el método nuevo del doble `RepositorioPlanesEnMemoria`, las fichas nuevas y el cambio de `initialEntries` en el test de US07, sin tocar aserciones.
+- Ideas descartadas: volver solo al listado al crear (ocultaba el mensaje de éxito que verifica el test de US07); entrar al formulario con un clic en "Nuevo plan" desde el test; calcular el estado en la base.
+- Reglas afectadas: nueva RN-PLAN-22; RN-UI-LIS-04 suma los filtros de Planes.
+- Verificación: back 216 unitarios y 13 e2e de consultar planes (63 e2e de planificación según el subagente); front 28 archivos y 143 tests; tipos y lint sin errores en los dos repos.
+- Pendientes: la tarjeta T12 en Jira (la creación fue bloqueada por permisos); detalle de un plan desde el listado, si se pide.

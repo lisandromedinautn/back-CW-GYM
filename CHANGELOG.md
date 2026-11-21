@@ -6,6 +6,10 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ## [Sin publicar]
 
+### Agregado
+
+- `GET /planificacion/planes` (Profesor): sus planes paginados (5, 10, 20, 50 o 100), del más nuevo al más viejo, con estado Próximo, Vigente o Finalizado según el reloj y filtros por estado, alumno y rango de fecha de inicio (RN-PLAN-22, RN-PLAN-15; CG-84, T13).
+
 ## [1.3.0] — 2026-11-21
 
 Más rutinas e inicio del entrenamiento (fase 3: US09, US10, US20, US11, US13). La fase se terminó el 20/11, dentro del CG Sprint 3.
