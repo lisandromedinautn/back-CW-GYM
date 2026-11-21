@@ -241,3 +241,13 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Qué hizo la IA: implementó el agregado, la copia de la prescripción, el inicio único en PostgreSQL y la consulta autenticada. Se reutilizó Planificación sin cambiar el contrato de US08.
 - Decisiones del desarrollador: confirmó UTC, los estados de consulta y los casos de dominio, API y UI.
 - Ideas descartadas: un proceso programado para medianoche y adelantar el registro de series o la finalización.
+
+## 2026-11-21 — Relevamiento de patrones de diseño aplicados [T11]
+- Desarrollador: Lisandro
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 bajo (sin subagentes)
+- Objetivo: listar los patrones que se vienen aplicando y sumarlos a la documentación.
+- Qué hizo la IA: contrastó la tabla "SOLID y patrones" del `CLAUDE.md` del back con el código de `develop` (back `9c23451`, front `82bb99a`) y escribió `docs/PATRONES.md`, igual en los dos repos, con estado ✅ / 🔶 / ⬜ y la ubicación de cada patrón.
+- Decisiones del desarrollador: pidió el listado y adjuntarlo a la documentación.
+- Ideas descartadas: cambiar código para completar Observador o los puertos del front; queda como decisión del equipo.
+- Reglas afectadas: ninguna.
+- Pendientes: Estrategia sin código (US14/US16); Observador sin suscriptores; el front importa los clientes de API sin interfaz intermedia, distinto de lo que dice su `CLAUDE.md`. Crear la tarjeta T11 en Jira: el conector perdió el acceso a lichimedina05.
