@@ -14,6 +14,11 @@ import {
   ConsultarRutinaDelDia,
   type ResultadoRutinaDelDia,
 } from '../../aplicacion/consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.js';
+import {
+  ConsultarPlanes,
+  type ResumenPlan,
+} from '../../aplicacion/consultar-planes/consultar-planes.caso-uso.js';
+import { ConsultarPlanesDto } from '../consultar-planes/consultar-planes.dto.js';
 import type { Plan } from '../../dominio/plan/plan.entidad.js';
 import {
   ConsultarPlanDelAlumno,
@@ -126,6 +131,7 @@ export class PlanificacionControlador {
     @Inject(ConsultarRutinas) private readonly consultarRutinas: ConsultarRutinas,
     @Inject(RenombrarRutina) private readonly renombrarRutina: RenombrarRutina,
     @Inject(CrearPlan) private readonly crearPlan: CrearPlan,
+    @Inject(ConsultarPlanes) private readonly consultarPlanes: ConsultarPlanes,
     @Inject(ConsultarRutinaDelDia)
     private readonly consultarRutinaDelDia: ConsultarRutinaDelDia,
     @Inject(ConsultarPlanDelAlumno)
@@ -191,6 +197,16 @@ export class PlanificacionControlador {
       alumnos: datos.alumnos,
     });
     return aRespuestaPlan(plan);
+  }
+
+  /** Solo Profesor (RN-IDE-03). T13: RN-PLAN-22 (sus planes, filtros, orden) y RN-PLAN-15 (estado). */
+  @Get('planes')
+  @Roles('Profesor')
+  async listarPlanes(
+    @UsuarioActual() usuario: UsuarioAutenticado,
+    @Query() consulta: ConsultarPlanesDto,
+  ): Promise<{ items: ResumenPlan[]; total: number; pagina: number; tamanio: number }> {
+    return this.consultarPlanes.ejecutar(usuario.sub, consulta);
   }
 
   /** Solo Alumno (RN-IDE-03). US08: RN-PLAN-11, 15 y 18. */

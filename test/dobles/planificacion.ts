@@ -2,7 +2,10 @@
 // solo en los bordes). Viven fuera de src/ para no contar en la cobertura.
 import { Reloj } from '../../src/compartido/dominio/reloj/reloj.puerto.js';
 import { ConsultaVinculos } from '../../src/modulos/planificacion/dominio/plan/consulta-vinculos.puerto.js';
-import { RepositorioPlanes } from '../../src/modulos/planificacion/dominio/plan/repositorio-planes.puerto.js';
+import {
+  type FiltrosPlanes,
+  RepositorioPlanes,
+} from '../../src/modulos/planificacion/dominio/plan/repositorio-planes.puerto.js';
 import type { Plan } from '../../src/modulos/planificacion/dominio/plan/plan.entidad.js';
 import { ConsultaEjercicios } from '../../src/modulos/planificacion/dominio/rutina/consulta-ejercicios.puerto.js';
 import {
@@ -91,6 +94,39 @@ export class RepositorioPlanesEnMemoria extends RepositorioPlanes {
       (plan) =>
         plan.alumnoIds.includes(alumnoId) && fecha >= plan.fechaInicio && fecha <= plan.fechaFin,
     );
+  }
+
+  /**
+   * RN-PLAN-22: los planes del profesor filtrados por estado (según `filtros.hoy`), alumno y
+   * rango de inicio (ambos extremos incluidos). Orden: inicio desc, desempate por id asc.
+   */
+  async listarPorProfesor(
+    profesorUsuarioId: string,
+    filtros: FiltrosPlanes,
+    pagina: number,
+    tamanio: number,
+  ): Promise<{ items: Plan[]; total: number }> {
+    const estadoDe = (plan: Plan): 'proximo' | 'vigente' | 'finalizado' => {
+      if (filtros.hoy < plan.fechaInicio) return 'proximo';
+      if (filtros.hoy > plan.fechaFin) return 'finalizado';
+      return 'vigente';
+    };
+    const coincidentes = this.planes
+      .filter((plan) => plan.profesorUsuarioId === profesorUsuarioId)
+      .filter((plan) => filtros.estado === undefined || estadoDe(plan) === filtros.estado)
+      .filter((plan) => filtros.alumnoId === undefined || plan.alumnoIds.includes(filtros.alumnoId))
+      .filter(
+        (plan) => filtros.inicioDesde === undefined || plan.fechaInicio >= filtros.inicioDesde,
+      )
+      .filter(
+        (plan) => filtros.inicioHasta === undefined || plan.fechaInicio <= filtros.inicioHasta,
+      )
+      .sort(
+        (uno, otro) =>
+          otro.fechaInicio.localeCompare(uno.fechaInicio) || uno.id.localeCompare(otro.id),
+      );
+    const inicio = (pagina - 1) * tamanio;
+    return { items: coincidentes.slice(inicio, inicio + tamanio), total: coincidentes.length };
   }
 }
 
