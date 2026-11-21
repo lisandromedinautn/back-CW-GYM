@@ -9,6 +9,7 @@ import { CrearRutina } from './aplicacion/crear-rutina/crear-rutina.caso-uso.js'
 import { ImportarRutina } from './aplicacion/importar-rutina/importar-rutina.caso-uso.js';
 import { CrearPlan } from './aplicacion/crear-plan/crear-plan.caso-uso.js';
 import { ConsultarRutinaDelDia } from './aplicacion/consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.js';
+import { ConsultarPlanes } from './aplicacion/consultar-planes/consultar-planes.caso-uso.js';
 import { ConsultarPlanDelAlumno } from './aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.js';
 import { PUBLICADOR_EVENTOS } from '../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
 import type { PublicadorEventos } from '../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
@@ -115,6 +116,11 @@ import { FachadaPlanificacion } from './fachada-planificacion.js';
         nombres: ConsultaNombresEjercicios,
         reloj: Reloj,
       ) => new ConsultarRutinaDelDia(planes, rutinas, vinculos, nombres, reloj),
+    },
+    {
+      provide: ConsultarPlanes,
+      inject: [RepositorioPlanes, Reloj],
+      useFactory: (planes: RepositorioPlanes, reloj: Reloj) => new ConsultarPlanes(planes, reloj),
     },
     {
       provide: ConsultarPlanDelAlumno,

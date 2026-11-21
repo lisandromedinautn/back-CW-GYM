@@ -74,6 +74,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | planificacion | `quitar-alumno-de-plan.caso-uso.ts` | `DELETE /planificacion/planes/:id/alumnos/:alumnoId` | US12 | 📄 |
 | planificacion | `consultar-rutina-del-dia.caso-uso.ts` | `GET /planificacion/mi-rutina-del-dia` (solo Alumno) | US08 | ✅ `consultar-rutina-del-dia.caso-uso.spec.ts`, `consultar-rutina-del-dia-alumnos.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-rutina-del-dia.e2e-spec.ts` |
 | planificacion | `consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.ts` | `GET /planificacion/mi-plan` (solo Alumno) | US11 | ✅ caso de uso, `consultar-plan-del-alumno.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-plan-del-alumno.e2e-spec.ts` |
+| planificacion | `consultar-planes/consultar-planes.caso-uso.ts` | `GET /planificacion/planes` (solo Profesor) | T13 | ✅ `consultar-planes.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-planes.e2e-spec.ts` |
 | entrenamiento | `iniciar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos` | US13 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` |
 | entrenamiento | `consultar-entrenamiento-en-curso.caso-uso.ts` | `GET /entrenamiento/mi-entrenamiento-en-curso` | US13 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` |
 | entrenamiento | `registrar-serie-realizada.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/series` | US14 | 📄 |
@@ -113,7 +114,7 @@ Hoy:
 | identidad | infraestructura | usuario, profesor, alumno |
 | identidad | presentacion | controlador, ingreso, alta-profesor, vinculo |
 | planificacion | dominio | rutina (con bloque, circuito, `NombreRutina` y los puertos RepositorioRutinas, ConsultaEjercicios y ConsultaNombresEjercicios), plan (con `DiaPlan`, `ValidezPlan` y los puertos RepositorioPlanes y ConsultaVinculos), objetivo-prescripto, pausa, tipo-rutina |
-| planificacion | aplicacion | crear-rutina, consultar-rutinas (incluye `resolver-rutina-para-alumno.ts`), renombrar-rutina, crear-plan, consultar-rutina-del-dia, consultar-plan-del-alumno |
+| planificacion | aplicacion | crear-rutina, consultar-rutinas (incluye `resolver-rutina-para-alumno.ts`), renombrar-rutina, crear-plan, consultar-rutina-del-dia, consultar-plan-del-alumno, consultar-planes |
 | planificacion | infraestructura | rutina, plan |
 | planificacion | presentacion | controlador, crear-rutina (incluye `RenombrarRutinaDto`), crear-plan |
 | entrenamiento | dominio | entrenamiento (con `CopiaRutina`, `EntrenamientoIniciado`, puertos y `entrenamiento.entidad.spec.ts`) |

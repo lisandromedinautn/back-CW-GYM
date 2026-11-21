@@ -33,6 +33,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | RN-PLAN-19 | El alumno consulta su plan completo con los 28 días y sus fechas | US11 | Vigente |
 | RN-PLAN-20 | Un circuito no repite ejercicios: cada ejercicio del catálogo aparece una sola vez en el mismo circuito | US09, decisión del 10/11/2026 | Vigente |
 | RN-PLAN-21 | La rutina tiene un nombre de 1 a 60 caracteres, sin contar los espacios de los extremos (se guarda recortado). Si el profesor no lo indica al crearla, se llama `Rutina N` (N = cantidad de rutinas del profesor + 1; si ese nombre ya está usado, el siguiente N libre). Un profesor no puede tener dos rutinas con el mismo nombre, comparando sin mayúsculas y sin espacios de los extremos (409). Se puede renombrar siempre, también con el mismo nombre que ya tiene. Distintos profesores pueden repetir nombres | T08, T09 (Lisandro, 11/11/2026) | Vigente |
+| RN-PLAN-22 | Un profesor solo consulta sus propios planes. El listado se pagina (5, 10, 20, 50 o 100), se ordena por fecha de inicio del más nuevo al más viejo y muestra el estado de cada plan según RN-PLAN-15 con la fecha del reloj: Próximo (todavía no empezó), Vigente o Finalizado (pasó su fecha de fin). Se filtra por estado, por alumno y por rango de fecha de inicio (ambos extremos incluidos) | T13 (Lisandro, 21/11/2026) | Vigente |
 
 ## Casos de uso planificados
 
@@ -49,6 +50,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `quitar-alumno-de-plan.caso-uso.ts` | US12 | 12, 16 |
 | `consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.ts` ✅ | US08 | 11, 15, 18 |
 | `consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.ts` ✅ | US11 | 11, 15, 19 |
+| `consultar-planes/consultar-planes.caso-uso.ts` ✅ | T13 | 10, 15, 22 |
 
 ## Endpoints tentativos
 
@@ -64,6 +66,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `DELETE /planificacion/planes/:id/alumnos/:alumnoId` | Profesor | quitar-alumno-de-plan |
 | `GET /planificacion/mi-rutina-del-dia` ✅ | Alumno | consultar-rutina-del-dia |
 | `GET /planificacion/mi-plan` ✅ | Alumno | consultar-plan-del-alumno |
+| `GET /planificacion/planes?pagina=&tamanio=&estado=&alumnoId=&inicioDesde=&inicioHasta=` ✅ (respuesta `{ items, total, pagina, tamanio }`) | Profesor | consultar-planes |
 
 ## Historial de cambios de reglas
 
@@ -76,6 +79,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | 10/11/2026 | Nueva RN-PLAN-20 | Un circuito no repite ejercicios (US09) | Ignacio |
 | 11/11/2026 | Nueva RN-PLAN-21 | La rutina tiene nombre (1 a 60 caracteres, recortado), por defecto `Rutina N`, único por profesor sin distinguir mayúsculas, y se puede renombrar (T08, T09) | Lisandro |
 | 17/11/2026 | RN-PLAN-08 | Se elimina la pregunta sobre si la copia modificada es una rutina nueva; se conserva la copia independiente y el acceso a las rutinas propias (CG-40, US20) | Desarrollador |
+| 21/11/2026 | Nueva RN-PLAN-22 | El profesor consulta sus propios planes, paginados, con estado y filtros por estado, alumno y rango de fecha de inicio (T13) | Lisandro |
 
 ## Decisiones de implementación (US06)
 
@@ -125,3 +129,10 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 * `ConsultarPlanDelAlumno` devuelve `{ estado: 'sin-plan', fecha }` o `{ estado: 'plan', fecha, plan: { id, fechaInicio, fechaFin, dias } }`. Cada día incluye `numero`, `fecha` y `rutina` (detalle con ejercicios y pausas, o `null` si es descanso). No expone profesor ni alumnos asignados.
 * Los días se ordenan por número sin modificar el agregado. Las fechas provienen de `DiaPlan`; las rutinas repetidas se resuelven una vez por consulta y comparten la transformación de US08. Una referencia a una rutina inexistente informa el error RN-PLAN-08, no descanso.
 * `GET /planificacion/mi-plan` usa exclusivamente `usuario.sub` y requiere rol Alumno. Ignora un alumno enviado por query. No cambia reglas, esquema ni dependencias.
+
+## Decisiones de implementación (T13)
+
+* Los filtros (profesor, estado, alumno, rango de inicio), el orden (`fechaInicio` desc, `id` asc) y la paginación los resuelve `RepositorioPlanes.listarPorProfesor` en la base. El filtro por alumno usa `EXISTS` y luego se cargan los planes completos de la página, para no recortar `alumnoIds`.
+* El estado (`proximo`, `vigente`, `finalizado`) se calcula en `ConsultarPlanes` con la fecha UTC del `Reloj` (RN-PLAN-15, reutiliza `ValidezPlan`); el repositorio recibe `hoy` solo para filtrar por estado.
+* `diasConRutina` y `diasDeDescanso` salen de los días del plan (RN-PLAN-10).
+* Un valor inválido (`tamanio`, `estado`, `alumnoId`, fechas mal formadas o inexistentes) responde 400 desde `ConsultarPlanesDto`, sin código RN. Por defecto pagina 1 y tamaño 10.
