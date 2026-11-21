@@ -130,6 +130,18 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 * Los días se ordenan por número sin modificar el agregado. Las fechas provienen de `DiaPlan`; las rutinas repetidas se resuelven una vez por consulta y comparten la transformación de US08. Una referencia a una rutina inexistente informa el error RN-PLAN-08, no descanso.
 * `GET /planificacion/mi-plan` usa exclusivamente `usuario.sub` y requiere rol Alumno. Ignora un alumno enviado por query. No cambia reglas, esquema ni dependencias.
 
+## Nota para US12 (Martina): qué cambió con T13 (21/11/2026)
+
+T13 (CG-84) ya está en `develop` y toca archivos que US12 también va a tocar. Antes de seguir, traé `develop` (`git pull`) y mergealo en tu rama local para resolver los choques temprano.
+
+* **Puerto `RepositorioPlanes`** (`dominio/plan/repositorio-planes.puerto.ts`): ahora exporta `FiltrosPlanes` y tiene el método abstracto `listarPorProfesor`. Si agregás `buscarPorId` u otro método, sumalo al lado; toda implementación tiene que cumplir los dos.
+* **`plan.repositorio-typeorm.ts`**: tiene `listarPorProfesor` (query builder con `EXISTS` sobre `plan_alumnos`) y el import de `In`. El filtro por alumno lee esa tabla: si cambiás cómo se guardan los alumnos del plan, revisalo.
+* **Doble `RepositorioPlanesEnMemoria`** (`test/dobles/planificacion.ts`): suma `listarPorProfesor`. Es el choque más probable; si lo editás, el hook de T10 pide `Tests-aprobados-por`.
+* **Controlador** (`planificacion.controlador.ts`): nuevo `@Get('planes')` (Profesor). Tus `POST /planificacion/planes/:id/alumnos` y `DELETE /planificacion/planes/:id/alumnos/:alumnoId` van en el mismo archivo; no chocan como rutas.
+* **`planificacion.module.ts`**: nueva fábrica de `ConsultarPlanes`; las tuyas van al lado.
+* **Reutilizable**: `ConsultarPlanes` ya devuelve `estado` (`proximo`, `vigente`, `finalizado`) y `alumnoIds` de cada plan. RN-PLAN-16 solo permite cambiar alumnos de un plan **vigente**: usá el mismo cálculo (`ValidezPlan.estaVigente` con el `Reloj`).
+* **Doc compartida**: `docs/TRAZABILIDAD.md`, `CHANGELOG.md` (Sin publicar), `DECISIONES-IA.md`, `ATLAS.md`, `FICHAS-TEST.md` y este archivo tienen entradas nuevas de T13: al mergear, conservá las dos. Ya existe la RN-PLAN-22; si necesitás una regla nueva, es la RN-PLAN-23.
+
 ## Decisiones de implementación (T13)
 
 * Los filtros (profesor, estado, alumno, rango de inicio), el orden (`fechaInicio` desc, `id` asc) y la paginación los resuelve `RepositorioPlanes.listarPorProfesor` en la base. El filtro por alumno usa `EXISTS` y luego se cargan los planes completos de la página, para no recortar `alumnoIds`.
