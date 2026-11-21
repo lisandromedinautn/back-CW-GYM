@@ -8,8 +8,29 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ### Agregado
 
-- `GET /planificacion/mi-plan` (Alumno): consulta su plan vigente completo con los 28 días ordenados, fechas, rutinas con ejercicios y pausas o descansos. Usa la identidad del token y no expone otros alumnos (RN-PLAN-11, 15, 19; US11).
+- Rutinas por circuitos en `POST /planificacion/rutinas`: dos o más ejercicios por circuito, vueltas y macropausa por vuelta (RN-PLAN-01, 03, 04; US09).
+- Rutina mixta: `orden` opcional en cada bloque y circuito para fijar la secuencia 1..N; sin `orden` van los bloques y después los circuitos. Las respuestas de crear, consultar y renombrar devuelven el `orden` (RN-PLAN-01; US10).
 - `POST /planificacion/rutinas/:id/importacion` crea una copia independiente de una rutina propia con nombre disponible (CG-40, US20).
+- `GET /planificacion/mi-plan` (Alumno): consulta su plan vigente completo con los 28 días ordenados, fechas, rutinas con ejercicios y pausas o descansos. Usa la identidad del token y no expone otros alumnos (RN-PLAN-11, 15, 19; US11).
+- `POST /entrenamiento/entrenamientos` (Alumno): inicia el entrenamiento del día como copia independiente de la rutina, con el peso corporal del día; uno por alumno y fecha UTC, garantizado en PostgreSQL. Sin plan, en descanso o duplicado responde 409 `RN-ENT-01`. Publica `EntrenamientoIniciado` (RN-ENT-01, 02; CG-46, US13).
+- `GET /entrenamiento/mi-entrenamiento-en-curso` (Alumno): devuelve `en-curso`, `abandonado` o `sin-entrenamiento`; a las 00:00 UTC el entrenamiento deja de estar en curso (RN-ENT-20; CG-46, US13).
+
+### Cambiado
+
+- Reutilización del detalle de rutina con nombres en las consultas del Alumno; refactor preparatorio de US11, sin cambiar el contrato de US08.
+- RN-PLAN-08: se elimina la pregunta sobre si una rutina importada modificada es una rutina nueva; se mantiene la copia independiente y la restricción a rutinas propias (CG-40, US20).
+
+## [1.2.0] — 2026-11-21
+
+Planificación básica (fase 2: US06, US07, US08) y las tareas técnicas del sprint 2 (T06 a T10). Se publica el 21/11, al cerrar el CG Sprint 2 en Jira. US06 figura Listo en Jira, pero la edición de rutinas (RN-PLAN-07, `PUT /planificacion/rutinas/:id`) todavía no está implementada.
+
+### Agregado
+
+- `POST /planificacion/rutinas` (Profesor): crea una rutina por bloques con ejercicios prescriptos, objetivos y pausas (RN-PLAN-01, 02, 04, 05, 06; US06).
+- `GET /planificacion/rutinas` (Profesor): listado paginado de sus rutinas (T08) y `PATCH /planificacion/rutinas/:id/nombre` para renombrarlas; el nombre es opcional al crear (RN-PLAN-21; T09).
+- `GET /catalogo/ejercicios/consulta`: ejercicios paginados (5, 10, 20, 50 o 100 por página) con buscador y filtros por atributo (T06, T07).
+- Paginación compartida (`Pagina<T>`, `TAMANIOS_PAGINA`, `PaginacionDto`) para los listados (T06).
+- Protección de los tests en el hook de commit: aprobación explícita y justificación para modificar un test existente (`scripts/proteger-tests.mjs`; T10).
 - `GET /planificacion/mi-rutina-del-dia` (Alumno): consulta su plan vigente y devuelve la rutina con nombres y objetivos de ejercicios, descanso o ausencia de plan. La fecha y el número de día se resuelven en el back (RN-PLAN-11, 15, 18; US08).
 - `POST /planificacion/planes` (Profesor): crea un plan de 28 días con la fecha de fin calculada (inicio + 27), una rutina o descanso por día y uno o más alumnos vinculados. Aplica RN-PLAN-08 a 15; el plan no se puede finalizar antes de tiempo (RN-PLAN-17) (US07).
 - `GET /identidad/alumnos` (Profesor): lista los alumnos vinculados al profesor, para asignarlos a un plan (US07).
@@ -17,9 +38,8 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ### Cambiado
 
-- Reutilización del detalle de rutina con nombres en las consultas del Alumno; refactor preparatorio de US11, sin cambiar el contrato de US08.
-- RN-PLAN-08: se elimina la pregunta sobre si una rutina importada modificada es una rutina nueva; se mantiene la copia independiente y la restricción a rutinas propias (CG-40, US20).
 - Métricas del sprint 2 al 14/11: US06 parcial, 26 puntos técnicos del sprint y 52/129 acumulados; residual V2 de 91 puntos con cierre explícito y pronósticos por capacidad. Se conserva la base histórica y se retiran como medición las horas inferidas de commits. Informe en `docs/METRICAS-SPRINT-2.md`.
+- Sprints de Jira alineados al calendario el 21/11: Sprint 2 cerrado, Sprint 3 activo y Sprint 4 creado; patrones de diseño aplicados relevados en `docs/PATRONES.md` (T11).
 
 ## [1.1.0] — 2026-11-08
 
