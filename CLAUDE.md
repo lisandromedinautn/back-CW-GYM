@@ -68,6 +68,8 @@ Reglas de dependencia (se revisan en cada code review):
 | SRP | Un caso de uso por archivo, una responsabilidad por clase |
 | OCP | Un tipo de carga o de récord nuevo se agrega como estrategia nueva, sin editar las existentes |
 
+Qué está aplicado hoy en el código, dónde y qué falta: [docs/PATRONES.md](docs/PATRONES.md).
+
 ## Paquetes (Yarn 1): regla estricta
 
 **PROHIBIDO instalar una versión publicada hace menos de 24 horas.** Yarn 1 no lo controla solo, así que antes de cada `yarn add` o `yarn upgrade`:

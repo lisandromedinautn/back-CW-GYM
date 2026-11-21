@@ -241,3 +241,23 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Qué hizo la IA: implementó el agregado, la copia de la prescripción, el inicio único en PostgreSQL y la consulta autenticada. Se reutilizó Planificación sin cambiar el contrato de US08.
 - Decisiones del desarrollador: confirmó UTC, los estados de consulta y los casos de dominio, API y UI.
 - Ideas descartadas: un proceso programado para medianoche y adelantar el registro de series o la finalización.
+
+## 2026-11-21 — Relevamiento de patrones de diseño aplicados [T11]
+- Desarrollador: Lisandro
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 bajo (sin subagentes)
+- Objetivo: listar los patrones que se vienen aplicando y sumarlos a la documentación.
+- Qué hizo la IA: contrastó la tabla "SOLID y patrones" del `CLAUDE.md` del back con el código de `develop` (back `9c23451`, front `82bb99a`) y escribió `docs/PATRONES.md`, igual en los dos repos, con estado ✅ / 🔶 / ⬜ y la ubicación de cada patrón.
+- Decisiones del desarrollador: pidió el listado y adjuntarlo a la documentación.
+- Ideas descartadas: cambiar código para completar Observador o los puertos del front; queda como decisión del equipo.
+- Reglas afectadas: ninguna.
+- Pendientes: Estrategia sin código (US14/US16); Observador sin suscriptores; el front importa los clientes de API sin interfaz intermedia, distinto de lo que dice su `CLAUDE.md`. Crear la tarjeta T11 en Jira: el conector perdió el acceso a lichimedina05.
+
+## 2026-11-21 — Sprints de Jira alineados al calendario y avance de la fase 3 [T11]
+- Desarrollador: Lisandro
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 bajo (sin subagentes), con el conector de Atlassian (lichimedina05)
+- Objetivo: revisar qué entraba en el sprint 3, qué está hecho, y acomodar Jira y la doc según lo que dice Jira y las fechas de `docs/PLAN-IMPLEMENTACION.md`.
+- Qué hizo la IA: comparó las 83 tarjetas de CG con `develop`. En Jira: inició y cerró CG Sprint 2 (nunca se había iniciado) con sus fechas 09–15/11; creó CG Sprint 3 (16–22/11, activo) con US10, US20, US11, US13, US12 y el arrastre de T06/T07, y CG Sprint 4 (23/11–01/12) con US14 a US18; pasó a Listo 16 subtareas de historias ya terminadas. En la doc: estado de los sprints, control de cortes (65 al 15/11 y 90 al 21/11 según Jira), fase 3 completa (36/36) y US12 en curso.
+- Decisiones del desarrollador: tomar Jira como fuente del estado y usar las fechas de la doc.
+- Ideas descartadas: marcar US06 como parcial en Jira o reabrirla sin consultar; mover US12 al sprint 4 aunque ya figura en curso.
+- Reglas afectadas: ninguna.
+- Pendientes: decidir US06 (Listo en Jira, edición RN-PLAN-07 sin código; subtareas CG-24 y CG-25 en Por hacer). CG-23 y CG-27 (Modelar de US06 y US07) no se pudieron pasar a Listo: el permiso de la herramienta lo bloqueó. Publicar `v1.2.0` y `v1.3.0`.
