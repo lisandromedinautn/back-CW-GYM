@@ -6,6 +6,10 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ## [Sin publicar]
 
+## [1.3.0] — 2026-11-21
+
+Más rutinas e inicio del entrenamiento (fase 3: US09, US10, US20, US11, US13). La fase se terminó el 20/11, dentro del CG Sprint 3.
+
 ### Agregado
 
 - Rutinas por circuitos en `POST /planificacion/rutinas`: dos o más ejercicios por circuito, vueltas y macropausa por vuelta (RN-PLAN-01, 03, 04; US09).
