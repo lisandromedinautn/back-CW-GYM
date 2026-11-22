@@ -1,4 +1,17 @@
-import { Body, Controller, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
+import { AlumnosDelPlan } from '../../aplicacion/alumnos-del-plan/alumnos-del-plan.caso-uso.js';
+import { AlumnoDelPlanDto } from '../alumnos-del-plan/alumno-del-plan.dto.js';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ConsultarRutinas } from '../../aplicacion/consultar-rutinas/consultar-rutinas.caso-uso.js';
 import {
   Roles,
@@ -131,6 +144,7 @@ export class PlanificacionControlador {
     @Inject(ConsultarRutinas) private readonly consultarRutinas: ConsultarRutinas,
     @Inject(RenombrarRutina) private readonly renombrarRutina: RenombrarRutina,
     @Inject(CrearPlan) private readonly crearPlan: CrearPlan,
+    @Inject(AlumnosDelPlan) private readonly alumnosDelPlan: AlumnosDelPlan,
     @Inject(ConsultarPlanes) private readonly consultarPlanes: ConsultarPlanes,
     @Inject(ConsultarRutinaDelDia)
     private readonly consultarRutinaDelDia: ConsultarRutinaDelDia,
@@ -207,6 +221,36 @@ export class PlanificacionControlador {
     @Query() consulta: ConsultarPlanesDto,
   ): Promise<{ items: ResumenPlan[]; total: number; pagina: number; tamanio: number }> {
     return this.consultarPlanes.ejecutar(usuario.sub, consulta);
+  }
+
+  @Get('planes/:id/alumnos')
+  @Roles('Profesor')
+  async alumnosDePlan(
+    @UsuarioActual() usuario: UsuarioAutenticado,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<{ alumnoIds: string[] }> {
+    const plan = await this.alumnosDelPlan.consultar(usuario.sub, id);
+    return { alumnoIds: [...plan.alumnoIds] };
+  }
+
+  @Post('planes/:id/alumnos')
+  @Roles('Profesor')
+  async agregarAlumno(
+    @UsuarioActual() usuario: UsuarioAutenticado,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() datos: AlumnoDelPlanDto,
+  ): Promise<void> {
+    await this.alumnosDelPlan.agregar(usuario.sub, id, datos.alumnoId);
+  }
+
+  @Delete('planes/:id/alumnos/:alumnoId')
+  @Roles('Profesor')
+  async quitarAlumno(
+    @UsuarioActual() usuario: UsuarioAutenticado,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('alumnoId', ParseUUIDPipe) alumnoId: string,
+  ): Promise<void> {
+    await this.alumnosDelPlan.quitar(usuario.sub, id, alumnoId);
   }
 
   /** Solo Alumno (RN-IDE-03). US08: RN-PLAN-11, 15 y 18. */

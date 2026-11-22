@@ -8,6 +8,8 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ### Agregado
 
+- US12: gestión de alumnos de planes vigentes por su profesor, con validaciones de vínculo y plan vigente.
+
 - `GET /planificacion/planes` (Profesor): sus planes paginados (5, 10, 20, 50 o 100), del más nuevo al más viejo, con estado Próximo, Vigente o Finalizado según el reloj y filtros por estado, alumno y rango de fecha de inicio (RN-PLAN-22, RN-PLAN-15; CG-84, T13).
 
 ## [1.3.0] — 2026-11-21

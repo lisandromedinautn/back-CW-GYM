@@ -6,7 +6,7 @@ import {
   type FiltrosPlanes,
   RepositorioPlanes,
 } from '../../src/modulos/planificacion/dominio/plan/repositorio-planes.puerto.js';
-import type { Plan } from '../../src/modulos/planificacion/dominio/plan/plan.entidad.js';
+import { Plan } from '../../src/modulos/planificacion/dominio/plan/plan.entidad.js';
 import { ConsultaEjercicios } from '../../src/modulos/planificacion/dominio/rutina/consulta-ejercicios.puerto.js';
 import {
   ConsultaNombresEjercicios,
@@ -86,6 +86,40 @@ export class RepositorioPlanesEnMemoria extends RepositorioPlanes {
     const indice = this.planes.findIndex((existente) => existente.id === plan.id);
     if (indice === -1) this.planes.push(plan);
     else this.planes[indice] = plan;
+  }
+
+  async buscarPorId(id: string): Promise<Plan | null> {
+    return this.planes.find((plan) => plan.id === id) ?? null;
+  }
+
+  async agregarAlumno(planId: string, alumnoId: string): Promise<void> {
+    const plan = await this.buscarPorId(planId);
+    if (plan)
+      await this.guardar(
+        Plan.reconstruir({
+          id: plan.id,
+          profesorUsuarioId: plan.profesorUsuarioId,
+          fechaInicio: plan.fechaInicio,
+          fechaFin: plan.fechaFin,
+          dias: plan.dias.map((dia) => ({ numero: dia.numero, rutinaId: dia.rutinaId })),
+          alumnoIds: [...plan.alumnoIds, alumnoId],
+        }),
+      );
+  }
+
+  async quitarAlumno(planId: string, alumnoId: string): Promise<void> {
+    const plan = await this.buscarPorId(planId);
+    if (plan)
+      await this.guardar(
+        Plan.reconstruir({
+          id: plan.id,
+          profesorUsuarioId: plan.profesorUsuarioId,
+          fechaInicio: plan.fechaInicio,
+          fechaFin: plan.fechaFin,
+          dias: plan.dias.map((dia) => ({ numero: dia.numero, rutinaId: dia.rutinaId })),
+          alumnoIds: plan.alumnoIds.filter((id) => id !== alumnoId),
+        }),
+      );
   }
 
   /** RN-PLAN-14, 15: vigente con la fecha entre inicio y fin, ambos incluidos. */

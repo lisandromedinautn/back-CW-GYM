@@ -70,8 +70,8 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | planificacion | `importar-rutina/importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | ✅ copia independiente de rutina propia |
 | planificacion | `crear-plan.caso-uso.ts` | `POST /planificacion/planes` | US07 | ✅ |
 | identidad | `listar-alumnos-del-profesor.caso-uso.ts` | `GET /identidad/alumnos` | US07 | ✅ |
-| planificacion | `agregar-alumno-a-plan.caso-uso.ts` | `POST /planificacion/planes/:id/alumnos` | US12 | 📄 |
-| planificacion | `quitar-alumno-de-plan.caso-uso.ts` | `DELETE /planificacion/planes/:id/alumnos/:alumnoId` | US12 | 📄 |
+| planificacion | `alumnos-del-plan/alumnos-del-plan.caso-uso.ts` | `GET/POST /planificacion/planes/:id/alumnos` | US12 | ✅ |
+| planificacion | `alumnos-del-plan/alumnos-del-plan.caso-uso.ts` | `DELETE /planificacion/planes/:id/alumnos/:alumnoId` | US12 | ✅ |
 | planificacion | `consultar-rutina-del-dia.caso-uso.ts` | `GET /planificacion/mi-rutina-del-dia` (solo Alumno) | US08 | ✅ `consultar-rutina-del-dia.caso-uso.spec.ts`, `consultar-rutina-del-dia-alumnos.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-rutina-del-dia.e2e-spec.ts` |
 | planificacion | `consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.ts` | `GET /planificacion/mi-plan` (solo Alumno) | US11 | ✅ caso de uso, `consultar-plan-del-alumno.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-plan-del-alumno.e2e-spec.ts` |
 | planificacion | `consultar-planes/consultar-planes.caso-uso.ts` | `GET /planificacion/planes` (solo Profesor) | T13 | ✅ `consultar-planes.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-planes.e2e-spec.ts` |

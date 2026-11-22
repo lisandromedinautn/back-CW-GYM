@@ -203,3 +203,17 @@ Consulta pública del caso de uso y, en los siguientes bloques, endpoint y panta
 | `test/e2e/planificacion/consultar-planes.e2e-spec.ts` › tamanio=7 responde 400 | RN-PLAN-22 (sin RN) | e2e | ?tamanio=7 | 400 | = esperado (Vitest, 21/11/2026) | 21/11/2026 |
 | `test/e2e/planificacion/consultar-planes.e2e-spec.ts` › estado=raro responde 400 | RN-PLAN-22 (sin RN) | e2e | ?estado=raro | 400 | = esperado (Vitest, 21/11/2026) | 21/11/2026 |
 | `test/e2e/planificacion/consultar-planes.e2e-spec.ts` › inicioDesde=2026-13-01 responde 400 | RN-PLAN-22 (sin RN) | e2e | ?inicioDesde=2026-13-01 | 400 | = esperado (Vitest, 21/11/2026) | 21/11/2026 |
+
+## US12 — Agregar o quitar alumnos de un plan vigente
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `alumnos-del-plan.caso-uso.spec.ts` › agrega alumno vinculado sin otro plan | RN-PLAN-13, 14, 16 | Unitario | plan 01/11–28/11; reloj 14/11; alumno vinculado sin plan | alumno asignado | = esperado (laptop, 21/11/2026) | 21/11/2026 |
+| `alumnos-del-plan.caso-uso.spec.ts` › rechaza alumno no vinculado | RN-PLAN-13 | Unitario | alumno sin vínculo | error RN-PLAN-13 | = esperado (laptop, 21/11/2026) | 21/11/2026 |
+| `alumnos-del-plan.caso-uso.spec.ts` › rechaza alumno con otro plan vigente | RN-PLAN-14 | Unitario | alumno con otro plan vigente | error RN-PLAN-14 | = esperado (laptop, 21/11/2026) | 21/11/2026 |
+| `alumnos-del-plan.caso-uso.spec.ts` › quita alumno y permite quitar el último | RN-PLAN-12, 16 | Unitario | plan vigente con alumnos y luego uno solo | alumno eliminado y lista vacía | = esperado (laptop, 21/11/2026) | 21/11/2026 |
+| `alumnos-del-plan.caso-uso.spec.ts` › incluye extremos de vigencia | RN-PLAN-16 | Unitario | 01/11 y 28/11 | agregar y quitar aceptados | = esperado (laptop, 21/11/2026) | 21/11/2026 |
+| `alumnos-del-plan.caso-uso.spec.ts` › rechaza fuera de vigencia | RN-PLAN-16 | Unitario | 31/10 y 29/11 | agregar y quitar rechazados | = esperado (laptop, 21/11/2026) | 21/11/2026 |
+| `alumnos-del-plan.e2e-spec.ts` › permisos y pertenencia | RN-IDE-03, RN-PLAN-16 | e2e | sin sesión, alumno y profesor ajeno | 401, 403 y rechazo del plan ajeno | = esperado (laptop, 21/11/2026) | 21/11/2026 |
+| `alumnos-del-plan.e2e-spec.ts` › persiste agregar y quitar | RN-PLAN-12, 13, 14, 16 | e2e | profesor propio, plan vigente, alumno vinculado | asignación agregada y eliminada; días intactos | = esperado (laptop, 21/11/2026) | 21/11/2026 |
+| `alumnos-del-plan.e2e-spec.ts` › asignaciones simultáneas | RN-PLAN-14 | e2e | dos planes vigentes, un alumno vinculado sin plan; altas simultáneas | una respuesta 201 y otra 409 | = esperado (laptop, 21/11/2026) | 21/11/2026 |

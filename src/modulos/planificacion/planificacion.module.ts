@@ -1,3 +1,4 @@
+import { AlumnosDelPlan } from './aplicacion/alumnos-del-plan/alumnos-del-plan.caso-uso.js';
 import { Inject, Logger, Module, type OnApplicationBootstrap } from '@nestjs/common';
 import { NormalizarNombresRutinas } from './aplicacion/normalizar-nombres-rutinas/normalizar-nombres-rutinas.caso-uso.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -88,6 +89,12 @@ import { FachadaPlanificacion } from './fachada-planificacion.js';
       provide: NormalizarNombresRutinas,
       inject: [RepositorioRutinas],
       useFactory: (rutinas: RepositorioRutinas) => new NormalizarNombresRutinas(rutinas),
+    },
+    {
+      provide: AlumnosDelPlan,
+      inject: [RepositorioPlanes, ConsultaVinculos, Reloj],
+      useFactory: (planes: RepositorioPlanes, vinculos: ConsultaVinculos, reloj: Reloj) =>
+        new AlumnosDelPlan(planes, vinculos, reloj),
     },
     {
       provide: CrearPlan,

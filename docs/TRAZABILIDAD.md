@@ -36,7 +36,7 @@ Estados: ⬜ sin empezar · 🟥 test en rojo (TDD; solo en el working tree, nun
 | US15 | RN-ENT-05, 06, 07, 08, 09, 17 | finalizar-entrenamiento | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
 | US16 | RN-ENT-10, 11, 12, 13 | finalizar-entrenamiento | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
 | US17 | RN-ENT-14, 15, 16 | registrar-percepcion | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
-| US12 | RN-PLAN-12, 13, 14, 16 | agregar-alumno-a-plan, quitar-alumno-de-plan | PaginaAlumnosDelPlan | — | — | — | — | ⬜ |
+| US12 | RN-PLAN-12, 13, 14, 16 | alumnos-del-plan | PaginaAlumnosDelPlan | 8 unitarios | 4 API | 3 interfaz | builds aprobados | En rama |
 | US18 | RN-ENT-18 | consultar-entrenamientos-de-alumnos | PaginaEntrenamientosDeAlumnos | — | — | — | — | ⬜ |
 
 En las columnas Unit, Int, e2e y Front va la ruta del archivo de test (o `archivo › caso`) cuando exista.
