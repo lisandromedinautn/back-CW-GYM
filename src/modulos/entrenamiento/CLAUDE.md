@@ -42,7 +42,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | `registrar-serie-realizada.caso-uso.ts` ✅ | US14 | 03, 04, 19, 20 |
 | `finalizar-entrenamiento.caso-uso.ts` | US15, US16 | 05–13, 17, 19, 20 |
 | `registrar-percepcion.caso-uso.ts` | US17 | 14, 15, 16 |
-| `consultar-entrenamientos-de-alumnos.caso-uso.ts` | US18 | 18 |
+| `consultar-entrenamientos-de-alumnos.caso-uso.ts` ✅ | US18 | 18 |
 
 ## Endpoints tentativos
 
@@ -53,7 +53,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | `POST /entrenamiento/entrenamientos/:id/series` ✅ | Alumno | registrar-serie-realizada |
 | `POST /entrenamiento/entrenamientos/:id/finalizacion` | Alumno | finalizar-entrenamiento |
 | `PUT /entrenamiento/entrenamientos/:id/percepcion` | Alumno | registrar-percepcion |
-| `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` | Profesor | consultar-entrenamientos-de-alumnos |
+| `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` ✅ | Profesor | consultar-entrenamientos-de-alumnos |
 
 ## Historial de cambios de reglas
 
@@ -78,3 +78,10 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 * Un entrenamiento de otro alumno responde `404`, para no revelar que existe (RN-ENT-19).
 * Un entrenamiento abandonado responde `409` con `RN-ENT-20`. El chequeo de "finalizado" de RN-ENT-04 llega con US15.
 * `POST` responde `201` con `{ orden, numero, posicion, ejercicioId, nombre, prescripta, realizada }` y publica `SerieRealizada` después de guardar. `GET /entrenamiento/mi-entrenamiento-en-curso` y el `POST` de inicio incluyen `series` en el entrenamiento, para retomar (RN-UI-ENT-02). El front tiene que replicar este contrato.
+
+## Decisiones de implementación (US18)
+
+* El profesor sale del JWT. El vínculo se consulta con el puerto `ConsultaVinculos`, que implementa la Fachada de identidad (`alumnoVinculadoAProfesor`).
+* Un alumno ajeno o inexistente responde `403` con `RN-ENT-18`, el mismo error en los dos casos para no revelar si el alumno existe.
+* `GET` devuelve una página `{ items, total, pagina, tamanio }` (tamaños 5, 10, 20, 50 o 100; 10 por defecto), del más nuevo al más viejo por fecha, sin filtros. Cada ítem es el entrenamiento completo (`id, alumnoId, inicio, pesoCorporalKg, rutina, series`) más `estado`.
+* Los abandonados se listan con `estado: 'abandonado'`. El estado `finalizado` se suma con US15.

@@ -37,7 +37,7 @@ Estados: ⬜ sin empezar · 🟥 test en rojo (TDD; solo en el working tree, nun
 | US16 | RN-ENT-10, 11, 12, 13 | finalizar-entrenamiento | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
 | US17 | RN-ENT-14, 15, 16 | registrar-percepcion | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
 | US12 | RN-PLAN-12, 13, 14, 16 | alumnos-del-plan | PaginaAlumnosDelPlan | 8 unitarios | 4 API | 3 interfaz | builds aprobados | En rama |
-| US18 | RN-ENT-18 | consultar-entrenamientos-de-alumnos | PaginaEntrenamientosDeAlumnos | — | — | — | — | ⬜ |
+| US18 | RN-ENT-18 | consultar-entrenamientos-de-alumnos | PaginaEntrenamientosDeAlumnos | `src/modulos/entrenamiento/aplicacion/consultar-entrenamientos-de-alumnos/consultar-entrenamientos-de-alumnos.caso-uso.spec.ts` | — | `test/e2e/entrenamiento/consultar-entrenamientos-de-alumnos.e2e-spec.ts` | — | back 🟩, front ⬜ |
 
 En las columnas Unit, Int, e2e y Front va la ruta del archivo de test (o `archivo › caso`) cuando exista.
 
@@ -99,6 +99,7 @@ Toda RN vigente tiene que tener al menos un test. Una RN sin test es una brecha 
 | RN-UI-LIS-03 | `src/modulos/catalogo/presentacion/lista-ejercicios/ListaEjerciciosPaginada.int.test.tsx` (vuelve a la página 1) | 🟩 |
 | RN-ENT-01, 02, 20 · RN-UI-ENT-02 | US13: dominio, API y pantalla | 🟩 |
 | RN-ENT-03, 04, 19 | US14: dominio y API (back) | 🟩 back |
-| RN-ENT-05 … RN-ENT-18 | — | ⬜ |
+| RN-ENT-18 | US18: caso de uso y API (back) | 🟩 back |
+| RN-ENT-05 … RN-ENT-17 | — | ⬜ |
 
 Cuando se escriba el primer test de una RN, se separa en su propia fila.

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThanOrEqual, QueryFailedError, Repository } from 'typeorm';
+import { In, LessThanOrEqual, QueryFailedError, Repository } from 'typeorm';
 import { Entrenamiento } from '../../dominio/entrenamiento/entrenamiento.entidad.js';
 import type { RepositorioEntrenamientos } from '../../dominio/entrenamiento/repositorio-entrenamientos.puerto.js';
 import type { SerieRealizada } from '../../dominio/entrenamiento/serie-realizada.valor.js';
@@ -49,6 +49,31 @@ export class RepositorioEntrenamientosTypeorm implements RepositorioEntrenamient
       order: { fecha: 'DESC' },
     });
     return fila ? this.hidratar(fila) : null;
+  }
+
+  async listarPorAlumno(
+    alumnoId: string,
+    pagina: number,
+    tamanio: number,
+  ): Promise<{ items: Entrenamiento[]; total: number }> {
+    const [filas, total] = await this.filas.findAndCount({
+      where: { alumnoId },
+      order: { fecha: 'DESC' },
+      skip: (pagina - 1) * tamanio,
+      take: tamanio,
+    });
+    if (filas.length === 0) return { items: [], total };
+    const series = await this.seriesFilas.find({
+      where: { entrenamientoId: In(filas.map((fila) => fila.id)) },
+      order: { orden: 'ASC', numero: 'ASC', posicion: 'ASC' },
+    });
+    const items = filas.map((fila) =>
+      filaAEntrenamiento(
+        fila,
+        series.filter((serie) => serie.entrenamientoId === fila.id),
+      ),
+    );
+    return { items, total };
   }
 
   async guardarSerie(entrenamientoId: string, serie: SerieRealizada): Promise<void> {

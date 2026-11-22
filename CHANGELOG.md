@@ -16,6 +16,8 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 - `GET /entrenamiento/mi-entrenamiento-en-curso` y `POST /entrenamiento/entrenamientos` incluyen `series` en el entrenamiento, para retomarlo (RN-UI-ENT-02; US14).
 
+- `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` (Profesor): los entrenamientos de un alumno vinculado, paginados (5, 10, 20, 50 o 100), del más nuevo al más viejo, con la copia de la rutina, las series realizadas y el estado; un alumno ajeno responde 403 `RN-ENT-18` (US18).
+
 ## [1.3.0] — 2026-11-21
 
 Más rutinas e inicio del entrenamiento (fase 3: US09, US10, US20, US11, US13). La fase se terminó el 20/11, dentro del CG Sprint 3.

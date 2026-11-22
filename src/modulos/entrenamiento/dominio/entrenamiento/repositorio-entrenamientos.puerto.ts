@@ -11,5 +11,11 @@ export abstract class RepositorioEntrenamientos {
    * Guarda una serie realizada. Si ya hay una con el mismo orden, número y posición en ese
    * entrenamiento, la reemplaza (corrección, decisión de US14). Debe ser atómico.
    */
+  /** Los entrenamientos del alumno, del más nuevo al más viejo por fecha (US18). */
+  abstract listarPorAlumno(
+    alumnoId: string,
+    pagina: number,
+    tamanio: number,
+  ): Promise<{ items: Entrenamiento[]; total: number }>;
   abstract guardarSerie(entrenamientoId: string, serie: SerieRealizada): Promise<void>;
 }
