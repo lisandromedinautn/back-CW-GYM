@@ -283,3 +283,15 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Reglas afectadas: RN-ENT-03, 04, 19 y 20 pasan a implementarse en el back; ninguna regla cambió de texto.
 - Verificación: back 242 unitarios, 3 de integración y 104 e2e (4 nuevos de US14; el de US13 sigue en verde con `series: []`); `yarn test:cov` con 349 tests y 98,19% de líneas; lint y tipos sin errores. Mutaciones sobre el caso de uso (sin control del dueño, sin guardar la serie) hacen fallar el e2e.
 - Pendientes: replicar el contrato en el front (US14 front, RN-UI-ENT-01) y medir los 10 s del OKR O3 en la demo.
+
+## 2026-11-22 — Consultar entrenamientos de mis alumnos [US18]
+- Desarrollador: Alex
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 (todo en serie, sin subagentes: la US es chica)
+- Objetivo: que el profesor consulte los entrenamientos de sus alumnos para ajustar sus planes (RN-ENT-18).
+- Qué hizo la IA: caso de uso con TDD (3 unitarios con dobles en memoria, primero en rojo), puerto `ConsultaVinculos` sobre la Fachada de identidad, listado paginado en el repositorio TypeORM con las series de cada entrenamiento, endpoint y 4 e2e. Mutaciones (sin control de vínculo, estado fijo, total, orden ascendente, sin series, salto de página) hacen fallar los tests. También integró US14 en `develop` (PR mergeado por el desarrollador) y borró su rama.
+- Decisiones del desarrollador: (1) rama desde `develop` con US14 ya mergeada; (2) alumno ajeno o inexistente con 403 `RN-ENT-18`; (3) cada ítem es el entrenamiento completo más `estado`; (4) paginado con `PaginacionDto`, del más nuevo al más viejo, sin filtros; (5) los abandonados se listan.
+- Ideas descartadas: 404 para el alumno ajeno; devolver solo un resumen sin la copia de la rutina; filtros por fecha (ninguna regla los pide).
+- Reglas afectadas: RN-ENT-18 pasa a implementarse en el back; ninguna regla cambió de texto.
+- Verificación: back 245 unitarios, 3 de integración y 108 e2e (4 nuevos de US18); `yarn test:cov` con 356 tests y 98,21% de líneas; lint y tipos sin errores.
+- Pendientes: front de US18 (página de entrenamientos de alumnos); sumar el estado `finalizado` con US15.
+
