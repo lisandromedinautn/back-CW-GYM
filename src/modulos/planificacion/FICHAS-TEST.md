@@ -217,3 +217,18 @@ Consulta pública del caso de uso y, en los siguientes bloques, endpoint y panta
 | `alumnos-del-plan.e2e-spec.ts` › permisos y pertenencia | RN-IDE-03, RN-PLAN-16 | e2e | sin sesión, alumno y profesor ajeno | 401, 403 y rechazo del plan ajeno | = esperado (laptop, 21/11/2026) | 21/11/2026 |
 | `alumnos-del-plan.e2e-spec.ts` › persiste agregar y quitar | RN-PLAN-12, 13, 14, 16 | e2e | profesor propio, plan vigente, alumno vinculado | asignación agregada y eliminada; días intactos | = esperado (laptop, 21/11/2026) | 21/11/2026 |
 | `alumnos-del-plan.e2e-spec.ts` › asignaciones simultáneas | RN-PLAN-14 | e2e | dos planes vigentes, un alumno vinculado sin plan; altas simultáneas | una respuesta 201 y otra 409 | = esperado (laptop, 21/11/2026) | 21/11/2026 |
+
+## Semilla de grupos para probar US12
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `test/integracion/planificacion/sembrar-grupos-us12.int-spec.ts` › crea grupos con planes vigentes | RN-IDE-09, RN-PLAN-09, 12, 13, 14, 16 | Integración | base de test sin los datos reservados; reloj 22/11/2026 | dos profesores, dos alumnos vinculados por profesor, uno asignado y otro disponible; planes de 28 días vigentes | = esperado (laptop; prueba con 27 días falla, restaurado) | 22/11/2026 |
+| `test/integracion/planificacion/sembrar-grupos-us12.int-spec.ts` › repetir respeta los datos existentes | RN-IDE-09, RN-PLAN-16 | Integración | ejecutar dos veces y quitar un alumno entre ejecuciones | sin duplicados ni restauración de asignaciones | = esperado (laptop; prueba con 27 días falla, restaurado) | 22/11/2026 |
+| `test/integracion/planificacion/sembrar-grupos-us12.int-spec.ts` › colisión de identidad | RN-IDE-06, 13 | Integración | identidad reservada ya ocupada | informa conflicto sin cambiar los datos existentes | = esperado (laptop; prueba con 27 días falla, restaurado) | 22/11/2026 |
+
+## Completar el plan de prueba con ejercicios
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `test/integracion/planificacion/completar-plan-us12.int-spec.ts` › completa los 28 días | RN-PLAN-06, 10, 11, 12, 13 | Integración | plan de prueba vigente, vinculado a alumno 01, 28 descansos y catálogo disponible | 28 días con rutina y ejercicios del catálogo, mismas fechas y alumno | = esperado (integración en laptop) | 22/11/2026 |
+| `test/integracion/planificacion/completar-plan-us12.int-spec.ts` › repetir y preservar cambios | RN-PLAN-08, 10 | Integración | ejecutar dos veces; luego plan con día ajeno modificado | no duplica y rechaza cambios ajenos sin sobrescribir | = esperado (integración en laptop) | 22/11/2026 |

@@ -23,6 +23,14 @@ yarn seed                        # datos iniciales (el Admin llega con US00)
 yarn start:dev                   # API en http://localhost:3000
 ```
 
+## Datos para probar US12
+
+Después de `yarn seed`, ingresá como `us12-profesor01@cwgym.test` o `us12-profesor02@cwgym.test` con la contraseña indicada en `SEMILLA_CONTRASENIA` del `.env`. Cada profesor tiene dos alumnos vinculados y un plan vigente de 28 días de descanso. El primer alumno está asignado y el segundo está disponible para agregar. Los alumnos usan `us12-alumno01@cwgym.test` a `us12-alumno04@cwgym.test` con la misma contraseña.
+
+Para completar el plan de `us12-alumno01@cwgym.test` con ejercicios en sus 28 días, ejecutá `yarn seed:plan-us12`. La operación conserva fechas y alumnos y rechaza planes que ya tengan otras rutinas.
+
+La semilla conserva cambios en asignaciones al repetirse. Si las cuentas reservadas entran en conflicto o el plan de prueba existente ya no está vigente, informa el problema sin reemplazar esos datos.
+
 ## Comandos
 
 | Comando | Qué hace |

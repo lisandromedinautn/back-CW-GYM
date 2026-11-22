@@ -272,3 +272,19 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Reglas afectadas: nueva RN-PLAN-22; RN-UI-LIS-04 suma los filtros de Planes.
 - Verificación: back 216 unitarios y 13 e2e de consultar planes (63 e2e de planificación según el subagente); front 28 archivos y 143 tests; tipos y lint sin errores en los dos repos.
 - Pendientes: la tarjeta T12 en Jira (la creación fue bloqueada por permisos); detalle de un plan desde el listado, si se pide.
+
+## 2026-11-22 — Datos de prueba para US12 [US12]
+- Desarrolladora: Martina Pineda.
+- Herramienta: Codex.
+- Objetivo: probar el alta y la baja de alumnos de planes vigentes desde la interfaz.
+- Implementación: semilla transaccional con dos profesores y cuatro alumnos dedicados; cada profesor tiene dos alumnos vinculados y un plan con uno asignado. Usa SEMILLA_CONTRASENIA y preserva cuentas, vínculos y asignaciones existentes; informa conflictos y planes vencidos.
+- Decisiones: Martina confirmó los casos y la prueba de integración con base real. Los planes usan la fecha de ejecución y contienen 28 días de descanso.
+- Verificación: tres tests de integración y build aprobados en laptop. Al cambiar temporalmente a 27 días fallaron los dos tests que verifican los 28; se restauró la semilla y volvieron a pasar los tres. Martina ejecutó yarn seed en desarrollo con éxito.
+- Reglas afectadas: ninguna; aplica RN-IDE-09 y RN-PLAN-09, 12, 13, 14 y 16 a datos de prueba.
+
+## 2026-11-22 — Ejercicios en el plan de prueba [US12]
+- Desarrolladora: Martina Pineda. Herramienta: Codex.
+- Objetivo: consultar como alumno un plan con ejercicios en cada uno de sus 28 días.
+- Implementación: comando explícito que completa el plan reservado del alumno 01 con una rutina y dos ejercicios del catálogo; conserva fechas y alumnos, y rechaza sobrescribir rutinas diferentes. Martina confirmó los casos.
+- Verificación: rojo inicial observado; dos tests de integración y build aprobados en laptop; Martina ejecutó el comando correctamente en desarrollo. La comprobación por mutación queda pendiente.
+- Reglas afectadas: ninguna; aplica RN-PLAN-06, 10, 11, 12 y 13.

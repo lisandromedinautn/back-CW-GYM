@@ -29,6 +29,8 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `.husky/`, `scripts/` | Hooks (pre-commit y commit-msg), validador de mensajes y verificación de antigüedad de paquetes ✅ |
 | `src/main.ts`, `src/modulo-raiz.module.ts` | Arranque de la API y módulo raíz (configuración y conexión a Postgres) ✅ |
 | `src/semillas.ts` | Punto de entrada de `yarn seed`: lista ordenada de semillas ✅ |
+| `src/semillas/sembrar-grupos-us12.ts` | Dos grupos de prueba con planes vigentes para US12 ✅ |
+| `src/semillas/completar-plan-us12.ts` | Completa el plan del alumno 01 con ejercicios en 28 días mediante `yarn seed:plan-us12` ✅ |
 | `src/configurar-aplicacion.ts` | Configuración HTTP común a `main.ts` y a los e2e (`ValidationPipe` con `whitelist`) ✅ |
 | `src/compartido/compartido.module.ts` | Kernel compartido: JWT global, `GuardRoles` y `FiltroErrorDominio` registrados como `APP_GUARD` y `APP_FILTER` ✅ |
 | `src/compartido/dominio/publicador-eventos/publicador-eventos.puerto.ts` | Puerto `PublicadorEventos` (publica un `EventoDominio`) y su símbolo de inyección ✅ |
