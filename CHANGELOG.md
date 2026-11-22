@@ -12,6 +12,10 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 - `GET /planificacion/planes` (Profesor): sus planes paginados (5, 10, 20, 50 o 100), del más nuevo al más viejo, con estado Próximo, Vigente o Finalizado según el reloj y filtros por estado, alumno y rango de fecha de inicio (RN-PLAN-22, RN-PLAN-15; CG-84, T13).
 
+- `POST /entrenamiento/entrenamientos/:id/series` (Alumno): registra una serie realizada del entrenamiento en curso o reemplaza la ya registrada (clave `orden`, `numero` y `posicion`); exige la medida prescripta y publica `SerieRealizada` (RN-ENT-03, 04, 19, 20; US14).
+
+- `GET /entrenamiento/mi-entrenamiento-en-curso` y `POST /entrenamiento/entrenamientos` incluyen `series` en el entrenamiento, para retomarlo (RN-UI-ENT-02; US14).
+
 ## [1.3.0] — 2026-11-21
 
 Más rutinas e inicio del entrenamiento (fase 3: US09, US10, US20, US11, US13). La fase se terminó el 20/11, dentro del CG Sprint 3.
