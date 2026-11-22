@@ -46,8 +46,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `normalizar-nombres-rutinas/normalizar-nombres-rutinas.caso-uso.ts` ✅ (corre al arrancar, `PlanificacionModule.onApplicationBootstrap`) | T09 | 21 |
 | `importar-rutina/importar-rutina.caso-uso.ts` ✅ | US20 | 08, 21 |
 | `crear-plan/crear-plan.caso-uso.ts` ✅ | US07 | 08, 09–15, 17 |
-| `agregar-alumno-a-plan.caso-uso.ts` | US12 | 13, 14, 16 |
-| `quitar-alumno-de-plan.caso-uso.ts` | US12 | 12, 16 |
+| `alumnos-del-plan/alumnos-del-plan.caso-uso.ts` ✅ | US12 | 12, 13, 14, 16 |
 | `consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.ts` ✅ | US08 | 11, 15, 18 |
 | `consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.ts` ✅ | US11 | 11, 15, 19 |
 | `consultar-planes/consultar-planes.caso-uso.ts` ✅ | T13 | 10, 15, 22 |
@@ -148,3 +147,9 @@ T13 (CG-84) ya está en `develop` y toca archivos que US12 también va a tocar. 
 * El estado (`proximo`, `vigente`, `finalizado`) se calcula en `ConsultarPlanes` con la fecha UTC del `Reloj` (RN-PLAN-15, reutiliza `ValidezPlan`); el repositorio recibe `hoy` solo para filtrar por estado.
 * `diasConRutina` y `diasDeDescanso` salen de los días del plan (RN-PLAN-10).
 * Un valor inválido (`tamanio`, `estado`, `alumnoId`, fechas mal formadas o inexistentes) responde 400 desde `ConsultarPlanesDto`, sin código RN. Por defecto pagina 1 y tamaño 10.
+
+## Implementación US12
+
+* Solo el profesor propietario puede consultar y modificar los alumnos de un plan vigente. El back valida el vínculo, la ausencia de otro plan vigente y permite quitar al último alumno.
+* La pantalla se abre desde «Alumnos» en el listado de planes vigentes. El alta o la baja actualiza las asignaciones sin recrear los días del plan.
+* La asignación y la creación serializan por alumno en PostgreSQL y vuelven a comprobar la vigencia dentro de la transacción (RN-PLAN-14).

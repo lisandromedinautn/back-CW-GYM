@@ -1,3 +1,4 @@
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
@@ -6,7 +7,7 @@ import {
   RepositorioPlanes,
 } from '../../dominio/plan/repositorio-planes.puerto.js';
 import type { Plan } from '../../dominio/plan/plan.entidad.js';
-import { PlanEsquema } from './plan.esquema.js';
+import { PlanAlumnoEsquema, PlanEsquema } from './plan.esquema.js';
 import { PlanMapper } from './plan.mapper.js';
 
 @Injectable()
@@ -17,8 +18,54 @@ export class RepositorioPlanesTypeorm extends RepositorioPlanes {
     super();
   }
 
-  async guardar(plan: Plan): Promise<void> {
-    await this.repositorio.save(PlanMapper.aEsquema(plan));
+  async guardar(plan: Plan, fechaActual?: string): Promise<void> {
+    if (!fechaActual) {
+      await this.repositorio.save(PlanMapper.aEsquema(plan));
+      return;
+    }
+    await this.repositorio.manager.transaction(async (manager) => {
+      for (const alumnoId of [...plan.alumnoIds].sort()) {
+        await manager.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 0))', [alumnoId]);
+        const conflictos = await manager.query(
+          'SELECT 1 FROM plan_alumnos a JOIN planes p ON p.id = a.plan_id WHERE a.alumno_id = $1 AND p.fecha_inicio <= $2 AND p.fecha_fin >= $2 LIMIT 1',
+          [alumnoId, fechaActual],
+        );
+        if (conflictos.length)
+          throw new ErrorDominio('RN-PLAN-14', 'El alumno ya tiene un plan vigente', 'conflicto');
+      }
+      await manager.getRepository(PlanEsquema).save(PlanMapper.aEsquema(plan));
+    });
+  }
+
+  async buscarPorId(id: string): Promise<Plan | null> {
+    const fila = await this.repositorio.findOne({
+      where: { id },
+      relations: { dias: true, alumnos: true },
+    });
+    return fila ? PlanMapper.aDominio(fila) : null;
+  }
+
+  async agregarAlumno(planId: string, alumnoId: string, fechaActual: string): Promise<void> {
+    await this.repositorio.manager.transaction(async (manager) => {
+      await manager.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 0))', [alumnoId]);
+      const conflictos = await manager.query(
+        'SELECT 1 FROM plan_alumnos a JOIN planes p ON p.id = a.plan_id WHERE a.alumno_id = $1 AND p.id <> $2 AND p.fecha_inicio <= $3 AND p.fecha_fin >= $3 LIMIT 1',
+        [alumnoId, planId, fechaActual],
+      );
+      if (conflictos.length)
+        throw new ErrorDominio('RN-PLAN-14', 'El alumno ya tiene un plan vigente', 'conflicto');
+      await manager
+        .createQueryBuilder()
+        .insert()
+        .into(PlanAlumnoEsquema)
+        .values({ planId, alumnoId })
+        .orIgnore()
+        .execute();
+    });
+  }
+
+  async quitarAlumno(planId: string, alumnoId: string): Promise<void> {
+    await this.repositorio.manager.getRepository(PlanAlumnoEsquema).delete({ planId, alumnoId });
   }
 
   /** RN-PLAN-14, 15: planes del alumno con la fecha actual entre inicio y fin, ambos incluidos. */

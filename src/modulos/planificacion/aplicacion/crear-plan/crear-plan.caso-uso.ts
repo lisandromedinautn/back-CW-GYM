@@ -47,7 +47,7 @@ export class CrearPlan {
     await this.validarRutinasPropias(profesorUsuarioId, plan);
     await this.validarAlumnosSinPlanVigente(plan.alumnoIds);
 
-    await this.planes.guardar(plan);
+    await this.planes.guardar(plan, fechaIso(this.reloj.ahora()));
     await this.publicador.publicar(new PlanCreado(plan.id, profesorUsuarioId, plan.alumnoIds));
     return plan;
   }
