@@ -12,13 +12,19 @@ import { FachadaPlanificacion } from '../planificacion/fachada-planificacion.js'
 import { PlanificacionModule } from '../planificacion/planificacion.module.js';
 import { ConsultarEntrenamientoEnCurso } from './aplicacion/consultar-entrenamiento-en-curso/consultar-entrenamiento-en-curso.caso-uso.js';
 import { IniciarEntrenamiento } from './aplicacion/iniciar-entrenamiento/iniciar-entrenamiento.caso-uso.js';
+import { RegistrarSerieRealizada } from './aplicacion/registrar-serie-realizada/registrar-serie-realizada.caso-uso.js';
 import { RepositorioEntrenamientos } from './dominio/entrenamiento/repositorio-entrenamientos.puerto.js';
 import { EntrenamientoEsquema } from './infraestructura/entrenamiento/entrenamiento.esquema.js';
+import { SerieRealizadaEsquema } from './infraestructura/entrenamiento/serie-realizada.esquema.js';
 import { RepositorioEntrenamientosTypeorm } from './infraestructura/entrenamiento/entrenamiento.repositorio-typeorm.js';
 import { EntrenamientoControlador } from './presentacion/controlador/entrenamiento.controlador.js';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EntrenamientoEsquema]), ModuloIdentidad, PlanificacionModule],
+  imports: [
+    TypeOrmModule.forFeature([EntrenamientoEsquema, SerieRealizadaEsquema]),
+    ModuloIdentidad,
+    PlanificacionModule,
+  ],
   controllers: [EntrenamientoControlador],
   providers: [
     { provide: Reloj, useClass: RelojSistema },
@@ -39,6 +45,16 @@ import { EntrenamientoControlador } from './presentacion/controlador/entrenamien
         reloj: Reloj,
         publicador: PublicadorEventos,
       ) => new IniciarEntrenamiento(repositorio, identidad, planificacion, reloj, publicador),
+    },
+    {
+      provide: RegistrarSerieRealizada,
+      inject: [RepositorioEntrenamientos, FachadaIdentidad, Reloj, PUBLICADOR_EVENTOS],
+      useFactory: (
+        repositorio: RepositorioEntrenamientos,
+        identidad: FachadaIdentidad,
+        reloj: Reloj,
+        publicador: PublicadorEventos,
+      ) => new RegistrarSerieRealizada(repositorio, identidad, reloj, publicador),
     },
     {
       provide: ConsultarEntrenamientoEnCurso,
