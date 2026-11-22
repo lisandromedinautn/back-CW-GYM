@@ -18,7 +18,7 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `.claude/skills/tdd`, `.claude/skills/coverage` | Skills de TDD y cobertura |
 | `test/datasets/` | Fixture del dataset de ejercicios (T01) ✅ |
 | `datos/` | Dataset de ejercicios reducido y su licencia (T01) ✅ |
-| `test/dobles/` | Dobles de los puertos para los tests unitarios (`identidad.ts`: repositorios, hasheador y emisor de tokens en memoria; `planificacion.ts`: repositorio de rutinas y de planes en memoria, catálogo fijo, vínculos falsos y reloj fijo). Fuera de `src/`, no cuentan en la cobertura ✅ |
+| `test/dobles/` | Dobles de los puertos para los tests unitarios (`identidad.ts`: repositorios, hasheador y emisor de tokens en memoria; `planificacion.ts`: repositorio de rutinas y de planes en memoria, catálogo fijo, vínculos falsos y reloj fijo; `entrenamiento.ts`: repositorio de entrenamientos en memoria y vínculos fijos). Fuera de `src/`, no cuentan en la cobertura ✅ |
 | `package.json`, `yarn.lock` | Dependencias exactas, scripts y `resolutions` (regla de las 24 h) ✅ |
 | `docker-compose.yml` | Postgres 18 de desarrollo (5442) y de test (5443, en memoria) ✅ |
 | `.env.example`, `.env.test` | Variables de entorno: plantilla de desarrollo y valores de test ✅ |
@@ -79,10 +79,10 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | planificacion | `consultar-planes/consultar-planes.caso-uso.ts` | `GET /planificacion/planes` (solo Profesor) | T13 | ✅ `consultar-planes.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-planes.e2e-spec.ts` |
 | entrenamiento | `iniciar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos` | US13 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` |
 | entrenamiento | `consultar-entrenamiento-en-curso.caso-uso.ts` | `GET /entrenamiento/mi-entrenamiento-en-curso` | US13 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` |
-| entrenamiento | `registrar-serie-realizada.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/series` | US14 | 📄 |
+| entrenamiento | `registrar-serie-realizada.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/series` | US14 | ✅ |
 | entrenamiento | `finalizar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/finalizacion` | US15, US16 | 📄 |
 | entrenamiento | `registrar-percepcion.caso-uso.ts` | `PUT /entrenamiento/entrenamientos/:id/percepcion` | US17 | 📄 |
-| entrenamiento | `consultar-entrenamientos-de-alumnos.caso-uso.ts` | `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` | US18 | 📄 |
+| entrenamiento | `consultar-entrenamientos-de-alumnos.caso-uso.ts` | `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` | US18 | ✅ |
 
 ## Dependencias entre módulos (solo por Fachada o eventos)
 
@@ -119,10 +119,10 @@ Hoy:
 | planificacion | aplicacion | crear-rutina, consultar-rutinas (incluye `resolver-rutina-para-alumno.ts`), renombrar-rutina, crear-plan, consultar-rutina-del-dia, consultar-plan-del-alumno, consultar-planes |
 | planificacion | infraestructura | rutina, plan |
 | planificacion | presentacion | controlador, crear-rutina (incluye `RenombrarRutinaDto`), crear-plan |
-| entrenamiento | dominio | entrenamiento (con `CopiaRutina`, `EntrenamientoIniciado`, puertos y `entrenamiento.entidad.spec.ts`) |
-| entrenamiento | aplicacion | iniciar-entrenamiento, consultar-entrenamiento-en-curso |
-| entrenamiento | infraestructura | entrenamiento (esquema y repositorio TypeORM) |
-| entrenamiento | presentacion | controlador |
+| entrenamiento | dominio | entrenamiento (con `CopiaRutina`, `SerieRealizada` valor y evento, `EntrenamientoIniciado`, puertos y `entrenamiento.entidad.spec.ts`) |
+| entrenamiento | aplicacion | iniciar-entrenamiento, consultar-entrenamiento-en-curso, registrar-serie-realizada, consultar-entrenamientos-de-alumnos |
+| entrenamiento | infraestructura | entrenamiento (esquema `series_realizadas` en `serie-realizada.esquema.ts`, `entrenamiento.mapper.ts` y repositorio TypeORM) |
+| entrenamiento | presentacion | controlador, registrar-serie-realizada (DTO) |
 | compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio, reloj, paginacion (`dominio/paginacion/paginacion.ts` con `TAMANIOS_PAGINA` y `Pagina<T>`; `presentacion/paginacion/paginacion.dto.ts` con `PaginacionDto`) |
 
 ## Nombres de archivo

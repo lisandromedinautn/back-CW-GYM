@@ -10,15 +10,22 @@ import { FachadaIdentidad } from '../identidad/fachada-identidad.js';
 import { ModuloIdentidad } from '../identidad/identidad.module.js';
 import { FachadaPlanificacion } from '../planificacion/fachada-planificacion.js';
 import { PlanificacionModule } from '../planificacion/planificacion.module.js';
+import { ConsultarEntrenamientosDeAlumnos } from './aplicacion/consultar-entrenamientos-de-alumnos/consultar-entrenamientos-de-alumnos.caso-uso.js';
 import { ConsultarEntrenamientoEnCurso } from './aplicacion/consultar-entrenamiento-en-curso/consultar-entrenamiento-en-curso.caso-uso.js';
 import { IniciarEntrenamiento } from './aplicacion/iniciar-entrenamiento/iniciar-entrenamiento.caso-uso.js';
+import { RegistrarSerieRealizada } from './aplicacion/registrar-serie-realizada/registrar-serie-realizada.caso-uso.js';
 import { RepositorioEntrenamientos } from './dominio/entrenamiento/repositorio-entrenamientos.puerto.js';
 import { EntrenamientoEsquema } from './infraestructura/entrenamiento/entrenamiento.esquema.js';
+import { SerieRealizadaEsquema } from './infraestructura/entrenamiento/serie-realizada.esquema.js';
 import { RepositorioEntrenamientosTypeorm } from './infraestructura/entrenamiento/entrenamiento.repositorio-typeorm.js';
 import { EntrenamientoControlador } from './presentacion/controlador/entrenamiento.controlador.js';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EntrenamientoEsquema]), ModuloIdentidad, PlanificacionModule],
+  imports: [
+    TypeOrmModule.forFeature([EntrenamientoEsquema, SerieRealizadaEsquema]),
+    ModuloIdentidad,
+    PlanificacionModule,
+  ],
   controllers: [EntrenamientoControlador],
   providers: [
     { provide: Reloj, useClass: RelojSistema },
@@ -41,6 +48,16 @@ import { EntrenamientoControlador } from './presentacion/controlador/entrenamien
       ) => new IniciarEntrenamiento(repositorio, identidad, planificacion, reloj, publicador),
     },
     {
+      provide: RegistrarSerieRealizada,
+      inject: [RepositorioEntrenamientos, FachadaIdentidad, Reloj, PUBLICADOR_EVENTOS],
+      useFactory: (
+        repositorio: RepositorioEntrenamientos,
+        identidad: FachadaIdentidad,
+        reloj: Reloj,
+        publicador: PublicadorEventos,
+      ) => new RegistrarSerieRealizada(repositorio, identidad, reloj, publicador),
+    },
+    {
       provide: ConsultarEntrenamientoEnCurso,
       inject: [RepositorioEntrenamientos, FachadaIdentidad, Reloj],
       useFactory: (
@@ -48,6 +65,15 @@ import { EntrenamientoControlador } from './presentacion/controlador/entrenamien
         identidad: FachadaIdentidad,
         reloj: Reloj,
       ) => new ConsultarEntrenamientoEnCurso(repositorio, identidad, reloj),
+    },
+    {
+      provide: ConsultarEntrenamientosDeAlumnos,
+      inject: [RepositorioEntrenamientos, FachadaIdentidad, Reloj],
+      useFactory: (
+        repositorio: RepositorioEntrenamientos,
+        identidad: FachadaIdentidad,
+        reloj: Reloj,
+      ) => new ConsultarEntrenamientosDeAlumnos(repositorio, identidad, reloj),
     },
   ],
 })

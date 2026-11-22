@@ -1,24 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThanOrEqual, QueryFailedError, Repository } from 'typeorm';
+import { In, LessThanOrEqual, QueryFailedError, Repository } from 'typeorm';
 import { Entrenamiento } from '../../dominio/entrenamiento/entrenamiento.entidad.js';
 import type { RepositorioEntrenamientos } from '../../dominio/entrenamiento/repositorio-entrenamientos.puerto.js';
+import type { SerieRealizada } from '../../dominio/entrenamiento/serie-realizada.valor.js';
 import { EntrenamientoEsquema, INICIO_UNICO_POR_DIA } from './entrenamiento.esquema.js';
+import { filaAEntrenamiento, serieAFila } from './entrenamiento.mapper.js';
+import { SerieRealizadaEsquema } from './serie-realizada.esquema.js';
 
 @Injectable()
 export class RepositorioEntrenamientosTypeorm implements RepositorioEntrenamientos {
   constructor(
     @InjectRepository(EntrenamientoEsquema)
     private readonly filas: Repository<EntrenamientoEsquema>,
+    @InjectRepository(SerieRealizadaEsquema)
+    private readonly seriesFilas: Repository<SerieRealizadaEsquema>,
   ) {}
 
   async insertar(entrenamiento: Entrenamiento): Promise<boolean> {
-    const datos = entrenamiento.datos;
+    const { id, alumnoId, pesoCorporalKg, rutina, inicio } = entrenamiento.datos;
     try {
       await this.filas.insert({
-        ...datos,
+        id,
+        alumnoId,
+        pesoCorporalKg,
+        rutina,
         fecha: entrenamiento.fecha,
-        inicio: new Date(datos.inicio),
+        inicio: new Date(inicio),
       });
       return true;
     } catch (error) {
@@ -30,19 +38,58 @@ export class RepositorioEntrenamientosTypeorm implements RepositorioEntrenamient
     }
   }
 
+  async buscarPorId(id: string): Promise<Entrenamiento | null> {
+    const fila = await this.filas.findOne({ where: { id } });
+    return fila ? this.hidratar(fila) : null;
+  }
+
   async buscarUltimo(alumnoId: string, hastaFecha: string): Promise<Entrenamiento | null> {
     const fila = await this.filas.findOne({
       where: { alumnoId, fecha: LessThanOrEqual(hastaFecha) },
       order: { fecha: 'DESC' },
     });
-    if (!fila) return null;
-    const { id, pesoCorporalKg, rutina, inicio } = fila;
-    return Entrenamiento.reconstruir({
-      id,
-      alumnoId,
-      pesoCorporalKg,
-      rutina,
-      inicio: inicio.toISOString(),
+    return fila ? this.hidratar(fila) : null;
+  }
+
+  async listarPorAlumno(
+    alumnoId: string,
+    pagina: number,
+    tamanio: number,
+  ): Promise<{ items: Entrenamiento[]; total: number }> {
+    const [filas, total] = await this.filas.findAndCount({
+      where: { alumnoId },
+      order: { fecha: 'DESC' },
+      skip: (pagina - 1) * tamanio,
+      take: tamanio,
     });
+    if (filas.length === 0) return { items: [], total };
+    const series = await this.seriesFilas.find({
+      where: { entrenamientoId: In(filas.map((fila) => fila.id)) },
+      order: { orden: 'ASC', numero: 'ASC', posicion: 'ASC' },
+    });
+    const items = filas.map((fila) =>
+      filaAEntrenamiento(
+        fila,
+        series.filter((serie) => serie.entrenamientoId === fila.id),
+      ),
+    );
+    return { items, total };
+  }
+
+  async guardarSerie(entrenamientoId: string, serie: SerieRealizada): Promise<void> {
+    await this.seriesFilas.upsert(serieAFila(entrenamientoId, serie), [
+      'entrenamientoId',
+      'orden',
+      'numero',
+      'posicion',
+    ]);
+  }
+
+  private async hidratar(fila: EntrenamientoEsquema): Promise<Entrenamiento> {
+    const series = await this.seriesFilas.find({
+      where: { entrenamientoId: fila.id },
+      order: { orden: 'ASC', numero: 'ASC', posicion: 'ASC' },
+    });
+    return filaAEntrenamiento(fila, series);
   }
 }
