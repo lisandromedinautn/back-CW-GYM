@@ -295,3 +295,14 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Verificación: back 245 unitarios, 3 de integración y 108 e2e (4 nuevos de US18); `yarn test:cov` con 356 tests y 98,21% de líneas; lint y tipos sin errores.
 - Pendientes: front de US18 (página de entrenamientos de alumnos); sumar el estado `finalizado` con US15.
 
+## 2026-11-22 — Modelar récords personales y carga efectiva [US16]
+- Desarrollador: Alex
+- Herramienta / modelo / esfuerzo: OpenCode · deepseek-v4.1-flash-free (todo en serie, sin subagentes)
+- Objetivo: modelar el dominio de US16 (RN-ENT-06, 07, 10, 11, 12, 13) sin tocar US15.
+- Qué hizo la IA: con TDD, 17 unitarios nuevos primero en rojo por aserción y después en verde. Implementó `CargaEfectiva` con 4 estrategias, `VolumenSerie`, `UnoRMEstimado`, `MarcasPorTipoEjercicio` con 3 estrategias, `RecordPersonal`, `RecordBatido` y `DetectorRecords`. Actualizó fichas, trazabilidad, atlas, patrones, plan y el `CLAUDE.md` del módulo.
+- Decisiones del desarrollador: alcance solo de modelado; 16 casos confirmados más el borde de 0 repeticiones; `factorPesoCorporal` como porcentaje; "sin peso" es solo `Sin Peso`; 1RM solo de 1 a 10 repeticiones; el récord conserva el `id` al ser superado; evento `RecordBatido`; `DetectorRecords` como punto de extensión.
+- Ideas descartadas: persistir récords, endpoint de finalización, adaptador de catálogo, e2e y cualquier cambio en US15; importar `TipoCarga` del dominio de Catálogo (se duplicó el tipo en Entrenamiento para respetar la regla 4); calcular volumen y 1RM dentro de los casos de uso.
+- Reglas afectadas: ninguna cambió de texto; se modelan RN-ENT-06, 07, 10, 11, 12 y 13.
+- Verificación: 262 unitarios en 48 archivos y lint sin errores; los 17 tests nuevos cubren el 100 % de las líneas de los archivos nuevos (`marcas-por-tipo-ejercicio` queda en 71,42 % de ramas por los guards de medida nula). `yarn test:cov` completo no se corrió porque necesita la base de test; el subconjunto unitario no alcanza los umbrales globales de infraestructura y presentación.
+- Pendientes: `ConsultaEjercicios` de la Fachada de catálogo con `factorPesoCorporal`, repositorio de récords, detección al finalizar y e2e (US15/US16).
+

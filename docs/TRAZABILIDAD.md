@@ -34,7 +34,7 @@ Estados: ⬜ sin empezar · 🟥 test en rojo (TDD; solo en el working tree, nun
 | US13 | RN-ENT-01, 02, 20 · RN-UI-ENT-02 | iniciar-entrenamiento, consultar-entrenamiento-en-curso | PaginaEntrenamientoEnCurso | `src/modulos/entrenamiento/dominio/entrenamiento/entrenamiento.entidad.spec.ts` | — | `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` | `src/modulos/entrenamiento/presentacion/entrenamiento-en-curso/entrenamiento.int.test.tsx` | back 🟩, front 🟩 |
 | US14 | RN-ENT-03, 04, 19, 20 · RN-UI-ENT-01 | registrar-serie-realizada | PaginaEntrenamientoEnCurso | `src/modulos/entrenamiento/dominio/entrenamiento/entrenamiento.entidad.spec.ts` | — | `test/e2e/entrenamiento/registrar-serie-realizada.e2e-spec.ts` | — | back 🟩, front ⬜ |
 | US15 | RN-ENT-05, 06, 07, 08, 09, 17 | finalizar-entrenamiento | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
-| US16 | RN-ENT-10, 11, 12, 13 | finalizar-entrenamiento | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
+| US16 | RN-ENT-10, 11, 12, 13 | finalizar-entrenamiento (detección pendiente) | PaginaResumenEntrenamiento | `src/modulos/entrenamiento/dominio/carga-efectiva/carga-efectiva.estrategias.spec.ts`, `src/modulos/entrenamiento/dominio/volumen-serie/volumen-serie.valor.spec.ts`, `src/modulos/entrenamiento/dominio/uno-rm-estimado/uno-rm-estimado.valor.spec.ts`, `src/modulos/entrenamiento/dominio/marcas-por-tipo-ejercicio/marcas-por-tipo-ejercicio.spec.ts`, `src/modulos/entrenamiento/dominio/record-personal/detector-records.spec.ts` (17 casos) | — | — | — | back 🔶 modelado; detección y API ⬜ |
 | US17 | RN-ENT-14, 15, 16 | registrar-percepcion | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
 | US12 | RN-PLAN-12, 13, 14, 16 | alumnos-del-plan | PaginaAlumnosDelPlan | 8 unitarios | 4 API | 3 interfaz | builds aprobados | En rama |
 | US18 | RN-ENT-18 | consultar-entrenamientos-de-alumnos | PaginaEntrenamientosDeAlumnos | `src/modulos/entrenamiento/aplicacion/consultar-entrenamientos-de-alumnos/consultar-entrenamientos-de-alumnos.caso-uso.spec.ts` | — | `test/e2e/entrenamiento/consultar-entrenamientos-de-alumnos.e2e-spec.ts` | — | back 🟩, front ⬜ |
@@ -100,6 +100,12 @@ Toda RN vigente tiene que tener al menos un test. Una RN sin test es una brecha 
 | RN-ENT-01, 02, 20 · RN-UI-ENT-02 | US13: dominio, API y pantalla | 🟩 |
 | RN-ENT-03, 04, 19 | US14: dominio y API (back) | 🟩 back |
 | RN-ENT-18 | US18: caso de uso y API (back) | 🟩 back |
-| RN-ENT-05 … RN-ENT-17 | — | ⬜ |
+| RN-ENT-05, 08, 09, 14, 15, 16, 17 | — | ⬜ |
+| RN-ENT-06 | `src/modulos/entrenamiento/dominio/volumen-serie/volumen-serie.valor.spec.ts` (1 caso) | 🟩 modelado |
+| RN-ENT-07 | `src/modulos/entrenamiento/dominio/carga-efectiva/carga-efectiva.estrategias.spec.ts` (3 casos) | 🟩 modelado |
+| RN-ENT-10 | `src/modulos/entrenamiento/dominio/marcas-por-tipo-ejercicio/marcas-por-tipo-ejercicio.spec.ts` (4 casos) | 🟩 modelado |
+| RN-ENT-11 | `src/modulos/entrenamiento/dominio/uno-rm-estimado/uno-rm-estimado.valor.spec.ts` (3 casos) | 🟩 modelado |
+| RN-ENT-12 | `src/modulos/entrenamiento/dominio/carga-efectiva/carga-efectiva.estrategias.spec.ts` (1 caso), `src/modulos/entrenamiento/dominio/volumen-serie/volumen-serie.valor.spec.ts` (1 caso), `src/modulos/entrenamiento/dominio/uno-rm-estimado/uno-rm-estimado.valor.spec.ts` (1 caso) | 🟩 modelado |
+| RN-ENT-13 | `src/modulos/entrenamiento/dominio/record-personal/detector-records.spec.ts` (4 casos) | 🟩 modelado |
 
 Cuando se escriba el primer test de una RN, se separa en su propia fila.

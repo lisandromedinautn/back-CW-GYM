@@ -5,6 +5,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 * **Agregados:** Entrenamiento (con sus Series Realizadas) y Récord Personal.
 * **Objetos de valor:** CopiaRutina, SerieRealizada, CargaEfectiva, VolumenSerie, UnoRMEstimado, RPE (1 a 10), SensacionFuerza (1 a 5), Duracion.
 * **Estrategias:** una por tipo de carga para calcular la carga efectiva y una por tipo de ejercicio para determinar qué récords aplican.
+* **Modelado US16:** MarcasPorTipoEjercicio, RecordPersonal, RecordBatido y DetectorRecords (detección sin persistencia).
 * **Eventos que emite:** EntrenamientoIniciado, SerieRealizada, EntrenamientoFinalizado, RécordBatido.
 * **Puertos:** RepositorioEntrenamientos, RepositorioRecords, ConsultaRutinaDelDia (Fachada de planificación), ConsultaAlumno (Fachada de identidad: peso actual y profesor), ConsultaEjercicios (Fachada de catálogo), Reloj.
 
@@ -85,3 +86,13 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 * Un alumno ajeno o inexistente responde `403` con `RN-ENT-18`, el mismo error en los dos casos para no revelar si el alumno existe.
 * `GET` devuelve una página `{ items, total, pagina, tamanio }` (tamaños 5, 10, 20, 50 o 100; 10 por defecto), del más nuevo al más viejo por fecha, sin filtros. Cada ítem es el entrenamiento completo (`id, alumnoId, inicio, pesoCorporalKg, rutina, series`) más `estado`.
 * Los abandonados se listan con `estado: 'abandonado'`. El estado `finalizado` se suma con US15.
+
+## Decisiones de implementación (US16, modelado)
+
+* Se modeló el dominio de récords sin tocar US15: `CargaEfectiva` (4 estrategias), `VolumenSerie`, `UnoRMEstimado`, `MarcasPorTipoEjercicio` (3 estrategias), `RecordPersonal`, `RecordBatido` y `DetectorRecords`.
+* `factorPesoCorporal` es un porcentaje: 100 = 100 %, 64 = 64 %. "Por repeticiones sin peso" es solo `Sin Peso`; `Peso Corporal` cuenta como "con carga".
+* El 1RM se estima solo entre 1 y 10 repeticiones. Con 0 repeticiones no se genera 1RM (ni con más de 10).
+* `RecordPersonal` conserva el mismo `id` cuando una marca lo supera, para el upsert futuro. La primera marca se guarda sin evento y el empate no cuenta (RN-ENT-13).
+* `DetectorRecords` recibe las marcas y los récords previos y devuelve los que hay que guardar y los eventos `RecordBatido`; no persiste ni publica.
+* `RecordBatido` lleva `alumnoId`, `ejercicioId`, `tipo`, `valorAnterior`, `valorNuevo` y `entrenamientoId`.
+* Pendiente para la detección real: `ConsultaEjercicios` de la Fachada de catálogo con `factorPesoCorporal`, repositorio de récords, caso de uso de finalización y e2e. Se resuelve con US15.

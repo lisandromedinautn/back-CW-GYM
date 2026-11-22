@@ -27,3 +27,20 @@ Una fila por caso de test. La entrada y el esperado los **confirma el desarrolla
 | `consultar-entrenamientos-de-alumnos.e2e-spec.ts` › alumno propio con series | RN-ENT-18 | e2e | profesor01 consulta a alumno01, que inició y registró la serie 3 del bloque (8 reps, 30 kg) | 200 con 1 entrenamiento `en-curso` y esa serie en `series` | ✅ | 22/11/2026 |
 | `consultar-entrenamientos-de-alumnos.e2e-spec.ts` › otro profesor | RN-ENT-18 | e2e | profesor02 consulta a alumno01 | 403 · `RN-ENT-18` | ✅ | 22/11/2026 |
 | `consultar-entrenamientos-de-alumnos.e2e-spec.ts` › paginación | RN-ENT-18 | e2e | alumno01 con entrenamientos el 20/11 y el 21/11, `tamanio=5` | El del 21/11 primero; `total: 2` | ✅ | 22/11/2026 |
+| `carga-efectiva.estrategias.spec.ts` › Sin Peso | RN-ENT-07 | Unit | 80 kg, factor 100, extra 10 | Carga 0 | ✅ | 22/11/2026 |
+| `carga-efectiva.estrategias.spec.ts` › Peso Extra | RN-ENT-07 | Unit | Peso extra 10 | Carga 10 | ✅ | 22/11/2026 |
+| `carga-efectiva.estrategias.spec.ts` › Peso Corporal | RN-ENT-07 | Unit | 80 kg, factor 64 | Carga 51.2 | ✅ | 22/11/2026 |
+| `carga-efectiva.estrategias.spec.ts` › Peso Corporal + Extra | RN-ENT-12 | Unit | 80 kg, factor 100, extra 10 | Carga 90 | ✅ | 22/11/2026 |
+| `volumen-serie.valor.spec.ts` › ejemplo de referencia | RN-ENT-06, 12 | Unit | Carga 90, 6 repeticiones | Volumen 540 | ✅ | 22/11/2026 |
+| `uno-rm-estimado.valor.spec.ts` › ejemplo de referencia | RN-ENT-12 | Unit | Carga 90, 6 repeticiones | 1RM 108 | ✅ | 22/11/2026 |
+| `uno-rm-estimado.valor.spec.ts` › límite superior | RN-ENT-11 | Unit | Carga 60, 10 repeticiones | 1RM 80 | ✅ | 22/11/2026 |
+| `uno-rm-estimado.valor.spec.ts` › fuera del límite | RN-ENT-11 | Unit | Carga 60, 11 repeticiones | `null` | ✅ | 22/11/2026 |
+| `uno-rm-estimado.valor.spec.ts` › sin repeticiones | RN-ENT-11 | Unit | Carga 60, 0 repeticiones | `null` | ✅ | 22/11/2026 |
+| `marcas-por-tipo-ejercicio.spec.ts` › repeticiones con carga | RN-ENT-10 | Unit | Peso Extra 60, 5 repeticiones | Rep 5, volumen 300, 1RM 70 | ✅ | 22/11/2026 |
+| `marcas-por-tipo-ejercicio.spec.ts` › repeticiones sin peso | RN-ENT-10 | Unit | Sin Peso, 15 repeticiones | Solo rep 15 | ✅ | 22/11/2026 |
+| `marcas-por-tipo-ejercicio.spec.ts` › por tiempo | RN-ENT-10 | Unit | 60 segundos | Solo tiempo 60 | ✅ | 22/11/2026 |
+| `marcas-por-tipo-ejercicio.spec.ts` › peso corporal | RN-ENT-10 | Unit | 80 kg, factor 100, 3 repeticiones | Rep 3, volumen 240, 1RM 88 | ✅ | 22/11/2026 |
+| `detector-records.spec.ts` › primera marca | RN-ENT-13 | Unit | Sin récord previo, marca 100 | Guarda 100, sin evento | ✅ | 22/11/2026 |
+| `detector-records.spec.ts` › empate | RN-ENT-13 | Unit | Récord 100, marca 100 | No guarda ni emite | ✅ | 22/11/2026 |
+| `detector-records.spec.ts` › marca mayor | RN-ENT-13 | Unit | Récord 100, marca 101 | Guarda 101 y emite `RecordBatido` 100 → 101 | ✅ | 22/11/2026 |
+| `detector-records.spec.ts` › varios tipos | RN-ENT-13 | Unit | Récords rep 5/vol 300/1RM 70; marcas rep 5/vol 360/1RM 84 | Guarda vol 360 y 1RM 84; 2 eventos | ✅ | 22/11/2026 |

@@ -117,7 +117,7 @@ Hoy:
 | planificacion | aplicacion | crear-rutina, consultar-rutinas (incluye `resolver-rutina-para-alumno.ts`), renombrar-rutina, crear-plan, consultar-rutina-del-dia, consultar-plan-del-alumno, consultar-planes |
 | planificacion | infraestructura | rutina, plan |
 | planificacion | presentacion | controlador, crear-rutina (incluye `RenombrarRutinaDto`), crear-plan |
-| entrenamiento | dominio | entrenamiento (con `CopiaRutina`, `SerieRealizada` valor y evento, `EntrenamientoIniciado`, puertos y `entrenamiento.entidad.spec.ts`) |
+| entrenamiento | dominio | entrenamiento (con `CopiaRutina`, `SerieRealizada` valor y evento, `EntrenamientoIniciado`, puertos y `entrenamiento.entidad.spec.ts`), carga-efectiva (con las 4 estrategias), volumen-serie, uno-rm-estimado, marcas-por-tipo-ejercicio (con las 3 estrategias), record-personal (`RecordPersonal`, `RecordBatido` y `DetectorRecords`) |
 | entrenamiento | aplicacion | iniciar-entrenamiento, consultar-entrenamiento-en-curso, registrar-serie-realizada, consultar-entrenamientos-de-alumnos |
 | entrenamiento | infraestructura | entrenamiento (esquema `series_realizadas` en `serie-realizada.esquema.ts`, `entrenamiento.mapper.ts` y repositorio TypeORM) |
 | entrenamiento | presentacion | controlador, registrar-serie-realizada (DTO) |

@@ -257,7 +257,7 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 | Orden | Tarjeta | Tarea | Repo | RN | Pts | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | 1 | US14 | Backend: registrar serie realizada | back | RN-ENT-03, 04, 19, 20 | 3 | ⬜ |
-| 1 | US16 | Modelar: Récord Personal y Carga Efectiva (Estrategia por tipo de carga, Epley) | back | RN-ENT-10, 11, 12, 13 | 5 | ⬜ |
+| 1 | US16 | Modelar: Récord Personal y Carga Efectiva (Estrategia por tipo de carga, Epley) | back | RN-ENT-10, 11, 12, 13 | 5 | ✅ |
 | 1 | US12 | Backend: agregar y quitar alumnos de un plan vigente | back | RN-PLAN-12, 13, 14, 16 | 3 | 🔄 En curso en Jira (Martina, Sprint 3); sin commits al 21/11 |
 | 2 | US14 | Frontend: registro de series en el entrenamiento en curso | front | RN-ENT-03, 04, 19, 20 · RN-UI-ENT-01 | 5 | ⬜ |
 | 2 | US15 | Backend: finalizar entrenamiento (volumen, grupos, duración) | back | RN-ENT-05, 06, 07, 08, 09, 17 | 5 | ⬜ |
