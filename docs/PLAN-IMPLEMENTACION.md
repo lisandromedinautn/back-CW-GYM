@@ -289,7 +289,7 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 | 1 | US18 | Backend: consultar los entrenamientos de mis alumnos | back | RN-ENT-18 | 3 | ⬜ |
 | 2 | US18 | Frontend: página de entrenamientos de alumnos | front | RN-ENT-18 | 3 | ✅ 23/11 (rama `feat/US18-entrenamientos-de-alumnos`) |
 | 2 | — | e2e de API de los flujos completos (back) | back | todas | 3 (V2) | ⬜ |
-| 2 | — | e2e de navegador con Playwright de los flujos principales (front) | front | todas | 5 (V2) | ⬜ |
+| 2 | T15 | e2e de navegador con Playwright de los flujos principales (front) | front | todas | 5 (V2) | ✅ CG-86: los cuatro flujos en verde el 23/11 (12 e2e de navegador); `importar-rutina.e2e.ts` adaptado al listado de planes de T13 |
 | 3 | — | Patches pendientes y revisión final de calidad | ambos | — | 3 (V2; reserva) | ⬜ |
 | 4 | — | Informe, matriz, métricas y cierres de versión futuros | ambos | — | 3 (V2) | ⬜ |
 
