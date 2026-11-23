@@ -1,4 +1,3 @@
-import { CatalogoModule } from '../catalogo/catalogo.module.js';
 import { ConsultaEjerciciosResumenFachadaCatalogo } from './infraestructura/entrenamiento/consulta-ejercicios-resumen.fachada-catalogo.js';
 import { RepositorioCierreEntrenamiento } from './dominio/entrenamiento/repositorio-cierre-entrenamiento.puerto.js';
 import { FinalizarEntrenamiento } from './aplicacion/finalizar-entrenamiento/finalizar-entrenamiento.caso-uso.js';
@@ -11,6 +10,8 @@ import {
 } from '../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
 import { Reloj } from '../../compartido/dominio/reloj/reloj.puerto.js';
 import { RelojSistema } from '../../compartido/infraestructura/reloj/reloj-sistema.js';
+import { CatalogoModule } from '../catalogo/catalogo.module.js';
+import { FachadaCatalogo } from '../catalogo/fachada-catalogo.js';
 import { FachadaIdentidad } from '../identidad/fachada-identidad.js';
 import { ModuloIdentidad } from '../identidad/identidad.module.js';
 import { FachadaPlanificacion } from '../planificacion/fachada-planificacion.js';
@@ -80,6 +81,7 @@ import { EntrenamientoControlador } from './presentacion/controlador/entrenamien
         FachadaPlanificacion,
         Reloj,
         PUBLICADOR_EVENTOS,
+        FachadaCatalogo,
       ],
       useFactory: (
         repositorio: RepositorioEntrenamientos,
@@ -87,7 +89,16 @@ import { EntrenamientoControlador } from './presentacion/controlador/entrenamien
         planificacion: FachadaPlanificacion,
         reloj: Reloj,
         publicador: PublicadorEventos,
-      ) => new IniciarEntrenamiento(repositorio, identidad, planificacion, reloj, publicador),
+        catalogo: FachadaCatalogo,
+      ) =>
+        new IniciarEntrenamiento(
+          repositorio,
+          identidad,
+          planificacion,
+          reloj,
+          publicador,
+          catalogo,
+        ),
     },
     {
       provide: RegistrarSerieRealizada,

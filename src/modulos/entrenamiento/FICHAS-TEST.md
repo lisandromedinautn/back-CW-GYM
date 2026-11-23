@@ -27,6 +27,10 @@ Una fila por caso de test. La entrada y el esperado los **confirma el desarrolla
 | `consultar-entrenamientos-de-alumnos.e2e-spec.ts` › alumno propio con series | RN-ENT-18 | e2e | profesor01 consulta a alumno01, que inició y registró la serie 3 del bloque (8 reps, 30 kg) | 200 con 1 entrenamiento `en-curso` y esa serie en `series` | ✅ | 22/11/2026 |
 | `consultar-entrenamientos-de-alumnos.e2e-spec.ts` › otro profesor | RN-ENT-18 | e2e | profesor02 consulta a alumno01 | 403 · `RN-ENT-18` | ✅ | 22/11/2026 |
 | `consultar-entrenamientos-de-alumnos.e2e-spec.ts` › paginación | RN-ENT-18 | e2e | alumno01 con entrenamientos el 20/11 y el 21/11, `tamanio=5` | El del 21/11 primero; `total: 2` | ✅ | 22/11/2026 |
+| `copia-rutina.valor.spec.ts` › agrega el GIF | RN-ENT-02 | Unit | Copia con un bloque de `press` y un circuito con `press` y `plancha`; el catálogo tiene `https://gifs.test/press.gif` para `press` | Bloque y `press` del circuito con esa URL | ✅ | 22/11/2026 |
+| `copia-rutina.valor.spec.ts` › ejercicio sin GIF | RN-ENT-02 | Unit | Igual, sin GIF para `plancha` | `plancha` con `urlGif: null` | ✅ | 22/11/2026 |
+| `gif-en-la-copia.e2e-spec.ts` › al iniciar | RN-ENT-02 | e2e | alumno01 inicia la rutina "Fuerza" del fixture (bloque `lever chest press`, circuito con `weighted front plank`) | `rutina.bloques[0].urlGif` = `https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0577-T0yTjgW.gif` y `rutina.circuitos[0].ejercicios[0].urlGif` = `https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/2135-VBAWRPG.gif` | ✅ | 22/11/2026 |
+| `gif-en-la-copia.e2e-spec.ts` › al retomar | RN-ENT-02 | e2e | `GET /entrenamiento/mi-entrenamiento-en-curso` después de iniciar | Las mismas dos URL | ✅ | 22/11/2026 |
 
 ## US15 — Finalizar entrenamiento y consultar resumen
 

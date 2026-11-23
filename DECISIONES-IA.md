@@ -296,6 +296,17 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Pendientes: front de US18 (página de entrenamientos de alumnos); sumar el estado `finalizado` con US15.
 
 
+## 2026-11-22 — Entrenamiento paso a paso con GIF y botón de finalizar [US14, T14]
+- Desarrollador: Ulises
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 (todo en serie, sin subagentes: el front del GIF dependía del contrato del back)
+- Objetivo: después de probar a mano el front de US14, mostrar un ejercicio por vez con su GIF y el contador siempre visible, avanzar al registrar, y dejar visible el botón de finalizar hasta que exista US15.
+- Qué hizo la IA: verificó que el modo secuencial era solo front, que el GIF necesitaba un cambio en el back y que finalizar dependía de US15 (back inexistente, asignada a Martina). Propuso la regla RN-UI-ENT-03, la ampliación de RN-ENT-02 y las fichas. Front: reescribió los tests de integración de US14 para el paso a paso (aprobado), implementó `PasoActual` y `FormularioSerie`, el GIF con atribución y el botón deshabilitado. Back: puerto `ConsultaEjercicios` implementado por la Fachada de catálogo (`EjercicioPublico` suma `urlGif`) y la función de dominio `conGifs` en `IniciarEntrenamiento`, con 2 unitarios y 2 e2e. Creó la tarjeta CG-85 (T14) en Jira. Sincronizó `TRAZABILIDAD.md` y `PLAN-IMPLEMENTACION.md` entre los repos.
+- Decisiones del desarrollador: paso a paso con Anterior/Siguiente; arranca en el primer paso sin registrar; abandonado sigue como lista de solo lectura; GIF guardado en la copia tocando solo Entrenamiento y la Fachada de catálogo (no Planificación, cuyos e2e comparan con `toEqual`); atribución "GIF © Gym visual"; botón "Finalizar entrenamiento" deshabilitado en el último paso, sin test hasta US15.
+- Ideas descartadas: agregar el GIF en la rutina del día de Planificación (cambiaba sus contratos y rompía e2e); habilitar el catálogo para el rol Alumno (toca RN-IDE-03); implementar la finalización en el back sin coordinar con US15.
+- Reglas afectadas: nueva RN-UI-ENT-03 (front). RN-ENT-02 amplía la copia con el GIF (back, historial del módulo).
+- Verificación: front 164 tests, back 247 unitarios, 3 de integración y 110 e2e; `yarn test:cov` en los dos dentro de los umbrales (back 98,2% de líneas); lint y tipos sin errores. Mutaciones sobre el paso inicial, el avance, Anterior/Siguiente, lo registrado, el GIF y `conGifs` hacen fallar los tests. Un test del GIF pasaba por un error del propio test (`undefined` tomaba el valor por defecto); se corrigió antes de commitear.
+- Pendientes: el back de US15 para habilitar el botón; los entrenamientos anteriores a T14 no tienen GIF; nada pusheado.
+
 ## 2026-11-22 — Datos de prueba para US12 [US12]
 - Desarrolladora: Martina Pineda.
 - Herramienta: Codex.

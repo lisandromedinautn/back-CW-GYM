@@ -9,6 +9,8 @@ export interface EjercicioPublico {
   tipo: string;
   /** Sin Peso, Peso Corporal, Peso Extra o Peso Corporal + Peso Extra (RN-CAT-03). */
   tipoCarga: string;
+  /** T14: GIF del ejercicio, para la copia del entrenamiento. */
+  urlGif: string;
 }
 
 /**
@@ -21,9 +23,7 @@ export class FachadaCatalogo {
   constructor(@Inject(RepositorioEjercicios) private readonly ejercicios: RepositorioEjercicios) {}
 
   /** Datos de catálogo necesarios al cerrar un entrenamiento. */
-  async obtenerDatosParaResumen(
-    id: string,
-  ): Promise<{
+  async obtenerDatosParaResumen(id: string): Promise<{
     tipoCarga: string;
     factorPesoCorporal: number | null;
     grupoPrincipal: string;
@@ -48,6 +48,7 @@ export class FachadaCatalogo {
       nombre: ejercicio.nombre,
       tipo: ejercicio.tipo.valor,
       tipoCarga: ejercicio.tipoCarga.valor,
+      urlGif: ejercicio.urlGif,
     };
   }
 }

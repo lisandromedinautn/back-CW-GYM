@@ -13,7 +13,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | ID | Regla | Origen | Estado |
 | :-- | :-- | :-- | :-- |
 | RN-ENT-01 | El alumno solo puede iniciar el entrenamiento de la rutina de hoy de su plan vigente, y una sola vez por día. No se recuperan días pasados ni se adelantan días futuros. Un día de descanso no se puede iniciar | US13, ZG-08 | Vigente |
-| RN-ENT-02 | Al iniciar se guardan una copia independiente de la rutina, el peso corporal actual del alumno y la hora de inicio, y se emite EntrenamientoIniciado | US13, decisiones 6, 12 y 13 | Vigente |
+| RN-ENT-02 | Al iniciar se guardan una copia independiente de la rutina (con el nombre y el GIF del catálogo de cada ejercicio; `urlGif` es `null` si el catálogo no lo tiene), el peso corporal actual del alumno y la hora de inicio, y se emite EntrenamientoIniciado | US13, decisiones 6, 12 y 13, T14 | Vigente |
 | RN-ENT-03 | Cada serie realizada registra lo hecho (repeticiones o tiempo, y peso si corresponde) asociado a la serie prescripta de la copia, para poder compararlos | US14 | Vigente |
 | RN-ENT-04 | Solo se registran series en un entrenamiento iniciado y no finalizado | US14 | Vigente |
 | RN-ENT-05 | Al finalizar se registra la hora de fin. La duración es fin − inicio. Un entrenamiento finalizado no se vuelve a finalizar | US15 | Vigente |
@@ -62,6 +62,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | 01/11/2026 | Todas | Versión inicial | Lisandro |
 | 01/11/2026 | RN-ENT-15 | Escala de sensación de fuerza fijada de 1 a 5 | Lisandro |
 | 01/11/2026 | RN-ENT-01, 09, 13, 16; nueva RN-ENT-20 | Se cierran ZG-08 a ZG-12: solo la rutina de hoy y una vez por día, los grupos incluyen el secundario, récord estrictamente mayor sin anunciar la primera marca, RPE y sensación opcionales y cargables después, entrenamiento abandonado a la medianoche | Lisandro |
+| 22/11/2026 | RN-ENT-02 | La copia guarda también el GIF de cada ejercicio, para mostrarlo durante el entrenamiento (T14) | Ulises |
 
 ## Decisiones de implementación (CG-46, US13)
 
@@ -91,4 +92,12 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 * El cierre guarda la hora de fin y el resumen con volumen, duración en segundos y grupos sin repetir. Sin series, devuelve 0 kg y grupos vacíos. Los récords se implementan en US16.
 * La fachada de Catálogo aporta tipo de carga, factor y grupos; el peso corporal es el guardado al iniciar. El resumen queda persistido para recuperarlo en el entrenamiento finalizado.
 * El repositorio bloquea el entrenamiento para serializar el cierre con el registro de series. Una segunda finalización responde RN-ENT-05; registrar una serie tras finalizar responde RN-ENT-04. El alumno se resuelve con el JWT.
-* `GET /entrenamiento/mi-entrenamiento-en-curso` puede devolver estado `finalizado` con `fin` y `resumen`; US14 aún no tiene pantalla de registro.
+* `GET /entrenamiento/mi-entrenamiento-en-curso` puede devolver estado `finalizado` con `fin` y `resumen`; US14 incluye pantalla de registro de series.
+
+## Decisiones de implementación (CG-85, T14)
+
+Decididas por Ulises el 22/11/2026.
+
+* Para mostrar el GIF durante el entrenamiento, la copia guarda `urlGif` en cada ejercicio de bloques y circuitos (RN-ENT-02). Lo agrega `IniciarEntrenamiento` con la función de dominio `conGifs`, consultando el puerto `ConsultaEjercicios`, que implementa directo la Fachada de catálogo (`EjercicioPublico` suma `urlGif`).
+* No se toca Planificación: sus respuestas (`mi-rutina-del-dia`, `mi-plan`) siguen iguales. El catálogo sigue siendo solo para Admin y Profesor.
+* Los entrenamientos iniciados antes de T14 no tienen `urlGif` en su copia (no se migran); el front los muestra sin imagen.

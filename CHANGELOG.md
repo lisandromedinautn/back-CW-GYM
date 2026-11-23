@@ -14,6 +14,8 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 - `yarn seed` prepara dos grupos aislados con planes y alumnos vinculados para probar US12.
 
+- La copia de la rutina del entrenamiento guarda `urlGif` en cada ejercicio (`null` si el catálogo no lo tiene), en `POST /entrenamiento/entrenamientos` y `GET /entrenamiento/mi-entrenamiento-en-curso`; `EjercicioPublico` de la Fachada de catálogo suma `urlGif`. No cambia ningún contrato de Planificación (RN-ENT-02; CG-85, T14).
+
 - US12: gestión de alumnos de planes vigentes por su profesor, con validaciones de vínculo y plan vigente.
 
 - `GET /planificacion/planes` (Profesor): sus planes paginados (5, 10, 20, 50 o 100), del más nuevo al más viejo, con estado Próximo, Vigente o Finalizado según el reloj y filtros por estado, alumno y rango de fecha de inicio (RN-PLAN-22, RN-PLAN-15; CG-84, T13).
