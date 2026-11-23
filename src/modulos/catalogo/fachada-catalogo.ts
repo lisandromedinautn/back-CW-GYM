@@ -9,6 +9,8 @@ export interface EjercicioPublico {
   tipo: string;
   /** Sin Peso, Peso Corporal, Peso Extra o Peso Corporal + Peso Extra (RN-CAT-03). */
   tipoCarga: string;
+  /** T14: GIF del ejercicio, para la copia del entrenamiento. */
+  urlGif: string;
 }
 
 /**
@@ -28,6 +30,7 @@ export class FachadaCatalogo {
       nombre: ejercicio.nombre,
       tipo: ejercicio.tipo.valor,
       tipoCarga: ejercicio.tipoCarga.valor,
+      urlGif: ejercicio.urlGif,
     };
   }
 }
