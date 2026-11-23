@@ -9,7 +9,7 @@ import type { RepositorioEntrenamientos } from '../../dominio/entrenamiento/repo
 
 type ResultadoConsulta =
   | { estado: 'sin-entrenamiento' }
-  | { estado: 'en-curso' | 'abandonado'; entrenamiento: DatosEntrenamiento };
+  | { estado: 'en-curso' | 'abandonado' | 'finalizado'; entrenamiento: DatosEntrenamiento };
 
 export class ConsultarEntrenamientoEnCurso {
   constructor(

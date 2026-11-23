@@ -34,7 +34,7 @@ Estados: ⬜ sin empezar · 🟥 test en rojo (TDD; solo en el working tree, nun
 | US13 | RN-ENT-01, 02, 20 · RN-UI-ENT-02 | iniciar-entrenamiento, consultar-entrenamiento-en-curso | PaginaEntrenamientoEnCurso | `src/modulos/entrenamiento/dominio/entrenamiento/entrenamiento.entidad.spec.ts` | — | `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` | `src/modulos/entrenamiento/presentacion/entrenamiento-en-curso/entrenamiento.int.test.tsx` | back 🟩, front 🟩 |
 | US14 | RN-ENT-03, 04, 19, 20 · RN-UI-ENT-01, 03 | registrar-serie-realizada | PaginaEntrenamientoEnCurso | `src/modulos/entrenamiento/dominio/entrenamiento/entrenamiento.entidad.spec.ts` | — | `test/e2e/entrenamiento/registrar-serie-realizada.e2e-spec.ts` | `src/modulos/entrenamiento/dominio/serie/serie.test.ts` (8 casos) · `src/modulos/entrenamiento/presentacion/entrenamiento-en-curso/RegistrarSerie.int.test.tsx` (8 casos) | back 🟩, front 🟩 |
 | T14 | RN-ENT-02 · RN-UI-ENT-03 | iniciar-entrenamiento (GIF en la copia) | PaginaEntrenamientoEnCurso (`PasoActual.tsx`) | `src/modulos/entrenamiento/dominio/entrenamiento/copia-rutina.valor.spec.ts` (2 casos) | — | `test/e2e/entrenamiento/gif-en-la-copia.e2e-spec.ts` (2 casos) | `src/modulos/entrenamiento/presentacion/entrenamiento-en-curso/RegistrarSerie.int.test.tsx` (2 casos de GIF) | back 🟩, front 🟩 |
-| US15 | RN-ENT-05, 06, 07, 08, 09, 17 | finalizar-entrenamiento | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
+| US15 | RN-ENT-05, 06, 07, 08, 09, 17 | cerrar-entrenamiento, calcular-resumen | ResumenEntrenamiento | 6 unitarios | — | 2 e2e API | 4 integración UI | En rama; récords corresponden a US16 |
 | US16 | RN-ENT-10, 11, 12, 13 | finalizar-entrenamiento | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
 | US17 | RN-ENT-14, 15, 16 | registrar-percepcion | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
 | US12 | RN-PLAN-12, 13, 14, 16 | alumnos-del-plan | PaginaAlumnosDelPlan | 8 unitarios | 4 API | 3 interfaz | builds aprobados | En rama |
@@ -104,6 +104,7 @@ Toda RN vigente tiene que tener al menos un test. Una RN sin test es una brecha 
 | RN-UI-ENT-03 | US14: paso a paso con contador siempre visible, avanzar al registrar, Anterior y Siguiente (`RegistrarSerie.int.test.tsx`, 5 casos) y GIF con atribución por paso (2 casos, T14) | 🟩 front |
 | RN-ENT-18 | US18: caso de uso y API (back) · selector de alumnos vinculados y error `RN-ENT-18` en pantalla (front: `PaginaEntrenamientosDeAlumnos.int.test.tsx`) | 🟩 back y front |
 | RN-UI-ENT-04 | US18: elegir alumno, listado del más nuevo al más viejo con fecha (hora de Argentina), rutina, estado, peso y series junto a lo prescripto (`entrenamientosDeAlumnos.test.ts`, `PaginaEntrenamientosDeAlumnos.int.test.tsx`, 6 casos) | 🟩 front |
-| RN-ENT-05 … RN-ENT-17 | — | ⬜ |
+| RN-ENT-05, 06, 07, 08, 09, 17 | US15: cálculo, cierre y resumen; récords de RN-ENT-17 pendientes en US16 | 🟩 parcial |
+| RN-ENT-10 … RN-ENT-16 | Récords y percepción (US16, US17) | ⬜ |
 
 Cuando se escriba el primer test de una RN, se separa en su propia fila.

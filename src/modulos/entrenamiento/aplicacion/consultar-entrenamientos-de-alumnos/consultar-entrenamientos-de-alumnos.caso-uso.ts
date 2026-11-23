@@ -5,7 +5,9 @@ import type { ConsultaVinculos } from '../../dominio/entrenamiento/consultas-ent
 import type { DatosEntrenamiento } from '../../dominio/entrenamiento/entrenamiento.entidad.js';
 import type { RepositorioEntrenamientos } from '../../dominio/entrenamiento/repositorio-entrenamientos.puerto.js';
 
-export type EntrenamientoDeAlumno = DatosEntrenamiento & { estado: 'en-curso' | 'abandonado' };
+export type EntrenamientoDeAlumno = DatosEntrenamiento & {
+  estado: 'en-curso' | 'abandonado' | 'finalizado';
+};
 
 /**
  * US18. El profesor consulta los entrenamientos de un alumno, del más nuevo al más viejo.

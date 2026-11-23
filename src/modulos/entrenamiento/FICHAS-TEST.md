@@ -31,3 +31,15 @@ Una fila por caso de test. La entrada y el esperado los **confirma el desarrolla
 | `copia-rutina.valor.spec.ts` › ejercicio sin GIF | RN-ENT-02 | Unit | Igual, sin GIF para `plancha` | `plancha` con `urlGif: null` | ✅ | 22/11/2026 |
 | `gif-en-la-copia.e2e-spec.ts` › al iniciar | RN-ENT-02 | e2e | alumno01 inicia la rutina "Fuerza" del fixture (bloque `lever chest press`, circuito con `weighted front plank`) | `rutina.bloques[0].urlGif` = `https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0577-T0yTjgW.gif` y `rutina.circuitos[0].ejercicios[0].urlGif` = `https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/2135-VBAWRPG.gif` | ✅ | 22/11/2026 |
 | `gif-en-la-copia.e2e-spec.ts` › al retomar | RN-ENT-02 | e2e | `GET /entrenamiento/mi-entrenamiento-en-curso` después de iniciar | Las mismas dos URL | ✅ | 22/11/2026 |
+
+## US15 — Finalizar entrenamiento y consultar resumen
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `finalizar-entrenamiento.caso-uso.spec.ts` › dominada con peso corporal y extra | RN-ENT-05, 06, 07, 08, 09, 12, 17 | Unitario | inicio 10:00, fin 10:30; 80 kg corporales, factor 100 %, 10 kg extra, 6 repeticiones; espalda y brazos | 1800 segundos, 540 kg, Espalda y Brazos | = esperado (laptop) | 22/11/2026 |
+| `calcular-resumen-entrenamiento.spec.ts` › tipos de carga y series | RN-ENT-06, 07, 08 | Unitario | sin peso, extra, corporal y corporal más extra, con series registradas | suma de los volúmenes calculados | = esperado (laptop) | 22/11/2026 |
+| `calcular-resumen-entrenamiento.spec.ts` › sin series | RN-ENT-06, 09, 17 | Unitario | entrenamiento sin series | 0 kg y grupos vacíos | = esperado (laptop) | 22/11/2026 |
+| `cerrar-entrenamiento.caso-uso.spec.ts` › finalización indebida | RN-ENT-05, 19, 20 | Unitario | finalizado, otro alumno y día posterior | rechazo sin modificar datos | = esperado (laptop) | 22/11/2026 |
+| `finalizar-entrenamiento.e2e-spec.ts` › permisos y persistencia | RN-ENT-05, 17, 19 | e2e | sin token, profesor, alumno ajeno y alumno propio | 401, 403, 404 y resumen persistido | = esperado (laptop) | 22/11/2026 |
+
+Comprobación por mutación US15: el cálculo de peso corporal con carga extra y la visualización de 540 kg fallaron al alterarse; se restauraron los archivos con las mismas huellas que las versiones aprobadas.

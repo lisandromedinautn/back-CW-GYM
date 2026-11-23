@@ -1,3 +1,7 @@
+import { ConsultaEjerciciosResumenFachadaCatalogo } from './infraestructura/entrenamiento/consulta-ejercicios-resumen.fachada-catalogo.js';
+import { RepositorioCierreEntrenamiento } from './dominio/entrenamiento/repositorio-cierre-entrenamiento.puerto.js';
+import { FinalizarEntrenamiento } from './aplicacion/finalizar-entrenamiento/finalizar-entrenamiento.caso-uso.js';
+import { CerrarEntrenamiento } from './aplicacion/finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.js';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
@@ -33,6 +37,42 @@ import { EntrenamientoControlador } from './presentacion/controlador/entrenamien
   providers: [
     { provide: Reloj, useClass: RelojSistema },
     { provide: RepositorioEntrenamientos, useClass: RepositorioEntrenamientosTypeorm },
+    { provide: RepositorioCierreEntrenamiento, useExisting: RepositorioEntrenamientos },
+    ConsultaEjerciciosResumenFachadaCatalogo,
+    {
+      provide: FinalizarEntrenamiento,
+      inject: [
+        RepositorioEntrenamientos,
+        FachadaIdentidad,
+        ConsultaEjerciciosResumenFachadaCatalogo,
+        Reloj,
+      ],
+      useFactory: (
+        repositorio: RepositorioEntrenamientos,
+        identidad: FachadaIdentidad,
+        ejercicios: ConsultaEjerciciosResumenFachadaCatalogo,
+        reloj: Reloj,
+      ) => new FinalizarEntrenamiento(repositorio, identidad, ejercicios, reloj),
+    },
+    {
+      provide: CerrarEntrenamiento,
+      inject: [
+        RepositorioEntrenamientos,
+        RepositorioCierreEntrenamiento,
+        FachadaIdentidad,
+        Reloj,
+        FinalizarEntrenamiento,
+        PUBLICADOR_EVENTOS,
+      ],
+      useFactory: (
+        repositorio: RepositorioEntrenamientos,
+        cierre: RepositorioCierreEntrenamiento,
+        identidad: FachadaIdentidad,
+        reloj: Reloj,
+        calculo: FinalizarEntrenamiento,
+        publicador: PublicadorEventos,
+      ) => new CerrarEntrenamiento(repositorio, cierre, identidad, reloj, calculo, publicador),
+    },
     {
       provide: IniciarEntrenamiento,
       inject: [

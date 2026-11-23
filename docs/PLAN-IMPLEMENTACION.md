@@ -302,3 +302,7 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 | Inicio real | Fin real | Puntos terminados | Horas reales | Desvío | Bugs en demo | Notas |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | | | | | | | |
+
+### Avance de US15 en rama — 22/11/2026
+
+El cierre y el resumen están implementados en la rama de US15. Pasaron 6 pruebas unitarias y 2 e2e en el back, 4 pruebas de integración en el front y los builds. El registro visual de series (US14) y los récords (US16) siguen pendientes. La comprobación por mutación detectó los cambios y los archivos fueron restaurados.

@@ -40,7 +40,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | `iniciar-entrenamiento.caso-uso.ts` ✅ | US13 | 01, 02 |
 | `consultar-entrenamiento-en-curso.caso-uso.ts` ✅ | US13 | 20 |
 | `registrar-serie-realizada.caso-uso.ts` ✅ | US14 | 03, 04, 19, 20 |
-| `finalizar-entrenamiento.caso-uso.ts` | US15, US16 | 05–13, 17, 19, 20 |
+| `finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.ts` ✅, `dominio/entrenamiento/calcular-resumen.ts` ✅ | US15 | 05–09, 17, 19, 20 |
 | `registrar-percepcion.caso-uso.ts` | US17 | 14, 15, 16 |
 | `consultar-entrenamientos-de-alumnos.caso-uso.ts` ✅ | US18 | 18 |
 
@@ -51,7 +51,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | `POST /entrenamiento/entrenamientos` ✅ | Alumno | iniciar-entrenamiento |
 | `GET /entrenamiento/mi-entrenamiento-en-curso` ✅ | Alumno | consultar-entrenamiento-en-curso |
 | `POST /entrenamiento/entrenamientos/:id/series` ✅ | Alumno | registrar-serie-realizada |
-| `POST /entrenamiento/entrenamientos/:id/finalizacion` | Alumno | finalizar-entrenamiento |
+| `POST /entrenamiento/entrenamientos/:id/finalizacion` ✅ | Alumno | cerrar-entrenamiento |
 | `PUT /entrenamiento/entrenamientos/:id/percepcion` | Alumno | registrar-percepcion |
 | `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` ✅ | Profesor | consultar-entrenamientos-de-alumnos |
 
@@ -86,6 +86,13 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 * Un alumno ajeno o inexistente responde `403` con `RN-ENT-18`, el mismo error en los dos casos para no revelar si el alumno existe.
 * `GET` devuelve una página `{ items, total, pagina, tamanio }` (tamaños 5, 10, 20, 50 o 100; 10 por defecto), del más nuevo al más viejo por fecha, sin filtros. Cada ítem es el entrenamiento completo (`id, alumnoId, inicio, pesoCorporalKg, rutina, series`) más `estado`.
 * Los abandonados se listan con `estado: 'abandonado'`. El estado `finalizado` se suma con US15.
+
+## Decisiones de implementación (US15)
+
+* El cierre guarda la hora de fin y el resumen con volumen, duración en segundos y grupos sin repetir. Sin series, devuelve 0 kg y grupos vacíos. Los récords se implementan en US16.
+* La fachada de Catálogo aporta tipo de carga, factor y grupos; el peso corporal es el guardado al iniciar. El resumen queda persistido para recuperarlo en el entrenamiento finalizado.
+* El repositorio bloquea el entrenamiento para serializar el cierre con el registro de series. Una segunda finalización responde RN-ENT-05; registrar una serie tras finalizar responde RN-ENT-04. El alumno se resuelve con el JWT.
+* `GET /entrenamiento/mi-entrenamiento-en-curso` puede devolver estado `finalizado` con `fin` y `resumen`; US14 incluye pantalla de registro de series.
 
 ## Decisiones de implementación (CG-85, T14)
 

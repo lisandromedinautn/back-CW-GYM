@@ -80,7 +80,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | entrenamiento | `iniciar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos` | US13, T14 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` · `test/e2e/entrenamiento/gif-en-la-copia.e2e-spec.ts` (GIF en la copia, T14) |
 | entrenamiento | `consultar-entrenamiento-en-curso.caso-uso.ts` | `GET /entrenamiento/mi-entrenamiento-en-curso` | US13 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` |
 | entrenamiento | `registrar-serie-realizada.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/series` | US14 | ✅ |
-| entrenamiento | `finalizar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/finalizacion` | US15, US16 | 📄 |
+| entrenamiento | `cerrar-entrenamiento.caso-uso.ts`, `calcular-resumen.ts` | `POST /entrenamiento/entrenamientos/:id/finalizacion` | US15 | ✅ `test/e2e/entrenamiento/finalizar-entrenamiento.e2e-spec.ts` |
 | entrenamiento | `registrar-percepcion.caso-uso.ts` | `PUT /entrenamiento/entrenamientos/:id/percepcion` | US17 | 📄 |
 | entrenamiento | `consultar-entrenamientos-de-alumnos.caso-uso.ts` | `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` | US18 | ✅ |
 
@@ -93,6 +93,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | entrenamiento | Fachada de planificacion | ✅ `fachada-planificacion.ts`: copiar la rutina del día con su orden (RN-ENT-01, 02) |
 | entrenamiento | Fachada de identidad | ✅ Peso actual del alumno (RN-ENT-02); profesor para RN-ENT-18 📄 |
 | entrenamiento | Fachada de catalogo | ✅ GIF de cada ejercicio para la copia (RN-ENT-02, T14), por el puerto `ConsultaEjercicios` que la Fachada implementa directo. Pendiente: tipo, tipo de carga, factor y grupo (RN-ENT-07, 09, 10) |
+| entrenamiento | Fachada de catalogo | ✅ Tipo de carga, factor y grupos para el resumen (RN-ENT-07, 09); récords US16 pendientes |
 
 ## Carpetas por concepto
 
