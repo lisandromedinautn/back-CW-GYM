@@ -77,7 +77,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | planificacion | `consultar-rutina-del-dia.caso-uso.ts` | `GET /planificacion/mi-rutina-del-dia` (solo Alumno) | US08 | ✅ `consultar-rutina-del-dia.caso-uso.spec.ts`, `consultar-rutina-del-dia-alumnos.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-rutina-del-dia.e2e-spec.ts` |
 | planificacion | `consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.ts` | `GET /planificacion/mi-plan` (solo Alumno) | US11 | ✅ caso de uso, `consultar-plan-del-alumno.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-plan-del-alumno.e2e-spec.ts` |
 | planificacion | `consultar-planes/consultar-planes.caso-uso.ts` | `GET /planificacion/planes` (solo Profesor) | T13 | ✅ `consultar-planes.caso-uso.spec.ts` y `test/e2e/planificacion/consultar-planes.e2e-spec.ts` |
-| entrenamiento | `iniciar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos` | US13 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` |
+| entrenamiento | `iniciar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos` | US13, T14 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` · `test/e2e/entrenamiento/gif-en-la-copia.e2e-spec.ts` (GIF en la copia, T14) |
 | entrenamiento | `consultar-entrenamiento-en-curso.caso-uso.ts` | `GET /entrenamiento/mi-entrenamiento-en-curso` | US13 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` |
 | entrenamiento | `registrar-serie-realizada.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/series` | US14 | ✅ |
 | entrenamiento | `finalizar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/finalizacion` | US15, US16 | 📄 |
@@ -92,7 +92,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | planificacion | Fachada de catalogo | Validar ejercicios referenciados y su tipo (RN-PLAN-04, 05, 06). ✅ `src/modulos/catalogo/fachada-catalogo.ts`, por el puerto `ConsultaEjercicios` (adaptador en `planificacion/infraestructura/rutina/`) |
 | entrenamiento | Fachada de planificacion | ✅ `fachada-planificacion.ts`: copiar la rutina del día con su orden (RN-ENT-01, 02) |
 | entrenamiento | Fachada de identidad | ✅ Peso actual del alumno (RN-ENT-02); profesor para RN-ENT-18 📄 |
-| entrenamiento | Fachada de catalogo | Tipo, tipo de carga, factor y grupo de cada ejercicio (RN-ENT-07, 09, 10) |
+| entrenamiento | Fachada de catalogo | ✅ GIF de cada ejercicio para la copia (RN-ENT-02, T14), por el puerto `ConsultaEjercicios` que la Fachada implementa directo. Pendiente: tipo, tipo de carga, factor y grupo (RN-ENT-07, 09, 10) |
 
 ## Carpetas por concepto
 

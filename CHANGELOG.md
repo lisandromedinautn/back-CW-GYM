@@ -8,6 +8,8 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ### Agregado
 
+- La copia de la rutina del entrenamiento guarda `urlGif` en cada ejercicio (`null` si el catálogo no lo tiene), en `POST /entrenamiento/entrenamientos` y `GET /entrenamiento/mi-entrenamiento-en-curso`; `EjercicioPublico` de la Fachada de catálogo suma `urlGif`. No cambia ningún contrato de Planificación (RN-ENT-02; CG-85, T14).
+
 - `yarn seed:plan-us12` carga ejercicios en los 28 días del plan de prueba del alumno 01.
 
 - `yarn seed` prepara dos grupos aislados con planes y alumnos vinculados para probar US12.

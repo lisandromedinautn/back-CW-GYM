@@ -259,7 +259,7 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 | 1 | US14 | Backend: registrar serie realizada | back | RN-ENT-03, 04, 19, 20 | 3 | ⬜ |
 | 1 | US16 | Modelar: Récord Personal y Carga Efectiva (Estrategia por tipo de carga, Epley) | back | RN-ENT-10, 11, 12, 13 | 5 | ⬜ |
 | 1 | US12 | Backend: agregar y quitar alumnos de un plan vigente | back | RN-PLAN-12, 13, 14, 16 | 3 | 🔄 En curso en Jira (Martina, Sprint 3); sin commits al 21/11 |
-| 2 | US14 | Frontend: registro de series en el entrenamiento en curso | front | RN-ENT-03, 04, 19, 20 · RN-UI-ENT-01 | 5 | ⬜ |
+| 2 | US14 | Frontend: registro de series en el entrenamiento en curso | front | RN-ENT-03, 04, 19, 20 · RN-UI-ENT-01 | 5 | ✅ 22/11 (rama `feat/US14-registrar-serie`) |
 | 2 | US15 | Backend: finalizar entrenamiento (volumen, grupos, duración) | back | RN-ENT-05, 06, 07, 08, 09, 17 | 5 | ⬜ |
 | 2 | US12 | Frontend: página de alumnos del plan | front | RN-PLAN-12, 13, 14, 16 | 1 | ⬜ |
 | 3 | US16 | Backend: detectar récords al finalizar (evento RécordBatido) | back | RN-ENT-10, 11, 12, 13 | 5 | ⬜ |
@@ -287,7 +287,7 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 | Orden | Tarjeta | Tarea | Repo | RN | Pts | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | 1 | US18 | Backend: consultar los entrenamientos de mis alumnos | back | RN-ENT-18 | 3 | ⬜ |
-| 2 | US18 | Frontend: página de entrenamientos de alumnos | front | RN-ENT-18 | 3 | ⬜ |
+| 2 | US18 | Frontend: página de entrenamientos de alumnos | front | RN-ENT-18 | 3 | ✅ 23/11 (rama `feat/US18-entrenamientos-de-alumnos`) |
 | 2 | — | e2e de API de los flujos completos (back) | back | todas | 3 (V2) | ⬜ |
 | 2 | — | e2e de navegador con Playwright de los flujos principales (front) | front | todas | 5 (V2) | ⬜ |
 | 3 | — | Patches pendientes y revisión final de calidad | ambos | — | 3 (V2; reserva) | ⬜ |
