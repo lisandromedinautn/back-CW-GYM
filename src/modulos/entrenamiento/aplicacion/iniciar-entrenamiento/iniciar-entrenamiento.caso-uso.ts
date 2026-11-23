@@ -5,8 +5,10 @@ import {
 } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import type { PublicadorEventos } from '../../../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
 import type { Reloj } from '../../../../compartido/dominio/reloj/reloj.puerto.js';
+import { type CopiaRutina, conGifs } from '../../dominio/entrenamiento/copia-rutina.valor.js';
 import type {
   ConsultaAlumno,
+  ConsultaEjercicios,
   ConsultaRutinaDelDia,
 } from '../../dominio/entrenamiento/consultas-entrenamiento.puerto.js';
 import { Entrenamiento } from '../../dominio/entrenamiento/entrenamiento.entidad.js';
@@ -19,6 +21,7 @@ export class IniciarEntrenamiento {
     private readonly rutinas: ConsultaRutinaDelDia,
     private readonly reloj: Reloj,
     private readonly publicador: PublicadorEventos,
+    private readonly ejercicios: ConsultaEjercicios,
   ) {}
 
   async ejecutar(usuarioId: string) {
@@ -40,12 +43,26 @@ export class IniciarEntrenamiento {
       alumnoId: alumno.id,
       inicio,
       pesoCorporalKg: alumno.pesoKg,
-      rutina: dia.rutina,
+      rutina: conGifs(dia.rutina, await this.gifsDe(dia.rutina)),
     });
     if (!(await this.entrenamientos.insertar(entrenamiento))) {
       throw new ErrorDominio('RN-ENT-01', 'Ya iniciaste un entrenamiento hoy', 'conflicto');
     }
     await this.publicador.publicar(entrenamiento.eventoDeInicio());
     return entrenamiento.datos;
+  }
+
+  /** RN-ENT-02 (T14): el GIF del catálogo de cada ejercicio de la rutina. */
+  private async gifsDe(rutina: CopiaRutina): Promise<Map<string, string>> {
+    const ids = new Set([
+      ...rutina.bloques.map((b) => b.ejercicioId),
+      ...rutina.circuitos.flatMap((c) => c.ejercicios.map((e) => e.ejercicioId)),
+    ]);
+    const gifs = new Map<string, string>();
+    for (const id of ids) {
+      const ejercicio = await this.ejercicios.obtenerEjercicio(id);
+      if (ejercicio) gifs.set(id, ejercicio.urlGif);
+    }
+    return gifs;
   }
 }
