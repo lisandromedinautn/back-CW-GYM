@@ -38,7 +38,7 @@ Estados: ⬜ sin empezar · 🟥 test en rojo (TDD; solo en el working tree, nun
 | US16 | RN-ENT-10, 11, 12, 13 | finalizar-entrenamiento | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
 | US17 | RN-ENT-14, 15, 16 | registrar-percepcion | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
 | US12 | RN-PLAN-12, 13, 14, 16 | alumnos-del-plan | PaginaAlumnosDelPlan | 8 unitarios | 4 API | 3 interfaz | builds aprobados | En rama |
-| US18 | RN-ENT-18 | consultar-entrenamientos-de-alumnos | PaginaEntrenamientosDeAlumnos | `src/modulos/entrenamiento/aplicacion/consultar-entrenamientos-de-alumnos/consultar-entrenamientos-de-alumnos.caso-uso.spec.ts` | — | `test/e2e/entrenamiento/consultar-entrenamientos-de-alumnos.e2e-spec.ts` | — | back 🟩, front ⬜ |
+| US18 | RN-ENT-18 · RN-UI-ENT-04 · RN-UI-LIS-03 | consultar-entrenamientos-de-alumnos | PaginaEntrenamientosDeAlumnos | `src/modulos/entrenamiento/aplicacion/consultar-entrenamientos-de-alumnos/consultar-entrenamientos-de-alumnos.caso-uso.spec.ts` | — | `test/e2e/entrenamiento/consultar-entrenamientos-de-alumnos.e2e-spec.ts` | `src/modulos/entrenamiento/dominio/entrenamientos-de-alumnos/entrenamientosDeAlumnos.test.ts` (1 caso) · `src/modulos/entrenamiento/presentacion/entrenamientos-de-alumnos/PaginaEntrenamientosDeAlumnos.int.test.tsx` (8 casos) | back 🟩, front 🟩 |
 
 En las columnas Unit, Int, e2e y Front va la ruta del archivo de test (o `archivo › caso`) cuando exista.
 
@@ -102,7 +102,8 @@ Toda RN vigente tiene que tener al menos un test. Una RN sin test es una brecha 
 | RN-ENT-03, 04, 19 | US14: dominio y API (back) · validación y registro en pantalla (front: `serie.test.ts`, `RegistrarSerie.int.test.tsx`; RN-ENT-19 solo en el back) | 🟩 back y front |
 | RN-UI-ENT-01 | US14: un clic por serie, sin diálogo (`RegistrarSerie.int.test.tsx`, 3 casos). Los 10 s del OKR O3 se miden en la demo | 🟩 front |
 | RN-UI-ENT-03 | US14: paso a paso con contador siempre visible, avanzar al registrar, Anterior y Siguiente (`RegistrarSerie.int.test.tsx`, 5 casos) y GIF con atribución por paso (2 casos, T14) | 🟩 front |
-| RN-ENT-18 | US18: caso de uso y API (back) | 🟩 back |
+| RN-ENT-18 | US18: caso de uso y API (back) · selector de alumnos vinculados y error `RN-ENT-18` en pantalla (front: `PaginaEntrenamientosDeAlumnos.int.test.tsx`) | 🟩 back y front |
+| RN-UI-ENT-04 | US18: elegir alumno, listado del más nuevo al más viejo con fecha (hora de Argentina), rutina, estado, peso y series junto a lo prescripto (`entrenamientosDeAlumnos.test.ts`, `PaginaEntrenamientosDeAlumnos.int.test.tsx`, 6 casos) | 🟩 front |
 | RN-ENT-05 … RN-ENT-17 | — | ⬜ |
 
 Cuando se escriba el primer test de una RN, se separa en su propia fila.
