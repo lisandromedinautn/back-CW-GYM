@@ -287,7 +287,7 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 | Orden | Tarjeta | Tarea | Repo | RN | Pts | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | 1 | US18 | Backend: consultar los entrenamientos de mis alumnos | back | RN-ENT-18 | 3 | ⬜ |
-| 2 | US18 | Frontend: página de entrenamientos de alumnos | front | RN-ENT-18 | 3 | ⬜ |
+| 2 | US18 | Frontend: página de entrenamientos de alumnos | front | RN-ENT-18 | 3 | ✅ 23/11 (rama `feat/US18-entrenamientos-de-alumnos`) |
 | 2 | — | e2e de API de los flujos completos (back) | back | todas | 3 (V2) | ⬜ |
 | 2 | — | e2e de navegador con Playwright de los flujos principales (front) | front | todas | 5 (V2) | ⬜ |
 | 3 | — | Patches pendientes y revisión final de calidad | ambos | — | 3 (V2; reserva) | ⬜ |
