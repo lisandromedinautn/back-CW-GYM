@@ -1,3 +1,5 @@
+import type { ResumenEntrenamiento } from './resumen-entrenamiento.js';
+import { EntrenamientoFinalizado } from './entrenamiento-finalizado.evento.js';
 import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import type { CopiaRutina, EjercicioPrescriptoCopiado } from './copia-rutina.valor.js';
 import { EntrenamientoIniciado } from './entrenamiento-iniciado.evento.js';
@@ -11,6 +13,8 @@ export interface DatosEntrenamiento {
   pesoCorporalKg: number;
   rutina: CopiaRutina;
   series: SerieRealizada[];
+  fin?: string;
+  resumen?: ResumenEntrenamiento;
 }
 
 export type DatosInicio = Omit<DatosEntrenamiento, 'series'>;
@@ -34,7 +38,8 @@ export class Entrenamiento {
     return this.registro.inicio.slice(0, 10);
   }
 
-  estadoEn(instante: Date): 'en-curso' | 'abandonado' {
+  estadoEn(instante: Date): 'en-curso' | 'abandonado' | 'finalizado' {
+    if (this.registro.fin) return 'finalizado';
     return instante.toISOString().slice(0, 10) > this.fecha ? 'abandonado' : 'en-curso';
   }
 
@@ -46,11 +51,33 @@ export class Entrenamiento {
     );
   }
 
+  asegurarFinalizable(instante: Date): void {
+    if (this.registro.fin)
+      throw new ErrorDominio('RN-ENT-05', 'El entrenamiento ya fue finalizado', 'conflicto');
+    if (this.estadoEn(instante) === 'abandonado')
+      throw new ErrorDominio('RN-ENT-20', 'El entrenamiento quedó abandonado', 'conflicto');
+    if (instante.getTime() < Date.parse(this.registro.inicio))
+      throw new ErrorDominio(
+        'RN-ENT-05',
+        'La hora de fin no puede ser anterior al inicio',
+        'validacion',
+      );
+  }
+
+  finalizar(instante: Date, resumen: ResumenEntrenamiento): EntrenamientoFinalizado {
+    this.asegurarFinalizable(instante);
+    this.registro.fin = instante.toISOString();
+    this.registro.resumen = structuredClone(resumen);
+    return new EntrenamientoFinalizado(this.registro.id, this.registro.alumnoId, this.registro.fin);
+  }
+
   /**
    * Registra lo hecho en una serie prescripta de la copia (RN-ENT-03). Registrar de nuevo la
    * misma serie la reemplaza (corrección). Un entrenamiento abandonado no admite series (RN-ENT-20).
    */
   registrarSerie(registro: RegistroSerie, instante: Date): EventoSerieRealizada {
+    if (this.estadoEn(instante) === 'finalizado')
+      throw new ErrorDominio('RN-ENT-04', 'El entrenamiento ya fue finalizado', 'conflicto');
     if (this.estadoEn(instante) === 'abandonado') {
       throw new ErrorDominio(
         'RN-ENT-20',

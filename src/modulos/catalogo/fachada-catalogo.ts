@@ -20,6 +20,26 @@ export interface EjercicioPublico {
 export class FachadaCatalogo {
   constructor(@Inject(RepositorioEjercicios) private readonly ejercicios: RepositorioEjercicios) {}
 
+  /** Datos de catálogo necesarios al cerrar un entrenamiento. */
+  async obtenerDatosParaResumen(
+    id: string,
+  ): Promise<{
+    tipoCarga: string;
+    factorPesoCorporal: number | null;
+    grupoPrincipal: string;
+    grupoSecundario: string | null;
+  } | null> {
+    const ejercicio = await this.ejercicios.buscarPorId(id);
+    return ejercicio
+      ? {
+          tipoCarga: ejercicio.tipoCarga.valor,
+          factorPesoCorporal: ejercicio.factorPesoCorporal?.porcentaje ?? null,
+          grupoPrincipal: ejercicio.musculoPrincipal.grupo,
+          grupoSecundario: ejercicio.musculoSecundario?.grupo ?? null,
+        }
+      : null;
+  }
+
   async obtenerEjercicio(id: string): Promise<EjercicioPublico | null> {
     const ejercicio = await this.ejercicios.buscarPorId(id);
     if (!ejercicio) return null;

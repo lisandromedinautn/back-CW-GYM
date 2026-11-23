@@ -27,3 +27,15 @@ Una fila por caso de test. La entrada y el esperado los **confirma el desarrolla
 | `consultar-entrenamientos-de-alumnos.e2e-spec.ts` › alumno propio con series | RN-ENT-18 | e2e | profesor01 consulta a alumno01, que inició y registró la serie 3 del bloque (8 reps, 30 kg) | 200 con 1 entrenamiento `en-curso` y esa serie en `series` | ✅ | 22/11/2026 |
 | `consultar-entrenamientos-de-alumnos.e2e-spec.ts` › otro profesor | RN-ENT-18 | e2e | profesor02 consulta a alumno01 | 403 · `RN-ENT-18` | ✅ | 22/11/2026 |
 | `consultar-entrenamientos-de-alumnos.e2e-spec.ts` › paginación | RN-ENT-18 | e2e | alumno01 con entrenamientos el 20/11 y el 21/11, `tamanio=5` | El del 21/11 primero; `total: 2` | ✅ | 22/11/2026 |
+
+## US15 — Finalizar entrenamiento y consultar resumen
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `finalizar-entrenamiento.caso-uso.spec.ts` › dominada con peso corporal y extra | RN-ENT-05, 06, 07, 08, 09, 12, 17 | Unitario | inicio 10:00, fin 10:30; 80 kg corporales, factor 100 %, 10 kg extra, 6 repeticiones; espalda y brazos | 1800 segundos, 540 kg, Espalda y Brazos | = esperado (laptop) | 22/11/2026 |
+| `calcular-resumen-entrenamiento.spec.ts` › tipos de carga y series | RN-ENT-06, 07, 08 | Unitario | sin peso, extra, corporal y corporal más extra, con series registradas | suma de los volúmenes calculados | = esperado (laptop) | 22/11/2026 |
+| `calcular-resumen-entrenamiento.spec.ts` › sin series | RN-ENT-06, 09, 17 | Unitario | entrenamiento sin series | 0 kg y grupos vacíos | = esperado (laptop) | 22/11/2026 |
+| `cerrar-entrenamiento.caso-uso.spec.ts` › finalización indebida | RN-ENT-05, 19, 20 | Unitario | finalizado, otro alumno y día posterior | rechazo sin modificar datos | = esperado (laptop) | 22/11/2026 |
+| `finalizar-entrenamiento.e2e-spec.ts` › permisos y persistencia | RN-ENT-05, 17, 19 | e2e | sin token, profesor, alumno ajeno y alumno propio | 401, 403, 404 y resumen persistido | = esperado (laptop) | 22/11/2026 |
+
+Comprobación por mutación US15: el cálculo de peso corporal con carga extra y la visualización de 540 kg fallaron al alterarse; se restauraron los archivos con las mismas huellas que las versiones aprobadas.

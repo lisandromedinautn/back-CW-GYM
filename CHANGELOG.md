@@ -8,6 +8,8 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ### Agregado
 
+- US15: finalización del entrenamiento y resumen de volumen, grupos musculares y duración.
+
 - `yarn seed:plan-us12` carga ejercicios en los 28 días del plan de prueba del alumno 01.
 
 - `yarn seed` prepara dos grupos aislados con planes y alumnos vinculados para probar US12.

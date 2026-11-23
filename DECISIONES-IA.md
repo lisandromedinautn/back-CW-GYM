@@ -309,5 +309,13 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Desarrolladora: Martina Pineda. Herramienta: Codex.
 - Objetivo: consultar como alumno un plan con ejercicios en cada uno de sus 28 días.
 - Implementación: comando explícito que completa el plan reservado del alumno 01 con una rutina y dos ejercicios del catálogo; conserva fechas y alumnos, y rechaza sobrescribir rutinas diferentes. Martina confirmó los casos.
-- Verificación: rojo inicial observado; dos tests de integración y build aprobados en laptop; Martina ejecutó el comando correctamente en desarrollo. La comprobación por mutación queda pendiente.
+- Verificación: rojo inicial observado; dos tests de integración y build aprobados en laptop; Martina ejecutó el comando correctamente en desarrollo. La comprobación por mutación detectó el cálculo y el texto alterados; los archivos fueron restaurados y sus huellas coinciden con las versiones aprobadas.
 - Reglas afectadas: ninguna; aplica RN-PLAN-06, 10, 11, 12 y 13.
+
+## 2026-11-22 — Finalizar entrenamiento y mostrar resumen [US15]
+- Desarrolladora: Martina Pineda. Herramienta: Codex.
+- Objetivo: finalizar y consultar peso total, grupos musculares y duración, aun sin la pantalla de registro de series de US14.
+- Implementación: el back calcula con las series guardadas, el peso corporal del inicio y datos del catálogo; guarda hora y resumen. El cierre se serializa con el registro de series. El front muestra el resumen y lo recupera al recargar.
+- Decisiones: Martina confirmó los casos, incluido cierre sin series y permisos. Los récords corresponden a US16 y no se simulan.
+- Verificación: 6 unitarios y 2 e2e en back, 4 tests de integración en front y builds aprobados en laptop. Rojo inicial observado en back y front. La comprobación por mutación detectó el cálculo y el texto alterados; los archivos fueron restaurados y sus huellas coinciden con las versiones aprobadas.
+- Reglas: RN-ENT-05, 06, 07, 08, 09, 17, 19 y 20.

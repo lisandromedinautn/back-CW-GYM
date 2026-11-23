@@ -33,7 +33,7 @@ Estados: ⬜ sin empezar · 🟥 test en rojo (TDD; solo en el working tree, nun
 | US11 | RN-PLAN-11, 19 | consultar-plan-del-alumno | PaginaMiPlan | `src/modulos/planificacion/aplicacion/consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.spec.ts` (10 casos) | — | `test/e2e/planificacion/consultar-plan-del-alumno.e2e-spec.ts` (9 casos) | `src/modulos/planificacion/presentacion/mi-plan/PaginaMiPlan.int.test.tsx` (9 Vitest) | back 🟩, front 🟩 en rama; integración pendiente |
 | US13 | RN-ENT-01, 02, 20 · RN-UI-ENT-02 | iniciar-entrenamiento, consultar-entrenamiento-en-curso | PaginaEntrenamientoEnCurso | `src/modulos/entrenamiento/dominio/entrenamiento/entrenamiento.entidad.spec.ts` | — | `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` | `src/modulos/entrenamiento/presentacion/entrenamiento-en-curso/entrenamiento.int.test.tsx` | back 🟩, front 🟩 |
 | US14 | RN-ENT-03, 04, 19, 20 · RN-UI-ENT-01 | registrar-serie-realizada | PaginaEntrenamientoEnCurso | `src/modulos/entrenamiento/dominio/entrenamiento/entrenamiento.entidad.spec.ts` | — | `test/e2e/entrenamiento/registrar-serie-realizada.e2e-spec.ts` | — | back 🟩, front ⬜ |
-| US15 | RN-ENT-05, 06, 07, 08, 09, 17 | finalizar-entrenamiento | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
+| US15 | RN-ENT-05, 06, 07, 08, 09, 17 | cerrar-entrenamiento, calcular-resumen | ResumenEntrenamiento | 6 unitarios | — | 2 e2e API | 4 integración UI | En rama; récords corresponden a US16 |
 | US16 | RN-ENT-10, 11, 12, 13 | finalizar-entrenamiento | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
 | US17 | RN-ENT-14, 15, 16 | registrar-percepcion | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
 | US12 | RN-PLAN-12, 13, 14, 16 | alumnos-del-plan | PaginaAlumnosDelPlan | 8 unitarios | 4 API | 3 interfaz | builds aprobados | En rama |
@@ -100,6 +100,7 @@ Toda RN vigente tiene que tener al menos un test. Una RN sin test es una brecha 
 | RN-ENT-01, 02, 20 · RN-UI-ENT-02 | US13: dominio, API y pantalla | 🟩 |
 | RN-ENT-03, 04, 19 | US14: dominio y API (back) | 🟩 back |
 | RN-ENT-18 | US18: caso de uso y API (back) | 🟩 back |
-| RN-ENT-05 … RN-ENT-17 | — | ⬜ |
+| RN-ENT-05, 06, 07, 08, 09, 17 | US15: cálculo, cierre y resumen; récords de RN-ENT-17 pendientes en US16 | 🟩 parcial |
+| RN-ENT-10 … RN-ENT-16 | Récords y percepción (US16, US17) | ⬜ |
 
 Cuando se escriba el primer test de una RN, se separa en su propia fila.
