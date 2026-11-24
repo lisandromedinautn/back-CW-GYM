@@ -461,3 +461,30 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
   - mover CG-60 a CG-62 en Jira;
   - decidir si `GET` de US18 incluye `percepcion` solo en finalizados, como `mi-entrenamiento-en-curso`;
   - fichas para la carga simultánea y para la sensación de fuerza 6, si se quieren.
+
+## 2026-11-24 — Consultar y editar una rutina [US06]
+- Desarrolladora: Martina
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5, sin subagentes (el front depende del contrato del back; delegar no ahorraba trabajo).
+- Objetivo: completar el CRUD de US06. Ya se creaba una rutina y se cambiaba su nombre, pero no su contenido. Rama `fix/US06-consultar-editar-rutina` en los dos repos.
+- Qué hizo la IA:
+  - Revisó el código y avisó que el listado (T06) ya existía; con la aclaración de Martina, propuso el detalle de una rutina en el editor precargado y su edición.
+  - Propuso 11 casos de test (8 del back y 3 del front) y los escribió en rojo después de que Martina los confirmó.
+  - **Back:** extrajo `resolverContenido` de `CrearRutina` (refactor aparte); `Rutina.editar`, caso de uso `EditarRutina`, `ConsultarRutinas.porId`, `GET` y `PUT /planificacion/rutinas/:id`. Corrigió `RepositorioRutinasTypeorm.guardar`, que dejaba en la base los bloques y circuitos quitados.
+  - **Front:** cliente `obtenerRutina` y `editarRutina`, hook `usarEditarRutina`, `rutinaAEdicion`, `PaginaEditarRutina` en `/profesor/rutinas/:id` y "Ver y editar" en cada tarjeta. `EditorRutina` acepta `rutina` y `edicion`, suma el campo "Nombre" y "Guardar cambios".
+- Decisiones de la desarrolladora:
+  - **Qué falta:** editar los ejercicios, repeticiones, pausas y demás desde un detalle de la rutina, no solo el nombre.
+  - **Confirmaciones:** casos de test y microcommits.
+- Ideas descartadas:
+  - una pantalla de detalle de solo lectura aparte del editor;
+  - editar solo valores, sin poder agregar, quitar o reordenar bloques y circuitos;
+  - un e2e que inicie un entrenamiento antes de editar: los entrenamientos guardan su propia copia y ninguna tabla de entrenamiento apunta a las de rutinas.
+- Reglas afectadas: ninguna cambia. Se implementa RN-PLAN-07, que figuraba sin código, con RN-PLAN-01, 06, 08 y 21.
+- Verificación:
+  - Back: `yarn test` 307/307, `yarn test:e2e` 120/120, `yarn test:int` 8/8 y lint OK.
+  - Front: `yarn test` 198/198, lint y `tsc -b` OK.
+  - Cada test nuevo dio rojo por la razón correcta antes de implementar: la función sin implementar, el método inexistente, la ruta 404 o el enlace inexistente.
+  - En el test del front se espera el campo "Repeticiones" con `findByLabelText`, porque aparece cuando llega el catálogo (sin cambiar las aserciones).
+- Pendientes:
+  - ramas sin pushear ni PR;
+  - mover US06 en Jira;
+  - no se corrieron los e2e de Playwright del front.
