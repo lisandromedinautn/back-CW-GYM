@@ -51,10 +51,24 @@ Percepción escrita como RPE/sensación: "9/3" es RPE 9 y sensación de fuerza 3
 
 | Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| `dominio/notificacion/percepcion.valor.spec.ts` › percepción mala | RN-NOT-06 | Unitario | 9/3, 7/2, 10/1 y 8/3 | Mala, mala, mala y no mala | | 24/11/2026 |
-| `dominio/notificacion/gravedad.valor.spec.ts` › (`describe` nuevo) gravedad de la percepción | RN-NOT-06 | Unitario | Gravedad de la percepción con 9/3, 7/2, 10/1 y 8/3 | Leve, Leve, Grave y `null` | | 24/11/2026 |
-| `gravedad.valor.spec.ts` › (`describe` nuevo) queda la mayor | RN-NOT-07 | Unitario | La mayor de: Leve y Grave; Leve y Leve; Grave y Leve; Leve y `null` | Grave, Leve, Grave y Leve | | 24/11/2026 |
-| `notificacion.entidad.spec.ts` › (`describe` nuevo) sumar la percepción | RN-NOT-05, 07 | Unitario | Notificación Leve, leída a las 11:00, a la que se suma 10/1. En otro caso, una Leve leída a la que se suma 8/3 | La primera queda Grave, no leída y con percepción `{ rpe: 10, sensacionFuerza: 1 }`. La segunda queda Leve y no leída | | 24/11/2026 |
-| `notificacion.entidad.spec.ts` › (mismo `describe`) crear solo por percepción | RN-NOT-01, 06 | Unitario | `crearPorPercepcion` con 7/2; después con 8/3 | Con 7/2: Leve, `seriesPorDebajo: []` y no leída. Con 8/3: `ErrorDominio` con código `RN-NOT-01` | | 24/11/2026 |
-| `aplicacion/sumar-percepcion/sumar-percepcion.caso-uso.spec.ts` › cuatro caminos | RN-NOT-01, 05, 06 | Unitario | (a) Ya hay notificación del entrenamiento de `a1`; llega 9/3. (b) No hay notificación; `a1` tiene profesor `p1`; llega 7/2. (c) No hay notificación; llega 8/3. (d) `a2` sin profesor; llega 10/1 | (a) La notificación suma la percepción. (b) Se crea una Leve para `p1`, sin series. (c) No se guarda nada. (d) No se guarda nada | | 24/11/2026 |
-| `test/e2e/notificaciones/percepcion.e2e-spec.ts` › percepción de punta a punta | RN-NOT-01, 05, 06, 07 · RN-ENT-16 | e2e | Plan de hoy con el bloque press de 5 × 10 × 30 para alumno01, alumno02 y alumno03, vinculados a profesor01. alumno01 finaliza con el ejemplo de RN-ENT-21 (Grave); profesor01 la marca leída; alumno01 carga 9/3. alumno02 completa todo y carga 10/1. alumno03 completa todo y carga 8/3 | La notificación de alumno01 queda Grave, no leída y con percepción `{ rpe: 9, sensacionFuerza: 3 }`. Hay una nueva notificación de alumno02, Grave y con `seriesPorDebajo: []`. alumno03 no tiene notificación. profesor01: `total` 2 y `noLeidas` 2 | | 24/11/2026 |
+| `dominio/notificacion/percepcion.valor.spec.ts` › percepción mala | RN-NOT-06 | Unitario | 9/3, 7/2, 10/1 y 8/3 | Mala, mala, mala y no mala | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `dominio/notificacion/gravedad.valor.spec.ts` › (`describe` nuevo) gravedad de la percepción | RN-NOT-06 | Unitario | Gravedad de la percepción con 9/3, 7/2, 10/1 y 8/3 | Leve, Leve, Grave y `null` | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `gravedad.valor.spec.ts` › (`describe` nuevo) queda la mayor | RN-NOT-07 | Unitario | La mayor de: Leve y Grave; Leve y Leve; Grave y Leve; Leve y `null` | Grave, Leve, Grave y Leve | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `notificacion.entidad.spec.ts` › (`describe` nuevo) sumar la percepción | RN-NOT-05, 07 | Unitario | Notificación Leve, leída a las 11:00, a la que se suma 10/1. En otro caso, una Leve leída a la que se suma 8/3 | La primera queda Grave, no leída y con percepción `{ rpe: 10, sensacionFuerza: 1 }`. La segunda queda Leve y no leída | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `notificacion.entidad.spec.ts` › (mismo `describe`) crear solo por percepción | RN-NOT-01, 06 | Unitario | `crearPorPercepcion` con 7/2; después con 8/3 | Con 7/2: Leve, `seriesPorDebajo: []` y no leída. Con 8/3: `ErrorDominio` con código `RN-NOT-01` | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `aplicacion/sumar-percepcion/sumar-percepcion.caso-uso.spec.ts` › cuatro caminos | RN-NOT-01, 05, 06 | Unitario | (a) Ya hay notificación del entrenamiento de `a1`; llega 9/3. (b) No hay notificación; `a1` tiene profesor `p1`; llega 7/2. (c) No hay notificación; llega 8/3. (d) `a2` sin profesor; llega 10/1 | (a) La notificación suma la percepción. (b) Se crea una Leve para `p1`, sin series. (c) No se guarda nada. (d) No se guarda nada | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `test/e2e/notificaciones/percepcion.e2e-spec.ts` › percepción de punta a punta | RN-NOT-01, 05, 06, 07 · RN-ENT-16 | e2e | Plan de hoy con el bloque press de 5 × 10 × 30 para alumno01, alumno02 y alumno03, vinculados a profesor01. alumno01 finaliza con el ejemplo de RN-ENT-21 (Grave); profesor01 la marca leída; alumno01 carga 9/3. alumno02 completa todo y carga 10/1. alumno03 completa todo y carga 8/3 | La notificación de alumno01 queda Grave, no leída y con percepción `{ rpe: 9, sensacionFuerza: 3 }`. Hay una nueva notificación de alumno02, Grave y con `seriesPorDebajo: []`. alumno03 no tiene notificación. profesor01: `total` 2 y `noLeidas` 2 | = esperado (verde el 24/11/2026) | 24/11/2026 |
+
+Comprobación por mutación US17 (24/11/2026). En cada caso se rompió la línea de producción, el test dio rojo y se restauró:
+
+* Percepción mala con `rpe >= 10` en lugar de `>= 9`.
+* `mayor` que devuelve siempre el primero.
+* `sumarPercepcion` sin `leidaEn = null`.
+* `crearPorPercepcion` sin el rechazo.
+* `SumarPercepcion` sin el corte por "no es mala" y sin el corte por "alumno sin profesor".
+* e2e:
+  * sin la suscripción a `PercepcionRegistrada`;
+  * `buscarPorEntrenamiento` que devuelve siempre `null`;
+  * el mapper sin escribir `percepcion`.
+
+El rojo previo de N1 a N5 fue un `TypeError`, porque los métodos todavía no existían, y no una aserción. N6 se escribió junto con la implementación. Los dos quedan cubiertos por las mutaciones de arriba.

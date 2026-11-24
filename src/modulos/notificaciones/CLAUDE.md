@@ -28,7 +28,7 @@ Contexto de soporte. Avisa al profesor, dentro de la app, cuando un alumno suyo 
 | `consultar-notificaciones/consultar-notificaciones.caso-uso.ts` ✅ | US21 | 03 |
 | `contar-no-leidas/contar-no-leidas.caso-uso.ts` ✅ | US21 | 03 |
 | `marcar-notificacion-leida/marcar-notificacion-leida.caso-uso.ts` ✅ | US21 | 04 |
-| `sumar-percepcion/sumar-percepcion.caso-uso.ts` | US17 | 01, 05, 06, 07 |
+| `sumar-percepcion/sumar-percepcion.caso-uso.ts` ✅ | US17 | 01, 05, 06, 07 |
 
 ## Endpoints
 
@@ -132,3 +132,11 @@ Implementado el 24/11/2026.
 * Si el usuario del JWT no es profesor, la bandeja sale vacía y el contador en 0. En la práctica no pasa, porque el guard exige el rol Profesor.
 * La respuesta no expone `profesorId` ni `leidaEn`: expone `leida` (boolean).
 * Los e2e existentes ahora usan el publicador real (salvo los que lo sobreescriben con un mock), así que al finalizar se crean notificaciones. Ningún e2e existente cambió y todos pasan.
+
+## Decisiones de implementación (CG-61, US17)
+
+Implementado el 24/11/2026.
+
+* **Tipos de la percepción:** `Percepcion` es una clase. El tipo de datos se llama `DatosPercepcion`: es el de `DatosNotificacion.percepcion` y el de la columna. `rpe` y `sensacionFuerza` admiten `null` en el tipo, y un `null` no cuenta como condición mala; con US17 los dos siempre llegan.
+* **Gravedad:** `Gravedad.reconstruir(valor)` rearma la gravedad guardada para compararla con `mayor`.
+* **Suscriptor:** `infraestructura/suscriptores/percepcion-registrada.suscriptor.ts`. `buscarPorEntrenamiento` usa el índice único de `entrenamiento_id`.
