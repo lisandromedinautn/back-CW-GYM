@@ -1,3 +1,4 @@
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import type { Pagina } from '../../../../compartido/dominio/paginacion/paginacion.js';
 import type { Reloj } from '../../../../compartido/dominio/reloj/reloj.puerto.js';
 import { fechaIso } from '../../dominio/plan/fechas.js';
@@ -26,6 +27,14 @@ export interface ResumenPlan {
   diasDeDescanso: number;
 }
 
+export interface DetallePlan {
+  id: string;
+  fechaInicio: string;
+  fechaFin: string;
+  estado: EstadoPlan;
+  dias: { numero: number; fecha: string; rutinaId: string | null; esDescanso: boolean }[];
+}
+
 /**
  * T13: listado paginado de los planes del profesor.
  * RN-PLAN-22: solo sus planes, filtros y orden los resuelve el repositorio. RN-PLAN-15: el estado
@@ -52,11 +61,33 @@ export class ConsultarPlanes {
     return { items: items.map((plan) => this.resumir(plan, ahora)), total, pagina, tamanio };
   }
 
-  private resumir(plan: Plan, ahora: Date): ResumenPlan {
+  /** US22: detalle de un plan propio con sus 28 días. Ajeno o inexistente: no encontrado. */
+  async porId(profesorUsuarioId: string, planId: string): Promise<DetallePlan> {
+    const plan = await this.planes.buscarPorId(planId);
+    if (!plan || plan.profesorUsuarioId !== profesorUsuarioId)
+      throw new ErrorDominio('RN-PLAN-22', 'El plan no existe o no es tuyo', 'no-encontrado');
+    return {
+      id: plan.id,
+      fechaInicio: plan.fechaInicio,
+      fechaFin: plan.fechaFin,
+      estado: this.estadoDe(plan, this.reloj.ahora()),
+      dias: plan.dias.map((dia) => ({
+        numero: dia.numero,
+        fecha: dia.fecha,
+        rutinaId: dia.rutinaId,
+        esDescanso: dia.esDescanso,
+      })),
+    };
+  }
+
+  private estadoDe(plan: Plan, ahora: Date): EstadoPlan {
     const validez = ValidezPlan.reconstruir(plan.fechaInicio, plan.fechaFin);
-    const hoy = fechaIso(ahora);
-    let estado: EstadoPlan = 'vigente';
-    if (!validez.estaVigente(ahora)) estado = hoy < plan.fechaInicio ? 'proximo' : 'finalizado';
+    if (validez.estaVigente(ahora)) return 'vigente';
+    return fechaIso(ahora) < plan.fechaInicio ? 'proximo' : 'finalizado';
+  }
+
+  private resumir(plan: Plan, ahora: Date): ResumenPlan {
+    const estado = this.estadoDe(plan, ahora);
     const diasDeDescanso = plan.dias.filter((dia) => dia.esDescanso).length;
     return {
       id: plan.id,

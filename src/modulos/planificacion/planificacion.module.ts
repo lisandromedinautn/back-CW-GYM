@@ -17,6 +17,9 @@ import { PUBLICADOR_EVENTOS } from '../../compartido/dominio/publicador-eventos/
 import type { PublicadorEventos } from '../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
 import { Reloj } from '../../compartido/dominio/reloj/reloj.puerto.js';
 import { RelojSistema } from '../../compartido/infraestructura/reloj/reloj-sistema.js';
+import { EditarDiaPlan } from './aplicacion/editar-dia-plan/editar-dia-plan.caso-uso.js';
+import { ConsultaEntrenamientosIniciados } from './dominio/plan/consulta-entrenamientos-iniciados.puerto.js';
+import { ConsultaEntrenamientosIniciadosTypeorm } from './infraestructura/plan/consulta-entrenamientos-iniciados.typeorm.js';
 import { ConsultaVinculos } from './dominio/plan/consulta-vinculos.puerto.js';
 import { RepositorioPlanes } from './dominio/plan/repositorio-planes.puerto.js';
 import { ConsultaEjercicios } from './dominio/rutina/consulta-ejercicios.puerto.js';
@@ -64,7 +67,18 @@ import { FachadaPlanificacion } from './fachada-planificacion.js';
     { provide: ConsultaNombresEjercicios, useClass: ConsultaNombresEjerciciosFachadaCatalogo },
     { provide: RepositorioPlanes, useClass: RepositorioPlanesTypeorm },
     { provide: ConsultaVinculos, useClass: ConsultaVinculosFachadaIdentidad },
+    { provide: ConsultaEntrenamientosIniciados, useClass: ConsultaEntrenamientosIniciadosTypeorm },
     { provide: Reloj, useClass: RelojSistema },
+    {
+      provide: EditarDiaPlan,
+      inject: [RepositorioPlanes, RepositorioRutinas, ConsultaEntrenamientosIniciados, Reloj],
+      useFactory: (
+        planes: RepositorioPlanes,
+        rutinas: RepositorioRutinas,
+        entrenamientos: ConsultaEntrenamientosIniciados,
+        reloj: Reloj,
+      ) => new EditarDiaPlan(planes, rutinas, entrenamientos, reloj),
+    },
     {
       provide: CrearRutina,
       inject: [RepositorioRutinas, ConsultaEjercicios],

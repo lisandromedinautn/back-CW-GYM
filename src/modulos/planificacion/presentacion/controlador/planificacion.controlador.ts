@@ -7,6 +7,7 @@ import {
   Get,
   Inject,
   Param,
+  ParseIntPipe,
   ParseUUIDPipe,
   Patch,
   Post,
@@ -31,8 +32,14 @@ import {
 } from '../../aplicacion/consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.js';
 import {
   ConsultarPlanes,
+  type DetallePlan,
   type ResumenPlan,
 } from '../../aplicacion/consultar-planes/consultar-planes.caso-uso.js';
+import {
+  EditarDiaPlan,
+  type DiaEditado,
+} from '../../aplicacion/editar-dia-plan/editar-dia-plan.caso-uso.js';
+import { EditarDiaPlanDto } from '../editar-dia-plan/editar-dia-plan.dto.js';
 import { ConsultarPlanesDto } from '../consultar-planes/consultar-planes.dto.js';
 import type { Plan } from '../../dominio/plan/plan.entidad.js';
 import {
@@ -148,6 +155,7 @@ export class PlanificacionControlador {
     @Inject(RenombrarRutina) private readonly renombrarRutina: RenombrarRutina,
     @Inject(CrearPlan) private readonly crearPlan: CrearPlan,
     @Inject(AlumnosDelPlan) private readonly alumnosDelPlan: AlumnosDelPlan,
+    @Inject(EditarDiaPlan) private readonly editarDiaPlan: EditarDiaPlan,
     @Inject(ConsultarPlanes) private readonly consultarPlanes: ConsultarPlanes,
     @Inject(ConsultarRutinaDelDia)
     private readonly consultarRutinaDelDia: ConsultarRutinaDelDia,
@@ -245,6 +253,28 @@ export class PlanificacionControlador {
     @Query() consulta: ConsultarPlanesDto,
   ): Promise<{ items: ResumenPlan[]; total: number; pagina: number; tamanio: number }> {
     return this.consultarPlanes.ejecutar(usuario.sub, consulta);
+  }
+
+  /** Solo Profesor (RN-IDE-03). US22: detalle de un plan propio con sus 28 días. */
+  @Get('planes/:id')
+  @Roles('Profesor')
+  async detallePlan(
+    @UsuarioActual() usuario: UsuarioAutenticado,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<DetallePlan> {
+    return this.consultarPlanes.porId(usuario.sub, id);
+  }
+
+  /** Solo Profesor (RN-IDE-03). US22: RN-PLAN-23 (editar un día) y RN-PLAN-11. */
+  @Put('planes/:id/dias/:numero')
+  @Roles('Profesor')
+  async editarDia(
+    @UsuarioActual() usuario: UsuarioAutenticado,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('numero', ParseIntPipe) numero: number,
+    @Body() datos: EditarDiaPlanDto,
+  ): Promise<DiaEditado> {
+    return this.editarDiaPlan.ejecutar(usuario.sub, id, numero, datos.rutinaId);
   }
 
   @Get('planes/:id/alumnos')

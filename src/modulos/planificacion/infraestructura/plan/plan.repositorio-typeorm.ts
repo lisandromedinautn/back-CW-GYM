@@ -7,7 +7,7 @@ import {
   RepositorioPlanes,
 } from '../../dominio/plan/repositorio-planes.puerto.js';
 import type { Plan } from '../../dominio/plan/plan.entidad.js';
-import { PlanAlumnoEsquema, PlanEsquema } from './plan.esquema.js';
+import { DiaPlanEsquema, PlanAlumnoEsquema, PlanEsquema } from './plan.esquema.js';
 import { PlanMapper } from './plan.mapper.js';
 
 @Injectable()
@@ -20,7 +20,16 @@ export class RepositorioPlanesTypeorm extends RepositorioPlanes {
 
   async guardar(plan: Plan, fechaActual?: string): Promise<void> {
     if (!fechaActual) {
-      await this.repositorio.save(PlanMapper.aEsquema(plan));
+      // Un plan existente conserva los ids de sus días: unique (plan_id, numero), no se duplican.
+      const esquema = PlanMapper.aEsquema(plan);
+      const existentes = await this.repositorio.manager
+        .getRepository(DiaPlanEsquema)
+        .find({ where: { planId: plan.id } });
+      for (const dia of esquema.dias) {
+        const previo = existentes.find((existente) => existente.numero === dia.numero);
+        if (previo) dia.id = previo.id;
+      }
+      await this.repositorio.save(esquema);
       return;
     }
     await this.repositorio.manager.transaction(async (manager) => {

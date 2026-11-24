@@ -75,3 +75,53 @@ describe('RN-PLAN-12 · el plan se crea con al menos un alumno', () => {
     expect(Plan.crear(datos({ alumnoIds: ['a1', 'a1'] })).alumnoIds).toEqual(['a1']);
   });
 });
+
+// Plan de ejemplo de US22: inicio 21/11/2026 (día 1), día 4 = 24/11 = hoy, día 10 = 30/11.
+const HOY = '2026-11-24';
+const RUTINA_PROPIA = 'r-propia';
+
+const diaDel = (plan: Plan, numero: number) => plan.dias.find((dia) => dia.numero === numero);
+
+describe('RN-PLAN-23 · el profesor edita los días de un plan que no terminó', () => {
+  it('P1 un día futuro cambia a la rutina indicada', () => {
+    const plan = Plan.crear(datos({ fechaInicio: '2026-11-21', dias: dias() }));
+
+    plan.editarDia(10, RUTINA_PROPIA, HOY);
+
+    expect(diaDel(plan, 10)?.rutinaId).toBe(RUTINA_PROPIA);
+  });
+
+  it('P2 un día futuro pasa a descanso con null', () => {
+    const plan = Plan.crear(datos({ fechaInicio: '2026-11-21', dias: dias(RUTINA_PROPIA) }));
+
+    plan.editarDia(10, null, HOY);
+
+    expect(diaDel(plan, 10)?.esDescanso).toBe(true);
+  });
+
+  it('P3 un día con fecha anterior a hoy se rechaza con RN-PLAN-23', () => {
+    const plan = Plan.crear(datos({ fechaInicio: '2026-11-21', dias: dias() }));
+
+    expect(codigoDelError(() => plan.editarDia(2, RUTINA_PROPIA, HOY))).toBe('RN-PLAN-23');
+  });
+
+  it('P4 el día de hoy sin entrenamiento iniciado cambia a la rutina indicada', () => {
+    const plan = Plan.crear(datos({ fechaInicio: '2026-11-21', dias: dias() }));
+
+    plan.editarDia(4, RUTINA_PROPIA, HOY);
+
+    expect(diaDel(plan, 4)?.rutinaId).toBe(RUTINA_PROPIA);
+  });
+
+  it('P5 un plan que ya terminó no se edita: se rechaza con RN-PLAN-23', () => {
+    const plan = Plan.crear(datos({ fechaInicio: '2026-10-01', dias: dias() }));
+
+    expect(codigoDelError(() => plan.editarDia(20, RUTINA_PROPIA, HOY))).toBe('RN-PLAN-23');
+  });
+
+  it.each([0, 29])('P6 el día %i no existe en el plan y se rechaza con RN-PLAN-11', (numero) => {
+    const plan = Plan.crear(datos({ fechaInicio: '2026-11-21', dias: dias() }));
+
+    expect(codigoDelError(() => plan.editarDia(numero, RUTINA_PROPIA, HOY))).toBe('RN-PLAN-11');
+  });
+});
