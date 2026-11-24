@@ -63,6 +63,7 @@ Hay tres roles: **Profesor**, **Alumno** y **Admin**.
 | 42 | Métricas con IA (08/11/2026) | La planificación se mide en **puntos por hora de sesión** y **horas de sesión por semana**; la velocity semanal es el producto de las dos. La velocity histórica (37 pts/semana, sin IA) queda solo como piso del escenario pesimista. Se suman T04 (reestimación) y T05 (ajuste de métricas), 1 pt cada una: el backlog pasa a 129 pts. Detalle en "Reestimación del 08/11/2026" |
 | 43 | Corte y reestimación del sprint 2 (14/11/2026) | A pedido de Martina: US06 se mantiene parcial; las horas y productividad horaria quedan ND. Se conservan los 129 puntos de V1 y se estima un residual V2 de 91, con escenarios condicionales y trazabilidad de fuentes en `docs/METRICAS-SPRINT-2.md`. No cambia el alcance de las RN ni las fechas objetivo acordadas |
 | 44 | Sprints de Jira alineados al calendario (21/11/2026) | A pedido de Lisandro: el Sprint 2 de Jira, que nunca se había iniciado, se inició y cerró con sus fechas (09–15/11); se crearon CG Sprint 3 (16–22/11, activo) y CG Sprint 4 (23/11–01/12) con las historias según su estado en Jira. Acumulado según Jira: 90/129. US06 figura Listo en Jira con la edición (RN-PLAN-07) sin código: queda para decidir. Detalle en `docs/PLAN-IMPLEMENTACION.md` |
+| 45 | Notificación de entrenamiento por debajo de lo prescripto (24/11/2026) | A pedido de Ulises se suma **US21** (CG-87, 11 pts, Sprint 4, fuera de la base V1 de 129 pts). Cuando un alumno finaliza un Entrenamiento con alguna serie por debajo de lo prescripto (las no registradas cuentan como no hechas), su profesor recibe una notificación en la app, Leve (menos del 40% de las series) o Grave (40% o más). Vive en un módulo nuevo, `notificaciones`, que escucha `EntrenamientoFinalizado`: es el primer suscriptor real (Observador). Reglas: RN-ENT-21 y RN-NOT-01 a 05 (la 05, percepción de US17, a confirmar) |
 
 ## Glosario de lenguaje ubicuo
 
@@ -92,6 +93,9 @@ Un término por concepto. Estos nombres se usan igual en conversaciones, tarjeta
 | **Entrenamiento** | Ejecución de la rutina del día por un alumno: copia independiente de la rutina, hora de inicio y de fin, series realizadas, peso corporal del día, RPE y sensación de fuerza |
 | **Entrenamiento abandonado** | Entrenamiento iniciado que no se finalizó antes de la medianoche. No calcula récords ni cuenta para la adherencia |
 | **Serie Realizada** | Lo que el alumno hizo efectivamente en una serie, comparable con lo prescripto |
+| **Serie por debajo de lo prescripto** | Serie prescripta de un Entrenamiento finalizado que no se registró, o que se registró con menos repeticiones, segundos o peso (si tenía peso prescripto) que lo indicado. En un circuito se cuenta cada ejercicio de cada vuelta |
+| **Notificación** | Aviso al profesor, dentro de la app, de que un alumno suyo finalizó un Entrenamiento con series por debajo de lo prescripto. Nace no leída |
+| **Gravedad** | Clasificación de la notificación: Leve (menos del 40% de las series por debajo) o Grave (40% o más) |
 | **Carga Efectiva** | Peso que cuenta por repetición según el tipo de carga |
 | **Factor de Peso Corporal** | Porcentaje del peso del alumno que mueve un ejercicio (100% por defecto) |
 | **Volumen de Serie** | Carga efectiva × repeticiones |
@@ -133,6 +137,7 @@ El 1RM se estima con la fórmula de Epley, solo para series de hasta 10 repetici
 | Planificación | `planificacion` | Rutinas y planes creados por el profesor | Rutina, Plan de Entrenamiento |
 | Entrenamiento | `entrenamiento` | Lo que realizó el alumno y sus récords | Entrenamiento, Récord Personal |
 | Identidad y Vínculos (soporte) | `identidad` | Usuarios, roles, ingreso al sistema y vínculo alumno-profesor | Profesor, Alumno, Admin |
+| Notificaciones (soporte) | `notificaciones` | Avisos al profesor de entrenamientos por debajo de lo prescripto (US21) | Notificación |
 
 **Contenido de cada agregado**
 
@@ -141,6 +146,7 @@ El 1RM se estima con la fórmula de Epley, solo para series de hasta 10 repetici
 * **Plan de Entrenamiento**: fecha de inicio, 28 días (cada uno con una rutina o descanso), profesor y alumnos por id.
 * **Entrenamiento**: copia de la rutina, inicio y fin, peso corporal del día, series realizadas, RPE y sensación de fuerza.
 * **Récord Personal**: mejor marca por alumno, ejercicio y tipo de récord.
+* **Notificación**: profesor, alumno y Entrenamiento por id, gravedad, total de series, series por debajo (prescripto y realizado), fecha de lectura y, con US17, la percepción del alumno.
 
 **Objetos de valor:** Carga Efectiva, Pausa (duración), Documento (tipo y número), Validez del plan (inicio y fin calculado), RPE y Sensación de Fuerza.
 
@@ -161,12 +167,12 @@ El 1RM se estima con la fórmula de Epley, solo para series de hasta 10 repetici
 | PlanCreado | Planificación | Los alumnos asignados ven su plan |
 | EntrenamientoIniciado | Entrenamiento | Copia la rutina y el peso del día, arranca el contador y habilita el registro de series |
 | SerieRealizada | Entrenamiento | Registra lo hecho frente a lo prescripto |
-| EntrenamientoFinalizado | Entrenamiento | Registra la hora de fin y calcula volumen, grupos trabajados y récords |
+| EntrenamientoFinalizado | Entrenamiento | Registra la hora de fin y calcula volumen, grupos trabajados y récords. Informa las series por debajo de lo prescripto: Notificaciones lo escucha y avisa al profesor (US21) |
 | RécordBatido | Entrenamiento | Se muestra en el resumen del entrenamiento |
 
 **Cálculos de dominio (sin services):** carga efectiva, volumen y 1RM estimado son comportamiento de objetos de valor y entidades (patrón Estrategia por tipo de carga). La detección de récords es comportamiento del agregado Récord Personal. La validación de plan vigente único la hace el caso de uso que asigna alumnos.
 
-**Catálogo de reglas de negocio:** cada regla tiene un ID `RN-<MÓDULO>-<nn>` y vive en el `CLAUDE.md` de su módulo en el back, que es la fuente de verdad. Prefijos: `RN-IDE`, `RN-CAT`, `RN-PLAN`, `RN-ENT`.
+**Catálogo de reglas de negocio:** cada regla tiene un ID `RN-<MÓDULO>-<nn>` y vive en el `CLAUDE.md` de su módulo en el back, que es la fuente de verdad. Prefijos: `RN-IDE`, `RN-CAT`, `RN-PLAN`, `RN-ENT`, `RN-NOT`.
 
 ## Convenciones técnicas (resumen)
 
@@ -317,6 +323,12 @@ Criterio adicional de US13: al iniciar se copian la rutina y el peso corporal de
 | ID | Historia | Tareas | Pts |
 | :-- | :-- | :-- | :-- |
 | US18 | Como **Profesor** quiero consultar los entrenamientos de mis alumnos para ajustar sus planes según lo que realmente hicieron | Backend M, Frontend M | 6 |
+
+### Agregada el 24/11/2026 (decisión 45, fuera de la base V1)
+
+| ID | Historia | Tareas | Pts |
+| :-- | :-- | :-- | :-- |
+| US21 | Como **Profesor** quiero recibir una notificación en la app cuando un alumno mío finaliza un entrenamiento por debajo de lo prescripto para ajustar su plan a tiempo | Modelar M, Backend L, Frontend M | 11 |
 
 US19 (finalizar un plan antes de sus 28 días) se eliminó del backlog: un plan no se puede finalizar antes de tiempo (decisión 31). En el escenario ideal no queda capacidad libre: los e2e de API se escriben dentro de cada US, y los de Playwright, los ajustes y el informe usan el margen del escenario pesimista.
 

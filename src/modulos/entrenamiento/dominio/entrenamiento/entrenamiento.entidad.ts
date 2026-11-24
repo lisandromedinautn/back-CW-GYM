@@ -5,6 +5,7 @@ import type { CopiaRutina, EjercicioPrescriptoCopiado } from './copia-rutina.val
 import { EntrenamientoIniciado } from './entrenamiento-iniciado.evento.js';
 import { EventoSerieRealizada } from './serie-realizada.evento.js';
 import type { MedidaSerie, RegistroSerie, SerieRealizada } from './serie-realizada.valor.js';
+import { seriesPorDebajo } from './series-por-debajo.js';
 
 export interface DatosEntrenamiento {
   id: string;
@@ -68,7 +69,24 @@ export class Entrenamiento {
     this.asegurarFinalizable(instante);
     this.registro.fin = instante.toISOString();
     this.registro.resumen = structuredClone(resumen);
-    return new EntrenamientoFinalizado(this.registro.id, this.registro.alumnoId, this.registro.fin);
+    return this.eventoDeFin();
+  }
+
+  /** Evento de un entrenamiento ya finalizado, con las series por debajo de lo prescripto (RN-ENT-21). */
+  eventoDeFin(): EntrenamientoFinalizado {
+    const { id, alumnoId, inicio, fin, rutina, series } = this.registro;
+    if (!fin)
+      throw new ErrorDominio('RN-ENT-05', 'El entrenamiento no fue finalizado', 'conflicto');
+    const { totalSeries, porDebajo } = seriesPorDebajo(rutina, series);
+    return new EntrenamientoFinalizado(
+      id,
+      alumnoId,
+      fin,
+      inicio,
+      rutina.nombre,
+      totalSeries,
+      porDebajo,
+    );
   }
 
   /**

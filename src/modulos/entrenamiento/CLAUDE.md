@@ -5,7 +5,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 * **Agregados:** Entrenamiento (con sus Series Realizadas) y Récord Personal.
 * **Objetos de valor:** CopiaRutina, SerieRealizada, CargaEfectiva, VolumenSerie, UnoRMEstimado, RPE (1 a 10), SensacionFuerza (1 a 5), Duracion.
 * **Estrategias:** una por tipo de carga para calcular la carga efectiva y una por tipo de ejercicio para determinar qué récords aplican.
-* **Eventos que emite:** EntrenamientoIniciado, SerieRealizada, EntrenamientoFinalizado, RécordBatido.
+* **Eventos que emite:** EntrenamientoIniciado, SerieRealizada, EntrenamientoFinalizado (con las series por debajo de lo prescripto, RN-ENT-21; lo escucha Notificaciones), RécordBatido. Con US17, PercepcionRegistrada.
 * **Puertos:** RepositorioEntrenamientos, RepositorioRecords, ConsultaRutinaDelDia (Fachada de planificación), ConsultaAlumno (Fachada de identidad: peso actual y profesor), ConsultaEjercicios (Fachada de catálogo), Reloj.
 
 ## Reglas de negocio
@@ -32,6 +32,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | RN-ENT-18 | El profesor consulta solo los entrenamientos de sus alumnos | US18, invariante 2 | Vigente |
 | RN-ENT-19 | Un alumno solo registra series y finaliza sus propios entrenamientos | US14, US15 | Vigente |
 | RN-ENT-20 | Un entrenamiento iniciado y no finalizado se retoma durante el mismo día. Pasada la medianoche queda **abandonado**: no admite series, no se finaliza, no calcula récords y no cuenta para la adherencia | ZG-12 | Vigente |
+| RN-ENT-21 | Al finalizar se determinan las **series por debajo de lo prescripto**. Se recorren todas las series prescriptas de la copia: cada serie de un bloque y cada ejercicio de cada vuelta de un circuito (los mismos pasos que registra el alumno). Una serie queda por debajo si se cumple alguna de estas condiciones: **(a)** no se registró; **(b)** sus repeticiones o segundos realizados son menos que los prescriptos; **(c)** tenía peso prescripto y el peso realizado es menor (un peso no informado cuenta como 0). Hacer más que lo prescripto no compensa otra serie. EntrenamientoFinalizado informa el total de series prescriptas y cada serie por debajo con lo prescripto y lo realizado. Los abandonados no se evalúan (RN-ENT-20). Ejemplo: bloque de 5 series de 10 repeticiones con 30 kg; se registran 10 × 30, 10 × 30, 8 × 30 y 10 × 25, y la quinta no → 3 series por debajo de 5 (la 3 por repeticiones, la 4 por peso, la 5 sin registrar) | US21 | Vigente (el ejemplo es literal obligatorio en los tests) |
 
 ## Casos de uso planificados
 
@@ -41,6 +42,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | `consultar-entrenamiento-en-curso.caso-uso.ts` ✅ | US13 | 20 |
 | `registrar-serie-realizada.caso-uso.ts` ✅ | US14 | 03, 04, 19, 20 |
 | `finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.ts` ✅, `dominio/entrenamiento/calcular-resumen.ts` ✅ | US15 | 05–09, 17, 19, 20 |
+| `finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.ts` (evento con las series por debajo) ✅, `dominio/entrenamiento/series-por-debajo.ts` ✅ | US21 | 21 |
 | `registrar-percepcion.caso-uso.ts` | US17 | 14, 15, 16 |
 | `consultar-entrenamientos-de-alumnos.caso-uso.ts` ✅ | US18 | 18 |
 
@@ -63,6 +65,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | 01/11/2026 | RN-ENT-15 | Escala de sensación de fuerza fijada de 1 a 5 | Lisandro |
 | 01/11/2026 | RN-ENT-01, 09, 13, 16; nueva RN-ENT-20 | Se cierran ZG-08 a ZG-12: solo la rutina de hoy y una vez por día, los grupos incluyen el secundario, récord estrictamente mayor sin anunciar la primera marca, RPE y sensación opcionales y cargables después, entrenamiento abandonado a la medianoche | Lisandro |
 | 22/11/2026 | RN-ENT-02 | La copia guarda también el GIF de cada ejercicio, para mostrarlo durante el entrenamiento (T14) | Ulises |
+| 24/11/2026 | Nueva RN-ENT-21 | Series por debajo de lo prescripto al finalizar, para notificar al profesor (US21): las no registradas cuentan como no hechas y el peso se compara solo si estaba prescripto | Ulises |
 
 ## Decisiones de implementación (CG-46, US13)
 
@@ -101,3 +104,17 @@ Decididas por Ulises el 22/11/2026.
 * Para mostrar el GIF durante el entrenamiento, la copia guarda `urlGif` en cada ejercicio de bloques y circuitos (RN-ENT-02). Lo agrega `IniciarEntrenamiento` con la función de dominio `conGifs`, consultando el puerto `ConsultaEjercicios`, que implementa directo la Fachada de catálogo (`EjercicioPublico` suma `urlGif`).
 * No se toca Planificación: sus respuestas (`mi-rutina-del-dia`, `mi-plan`) siguen iguales. El catálogo sigue siendo solo para Admin y Profesor.
 * Los entrenamientos iniciados antes de T14 no tienen `urlGif` en su copia (no se migran); el front los muestra sin imagen.
+
+## Modelo de US21 (CG-87)
+
+Decidido por Ulises el 24/11/2026. El que notifica es el módulo `notificaciones` (ver su `CLAUDE.md`); acá solo se decide qué serie quedó por debajo.
+
+* `dominio/entrenamiento/series-por-debajo.ts`: función pura `seriesPorDebajo(copia, series)`. Devuelve `{ totalSeries, porDebajo: SeriePorDebajo[] }`, con las series en el orden de la rutina.
+  * Cada `SeriePorDebajo` es `{ orden, numero, posicion, ejercicioId, nombre, prescripta, realizada }`, con `realizada: null` si no se registró.
+  * Recorre la copia igual que la validación de `registrarSerie`, así los dos usan la misma noción de "serie prescripta".
+* `Entrenamiento.finalizar` arma el evento con esos datos. `CerrarEntrenamiento` publica **el evento que devuelve la entidad**, en lugar de construir uno propio como hoy, para que la regla quede en el dominio.
+* `EntrenamientoFinalizado` suma, como primitivos: `inicio`, `rutina` (nombre), `totalSeries` y `seriesPorDebajo`.
+  * Se publica también si no hay series por debajo: quién lo escucha decide.
+  * Cambiar el evento toca los tests existentes que lo comparan (`cerrar-entrenamiento.caso-uso.spec.ts`). **Se pregunta antes de modificarlos.**
+* No hay endpoint nuevo en este módulo. La respuesta de la finalización (el resumen) no cambia.
+* US17 emitirá `PercepcionRegistrada` (`entrenamientoId`, `rpe`, `sensacionFuerza`) para que la notificación la sume (RN-NOT-05, a confirmar).

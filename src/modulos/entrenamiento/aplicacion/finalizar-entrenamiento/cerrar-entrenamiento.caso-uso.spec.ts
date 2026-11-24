@@ -71,3 +71,85 @@ describe('RN-ENT-05, 19, 20 · cierre de un entrenamiento', () => {
     await expect(caso.ejecutar('usuario', 'ent')).rejects.toMatchObject({ codigo: 'RN-ENT-20' });
   });
 });
+
+describe('RN-ENT-21 · el cierre publica las series por debajo de lo prescripto', () => {
+  async function prepararConBloque() {
+    const repo = new RepositorioEntrenamientosEnMemoria();
+    await repo.insertar(
+      Entrenamiento.crear({
+        id: 'ent',
+        alumnoId: 'alumno',
+        inicio: '2026-11-22T10:00:00.000Z',
+        pesoCorporalKg: 80,
+        rutina: {
+          id: 'r',
+          nombre: 'Fuerza',
+          tipo: 'Bloques',
+          bloques: [
+            {
+              orden: 1,
+              ejercicioId: 'press',
+              nombre: 'Press',
+              repeticiones: 10,
+              segundos: null,
+              pesoKg: 30,
+              series: 2,
+              micropausaSegundos: 0,
+              macropausaSegundos: 0,
+            },
+          ],
+          circuitos: [],
+        },
+      }),
+    );
+    const alumnos = { obtenerAlumnoConPeso: async () => ({ id: 'alumno', pesoKg: 90 }) };
+    const reloj = new RelojFijo(new Date('2026-11-22T10:30:00.000Z'));
+    const calculo = new FinalizarEntrenamiento(
+      repo,
+      alumnos,
+      { obtenerEjercicio: async () => null },
+      reloj,
+    );
+    const publicar = vi.fn(async (_evento: unknown) => {});
+    const caso = new CerrarEntrenamiento(repo, new CierreEnMemoria(repo), alumnos, reloj, calculo, {
+      publicar,
+    });
+    return { caso, publicar };
+  }
+
+  it('publica EntrenamientoFinalizado con inicio, rutina, total y series por debajo', async () => {
+    const { caso, publicar } = await prepararConBloque();
+    await caso.ejecutar('usuario', 'ent');
+    expect(publicar).toHaveBeenCalledOnce();
+    const evento = publicar.mock.calls[0][0] as Record<string, unknown>;
+    expect(evento).toMatchObject({
+      nombre: 'EntrenamientoFinalizado',
+      entrenamientoId: 'ent',
+      alumnoId: 'alumno',
+      fin: '2026-11-22T10:30:00.000Z',
+      inicio: '2026-11-22T10:00:00.000Z',
+      rutina: 'Fuerza',
+      totalSeries: 2,
+    });
+    expect(evento.seriesPorDebajo).toEqual([
+      {
+        orden: 1,
+        numero: 1,
+        posicion: null,
+        ejercicioId: 'press',
+        nombre: 'Press',
+        prescripta: { repeticiones: 10, segundos: null, pesoKg: 30 },
+        realizada: null,
+      },
+      {
+        orden: 1,
+        numero: 2,
+        posicion: null,
+        ejercicioId: 'press',
+        nombre: 'Press',
+        prescripta: { repeticiones: 10, segundos: null, pesoKg: 30 },
+        realizada: null,
+      },
+    ]);
+  });
+});
