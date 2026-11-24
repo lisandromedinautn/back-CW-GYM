@@ -359,3 +359,57 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Qué hizo la IA: comparó Jira, `TRAZABILIDAD.md`, `PLAN-IMPLEMENTACION.md` y el historial de los dos repos. En Jira pasó a Listo CG-54 y CG-55 (subtareas de US15), CG-73 (T06), CG-74 (T07) y CG-86 (T15); pasó US06 (CG-22) y sus subtareas CG-24 y CG-25 a En curso porque la edición de rutinas (RN-PLAN-07) no tiene código; etiquetó como `descartada` las subtareas de US01 (CG-7, 8, 9). En la documentación marcó US10, US11, US12, US14, US15 y US18 como integradas y recalculó el acumulado: 103/129.
 - Decisiones del desarrollador: «actualizá todo al estado verdadero del repo».
 - Pendientes: borrar a mano CG-6 a CG-9 (el conector no borra); US06 (edición), US16 y US17.
+
+## 2026-11-24 — Notificar al profesor un entrenamiento por debajo de lo prescripto [US21]
+- Desarrollador: Ulises
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 (orquestador) + Sonnet 5.5 medium (7 subagentes) + Haiku 5.5 low (2 subagentes).
+  - Back, en tres tandas: A (RN-ENT-21), B (publicador) y C (dominio, Haiku) en paralelo; después D (casos de uso); después E (infraestructura, API y e2e).
+  - Front: F (bandeja); después G (contador) y H (`?alumno=` de US18, Haiku) en paralelo; después I (e2e de Playwright).
+- Objetivo: que el profesor reciba, dentro de la app, una notificación cuando un alumno suyo finaliza un entrenamiento con resultados por debajo de lo prescripto. La tarea no tenía tarjeta en Jira.
+- Qué hizo la IA:
+  - **Jira:** creó CG-87 (US21, 11 pts, Sprint 4) con sus subtareas CG-88 (Modelar), CG-89 (Backend) y CG-90 (Frontend).
+  - **Modelado:** preguntó las zonas grises y escribió el modelo en los dos repos:
+    - módulo nuevo `notificaciones` con RN-NOT-01 a 05, RN-ENT-21 y la decisión 45;
+    - glosario (Serie por debajo de lo prescripto, Notificación, Gravedad), plan, trazabilidad y atlas.
+  - **Fichas:** propuso las fichas (25 del back, 8 del front) y las registró una vez confirmadas.
+  - **Back:**
+    - función pura `seriesPorDebajo`;
+    - `EntrenamientoFinalizado` con las series por debajo, publicado por la entidad (`eventoDeFin`);
+    - `PublicadorEventosEnProceso` con el puerto `SuscriptorEventos`, primer suscriptor real (Observador ✅ en `PATRONES.md`);
+    - agregado `Notificacion` y objeto de valor `Gravedad`;
+    - cuatro casos de uso, repositorio TypeORM, adaptador de la Fachada de identidad (`obtenerProfesorPorUsuarioId`), suscriptor, controlador y e2e con el publicador real.
+  - **Front:**
+    - bandeja `/profesor/notificaciones`;
+    - contador "Notificaciones (N)" en el menú, compuesto desde `Aplicacion.tsx` y solo para el Profesor;
+    - enlace a US18 con `?alumno=`;
+    - e2e de Playwright.
+  - **Revisión:** revisó cada reporte y el código de cada subagente, corrió la verificación completa y actualizó fichas, atlas, trazabilidad, `CHANGELOG` y reglas.
+- Decisiones del desarrollador:
+  - **Qué cuenta como por debajo:** una serie queda por debajo con menos repeticiones, segundos o peso (si había peso prescripto) que lo prescripto. Las no registradas cuentan como cero y, en un circuito, cuenta cada ejercicio de cada vuelta.
+  - **Gravedad:** Leve con menos del 40% de las series por debajo; Grave con el 40% o más. Manda el porcentaje: 1 de 2 es Grave.
+  - **Bandeja y módulo:** bandeja con contador de no leídas y "Marcar como leída", en un módulo nuevo que escucha el evento.
+  - **Preparado para US17:** RPE y sensación de fuerza van en la misma notificación. Por ahora es `percepcion: null` en la tabla y en el contrato, con RN-NOT-05 a confirmar.
+  - **Patrones:** énfasis en respetar las convenciones y los patrones de los `.md` antes de codear.
+  - **Confirmaciones:** confirmó las fichas, más 3 nuevas del dominio del front para recuperar el umbral de cobertura de ramas (78,84% → 80,46%); los repartos por tanda y los microcommits.
+- Ideas descartadas:
+  - `@nestjs/event-emitter`: se resolvió con un publicador propio, sin paquetes nuevos.
+  - Volumen total o un umbral de cumplimiento como criterio de "por debajo".
+  - Contar solo las series registradas.
+  - Notificación como agregado dentro de Entrenamiento.
+  - Marca en la página de US18 en lugar de una bandeja.
+  - Desactivar el contador en los tests o agregar una respuesta por defecto en la red falsa compartida. No hizo falta: el contador ignora los errores de red.
+  - Reunificar el recorrido de `registrarSerie` con `seriesPrescriptas`: queda como refactor aparte.
+- Reglas afectadas:
+  - Nuevas: RN-ENT-21, RN-NOT-01 a 04 (vigentes), RN-NOT-05 (a confirmar con US17), RN-UI-NOT-01 y 02.
+  - Ajuste el mismo día: RN-UI-NOT-01 también se actualiza al marcar, como pide la ficha e2e confirmada.
+- Verificación:
+  - Back: `yarn test:cov` 399/399, con cobertura y lint OK.
+  - Front: 188/188 en Vitest con cobertura y 13/13 e2e de navegador, con la base recién sembrada.
+  - En cada ficha el test detectó un cambio hecho a propósito en el código, que después se restauró.
+  - Lo que no detecta ningún test quedó anotado en las fichas: dos cambios en E7 y el `ON CONFLICT DO NOTHING`.
+  - El e2e de Playwright encontró que el contador tardaba 60 s en actualizarse; se corrigió con un aviso interno del módulo.
+- Pendientes:
+  - Ramas `feat/US21-notificar-entrenamiento-por-debajo` sin pushear ni PR.
+  - Cuando se trabaje US17: si cargar la percepción vuelve la notificación a no leída y si una percepción baja notifica aunque no haya series por debajo.
+  - Mover CG-87 a CG-90 en Jira.
+  - El back de test (`yarn start`) deja vivo el proceso `dist/main` al detener la tarea: se cerró a mano dos veces.
