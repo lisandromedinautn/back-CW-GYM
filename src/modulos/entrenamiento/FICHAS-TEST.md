@@ -64,3 +64,14 @@ E7 no detecta dos mutaciones:
 * que `totalSeries` se reemplace por la cantidad de series por debajo.
 
 Sin series registradas, los dos valores coinciden. Esos caminos los detectan E1 y E6 en la función de dominio.
+
+## US17 — Percepción del alumno (confirmadas por Ulises el 24/11/2026)
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `dominio/percepcion/rpe.valor.spec.ts` › rango del RPE | RN-ENT-14 | Unitario | 1 y 10; después 0, 11 y 7,5 | 1 y 10 son válidos; 0, 11 y 7,5 dan `ErrorDominio` con código `RN-ENT-14` | | 24/11/2026 |
+| `dominio/percepcion/sensacion-fuerza.valor.spec.ts` › rango de la sensación | RN-ENT-15 | Unitario | 1 y 5; después 0, 6 y 2,5 | 1 y 5 son válidos; 0, 6 y 2,5 dan `ErrorDominio` con código `RN-ENT-15` | | 24/11/2026 |
+| `dominio/entrenamiento/entrenamiento.entidad.spec.ts` › (`describe` nuevo) registra la percepción de un finalizado | RN-ENT-16 | Unitario | Entrenamiento "Fuerza" con 2 series prescriptas, finalizado a las 10:30. A las 11:00 se registra RPE 9 y sensación 2 | Queda guardada la percepción `{ rpe: 9, sensacionFuerza: 2 }`. Evento `PercepcionRegistrada` con `entrenamientoId`, `alumnoId`, `inicio`, `rutina: 'Fuerza'`, `totalSeries: 2` y `percepcion: { rpe: 9, sensacionFuerza: 2 }` | | 24/11/2026 |
+| `entrenamiento.entidad.spec.ts` › (mismo `describe`) solo una vez y solo finalizado | RN-ENT-16 | Unitario | Tres intentos: en curso; abandonado (al día siguiente); un segundo registro con RPE 5 y sensación 5 sobre el finalizado | Los tres dan `ErrorDominio` con código `RN-ENT-16`. Después del tercero sigue la primera percepción (9 y 2) | | 24/11/2026 |
+| `aplicacion/registrar-percepcion/registrar-percepcion.caso-uso.spec.ts` › propio y ajeno | RN-ENT-16, 19 | Unitario | Entrenamiento propio finalizado; después uno de otro alumno | Con el propio guarda la percepción y publica 1 evento; con el ajeno da no encontrado (404) y no publica nada | | 24/11/2026 |
+| `test/e2e/entrenamiento/registrar-percepcion.e2e-spec.ts` › carga, lectura y rechazos | RN-ENT-14, 15, 16, 19 · RN-IDE-03 | e2e | alumno01 finaliza y envía `{ rpe: 9, sensacionFuerza: 2 }`. Después: `GET mi-entrenamiento-en-curso`; `GET` del profesor (US18); segundo `POST`; RPE 11; sensación 0; `POST` sobre un entrenamiento en curso de otro alumno; `POST` de un profesor | `201 { rpe: 9, sensacionFuerza: 2 }`. Los dos `GET` traen `percepcion: { rpe: 9, sensacionFuerza: 2 }`. Segundo `POST`: 409 `RN-ENT-16`. RPE 11: 400 `RN-ENT-14`. Sensación 0: 400 `RN-ENT-15`. En curso: 409 `RN-ENT-16`. Profesor: 403 | | 24/11/2026 |
