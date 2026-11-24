@@ -51,7 +51,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.ts` ✅ | US08 | 11, 15, 18 |
 | `consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.ts` ✅ | US11 | 11, 15, 19 |
 | `consultar-planes/consultar-planes.caso-uso.ts` ✅ | T13 | 10, 15, 22 |
-| `editar-dia-plan/editar-dia-plan.caso-uso.ts` | US22 | 10, 11, 23 |
+| `editar-dia-plan/editar-dia-plan.caso-uso.ts` ✅ | US22 | 10, 11, 23 |
 
 ## Endpoints tentativos
 
@@ -69,8 +69,8 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `GET /planificacion/mi-rutina-del-dia` ✅ | Alumno | consultar-rutina-del-dia |
 | `GET /planificacion/mi-plan` ✅ | Alumno | consultar-plan-del-alumno |
 | `GET /planificacion/planes?pagina=&tamanio=&estado=&alumnoId=&inicioDesde=&inicioHasta=` ✅ (respuesta `{ items, total, pagina, tamanio }`) | Profesor | consultar-planes |
-| `PUT /planificacion/planes/:id/dias/:numero` (body `{ rutinaId: uuid \| null }`; responde el día `{ numero, fecha, rutinaId, esDescanso }`) | Profesor | editar-dia-plan |
-| `GET /planificacion/planes/:id` (plan propio: `id`, `fechaInicio`, `fechaFin`, `estado`, `dias[{ numero, fecha, rutinaId, esDescanso }]`) | Profesor | consultar-planes (`porId`, US22) |
+| `PUT /planificacion/planes/:id/dias/:numero` ✅ (body `{ rutinaId: uuid \| null }`; responde el día `{ numero, fecha, rutinaId, esDescanso }`) | Profesor | editar-dia-plan |
+| `GET /planificacion/planes/:id` ✅ (plan propio: `id`, `fechaInicio`, `fechaFin`, `estado`, `dias[{ numero, fecha, rutinaId, esDescanso }]`) | Profesor | consultar-planes (`porId`, US22) |
 
 ## Historial de cambios de reglas
 
@@ -167,3 +167,11 @@ T13 (CG-84) ya está en `develop` y toca archivos que US12 también va a tocar. 
 * Solo el profesor propietario puede consultar y modificar los alumnos de un plan vigente. El back valida el vínculo, la ausencia de otro plan vigente y permite quitar al último alumno.
 * La pantalla se abre desde «Alumnos» en el listado de planes vigentes. El alta o la baja actualiza las asignaciones sin recrear los días del plan.
 * La asignación y la creación serializan por alumno en PostgreSQL y vuelven a comprobar la vigencia dentro de la transacción (RN-PLAN-14).
+
+## Decisiones de implementación (US22)
+
+* `Plan.editarDia(numero, rutinaId, hoy)` valida RN-PLAN-11 (1..28) y RN-PLAN-23 (plan terminado o día anterior a hoy) y reemplaza el `DiaPlan`; `dias` pasó a ser un getter sobre un campo privado, sin romper la inmutabilidad hacia afuera.
+* El día de hoy con Entrenamiento iniciado se valida en el caso de uso, antes de mutar el plan, con el puerto `ConsultaEntrenamientosIniciados`. Su adaptador (`infraestructura/plan/consulta-entrenamientos-iniciados.typeorm.ts`) consulta la tabla `entrenamientos` con SQL parametrizado, sin importar el módulo de Entrenamiento (evita el ciclo).
+* Plan o rutina ajenos o inexistentes responden 404 con código RN-PLAN-23; `hoy` es la fecha UTC del `Reloj`.
+* `RepositorioPlanesTypeorm.guardar` conserva los ids de los días existentes (unique `plan_id, numero`), así el cambio actualiza `dias_plan` sin duplicar filas.
+* `ConsultarPlanes.porId` reusa el cálculo de estado del listado.
