@@ -5,8 +5,12 @@ import type { CopiaRutina, EjercicioPrescriptoCopiado } from './copia-rutina.val
 import { EntrenamientoIniciado } from './entrenamiento-iniciado.evento.js';
 import { EventoSerieRealizada } from './serie-realizada.evento.js';
 import type { MedidaSerie, RegistroSerie, SerieRealizada } from './serie-realizada.valor.js';
+import { seriesPorDebajo, seriesPrescriptas } from './series-por-debajo.js';
+import { PercepcionRegistrada } from './percepcion-registrada.evento.js';
+import type { DatosPercepcion, Percepcion } from '../percepcion/percepcion.valor.js';
 
 export interface DatosEntrenamiento {
+  percepcion?: DatosPercepcion;
   id: string;
   alumnoId: string;
   inicio: string;
@@ -68,7 +72,50 @@ export class Entrenamiento {
     this.asegurarFinalizable(instante);
     this.registro.fin = instante.toISOString();
     this.registro.resumen = structuredClone(resumen);
-    return new EntrenamientoFinalizado(this.registro.id, this.registro.alumnoId, this.registro.fin);
+    return this.eventoDeFin();
+  }
+
+  /** Evento de un entrenamiento ya finalizado, con las series por debajo de lo prescripto (RN-ENT-21). */
+  eventoDeFin(): EntrenamientoFinalizado {
+    const { id, alumnoId, inicio, fin, rutina, series } = this.registro;
+    if (!fin)
+      throw new ErrorDominio('RN-ENT-05', 'El entrenamiento no fue finalizado', 'conflicto');
+    const { totalSeries, porDebajo } = seriesPorDebajo(rutina, series);
+    return new EntrenamientoFinalizado(
+      id,
+      alumnoId,
+      fin,
+      inicio,
+      rutina.nombre,
+      totalSeries,
+      porDebajo,
+    );
+  }
+
+  /**
+   * RN-ENT-16: la percepción se carga una sola vez, solo en un entrenamiento finalizado.
+   */
+  registrarPercepcion(percepcion: Percepcion, instante: Date): PercepcionRegistrada {
+    if (this.estadoEn(instante) !== 'finalizado') {
+      throw new ErrorDominio(
+        'RN-ENT-16',
+        'La percepción solo se carga en un entrenamiento finalizado',
+        'conflicto',
+      );
+    }
+    if (this.registro.percepcion) {
+      throw new ErrorDominio('RN-ENT-16', 'La percepción ya fue cargada', 'conflicto');
+    }
+    this.registro.percepcion = percepcion.datos;
+    const { id, alumnoId, inicio, rutina } = this.registro;
+    return new PercepcionRegistrada(
+      id,
+      alumnoId,
+      inicio,
+      rutina.nombre,
+      seriesPrescriptas(rutina).length,
+      percepcion.datos,
+    );
   }
 
   /**

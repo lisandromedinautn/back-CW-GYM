@@ -9,6 +9,8 @@ import {
 import { ConsultarEntrenamientosDeAlumnos } from '../../aplicacion/consultar-entrenamientos-de-alumnos/consultar-entrenamientos-de-alumnos.caso-uso.js';
 import { ConsultarEntrenamientoEnCurso } from '../../aplicacion/consultar-entrenamiento-en-curso/consultar-entrenamiento-en-curso.caso-uso.js';
 import { IniciarEntrenamiento } from '../../aplicacion/iniciar-entrenamiento/iniciar-entrenamiento.caso-uso.js';
+import { RegistrarPercepcion } from '../../aplicacion/registrar-percepcion/registrar-percepcion.caso-uso.js';
+import { RegistrarPercepcionDto } from '../registrar-percepcion/registrar-percepcion.dto.js';
 import { RegistrarSerieRealizada } from '../../aplicacion/registrar-serie-realizada/registrar-serie-realizada.caso-uso.js';
 import { RegistrarSerieRealizadaDto } from '../registrar-serie-realizada/registrar-serie-realizada.dto.js';
 
@@ -19,8 +21,13 @@ export class EntrenamientoControlador {
     @Inject(ConsultarEntrenamientoEnCurso)
     private readonly consultarEntrenamiento: ConsultarEntrenamientoEnCurso,
     @Inject(RegistrarSerieRealizada) private readonly registrarSerie: RegistrarSerieRealizada,
+
+    @Inject(RegistrarPercepcion)
+    private readonly registrarPercepcion: RegistrarPercepcion,
+
     @Inject(CerrarEntrenamientoConRecords)
     private readonly cerrarEntrenamiento: CerrarEntrenamientoConRecords,
+
     @Inject(ConsultarEntrenamientosDeAlumnos)
     private readonly consultarDeAlumnos: ConsultarEntrenamientosDeAlumnos,
   ) {}
@@ -51,6 +58,16 @@ export class EntrenamientoControlador {
   @Roles('Alumno')
   finalizar(@UsuarioActual() usuario: UsuarioAutenticado, @Param('id', ParseUUIDPipe) id: string) {
     return this.cerrarEntrenamiento.ejecutar(usuario.sub, id);
+  }
+
+  @Post('entrenamientos/:id/percepcion')
+  @Roles('Alumno')
+  cargarPercepcion(
+    @UsuarioActual() usuario: UsuarioAutenticado,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: RegistrarPercepcionDto,
+  ) {
+    return this.registrarPercepcion.ejecutar(usuario.sub, id, dto.rpe, dto.sensacionFuerza);
   }
 
   @Get('alumnos/:alumnoId/entrenamientos')

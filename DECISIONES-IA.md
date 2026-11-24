@@ -333,3 +333,123 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 ## 2026-11-22 — Modelar récords personales y carga efectiva [US16]
 - Desarrollador: Ramiro
 - Agregado 23/11/2026 (cierre): se implementó el backend de US16 sobre US15 ya en develop. Puerto `ConsultaEjerciciosRecords` (adaptador sobre la Fachada de catálogo, devuelve `nombre`, `tipo`, `tipoCarga` y `factorPesoCorporal`), repositorio `RepositorioRecords` con TypeORM (`records_personales`, único por `alumno_id, ejercicio_id, tipo`, upsert conservando el `id`), y `CerrarEntrenamientoConRecords` (A2) que envuelve a `CerrarEntrenamiento` sin tocar sus tests: cierra, re-lee el entrenamiento, calcula marcas con `MarcasPorTipoEjercicio`, agrupa por `(ejercicioId, tipo)` quedándose con la mejor marca, detecta contra los previos con `DetectorRecords`, guarda y publica cada `RecordBatido`, y devuelve `recordsBatidos` solo si hay batidos. `recordsBatidos` es opcional en la respuesta para no romper los tests de US15 (que usan `toEqual`). Endpoint sin cambios: el controlador usa el envoltorio en el mismo `POST /entrenamiento/entrenamientos/:id/finalizacion`. Verificación: 274 unitarios, 12 de integración, 115 e2e, lint y build en verde. Limitación aceptada: si falla la persistencia de récords, el entrenamiento ya quedó finalizado y `EntrenamientoFinalizado` ya se publicó. Diferido: FK `entrenamiento_id` con `ON DELETE CASCADE` y filas de `FICHAS-TEST.md`.
+
+## 2026-11-23 — Finalizar en el último paso y e2e de navegador del MVP [US15, T15]
+- Desarrollador: Ulises
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 (orquestador) + Sonnet 5.5 medium (1 subagente: P1, E1–E3 y S1, en serie porque comparten la base de test y los puertos)
+- Objetivo: comprobar que la finalización de US15 (Martina) convive con el paso a paso de US14 y cubrir con e2e de Playwright los cuatro flujos del cierre del MVP (fase 5, CG-86).
+- Qué hizo la IA: revisó la rama de US15 (salía de un `develop` anterior a US14, con 8 conflictos) y, ya integrada por Martina, encontró dos botones «Finalizar entrenamiento» en el último paso. Dejó solo el del último paso, habilitado, y adaptó la rutina falsa de los 2 tests de integración que finalizan (esperados sin cambios). Creó la tarjeta CG-86 (T15). Registró las fichas, escribió el soporte (`e2e/soporte/api.ts` prepara datos por la API real, `sesion.ts` ingresa y navega) y los e2e de ingreso y vínculo; delegó plan del día, entrenamiento completo y seguimiento al subagente y revisó su reporte. Adaptó `importar-rutina.e2e.ts`, que fallaba desde T13 porque «Planes» pasó a ser el listado. Configuró Playwright con un solo worker y `E2E_PUERTO_FRONT` para correr contra el back de test (3001) sin tocar los servidores de desarrollo, y lo documentó en `docs/TESTING.md`. Sincronizó `TRAZABILIDAD.md` (US15 ya integrada) y `PLAN-IMPLEMENTACION.md` entre los repos.
+- Decisiones del desarrollador: «Finalizar entrenamiento» solo en el último paso (lo pedido en US14) en lugar de visible desde el paso 1; aprobó cambiar la entrada de los 2 tests de US15 y adaptar el e2e de importar rutina; tarjeta T15; reparto Opus (soporte, fichas e I1–I4) + Sonnet medium (resto); descargar Chromium para Playwright.
+- Ideas descartadas: dejar el botón de Martina siempre visible (contradecía la decisión de US14); integrar US15 antes de que Martina lo hiciera (era su tarea); correr los e2e contra la base de desarrollo (cada alumno se vincula y entrena una sola vez, así que necesitan la base de test recién sembrada); varios workers o subagentes en paralelo (generar un código invalida el anterior y comparten la base); testear el abandono (RN-ENT-20) en e2e (no se puede mover el reloj del back real).
+- Reglas afectadas: ninguna nueva. Se cubren en navegador RN-IDE-01, 08, 09, 10, 11; RN-PLAN-08, 11, 13, 15, 21; RN-ENT-01, 02, 03, 05, 06, 17, 18; RN-UI-ENT-02, 03, 04.
+- Verificación: front 177 tests de Vitest y 12 e2e de navegador en verde con la base recién sembrada; lint sin errores. Cada e2e nuevo y la adaptación de importar rutina fallaron por aserción al romper una línea de producción (11 mutaciones, restauradas).
+- Pendientes: no hay test de que «Finalizar» no aparezca antes del último paso; P1 calcula la fecha de fin en el test porque depende del día; la parte del alumno en P1 no tiene mutación propia; ramas pusheadas sin PR (`fix/US15-finalizar-ultimo-paso`, `test/T15-e2e-navegador` en el front y `docs/T15-e2e-navegador` en el back).
+
+## 2026-11-23 — Jira y documentación alineados con develop [T11]
+- Desarrollador: Lisandro. Herramienta / modelo: Claude Code · Opus 5.5.
+- Objetivo: que Jira (CG) y la documentación reflejen lo que realmente está integrado en `develop`.
+- Qué hizo la IA: comparó Jira, `TRAZABILIDAD.md`, `PLAN-IMPLEMENTACION.md` y el historial de los dos repos. En Jira pasó a Listo CG-54 y CG-55 (subtareas de US15), CG-73 (T06), CG-74 (T07) y CG-86 (T15); pasó US06 (CG-22) y sus subtareas CG-24 y CG-25 a En curso porque la edición de rutinas (RN-PLAN-07) no tiene código; etiquetó como `descartada` las subtareas de US01 (CG-7, 8, 9). En la documentación marcó US10, US11, US12, US14, US15 y US18 como integradas y recalculó el acumulado: 103/129.
+- Decisiones del desarrollador: «actualizá todo al estado verdadero del repo».
+- Pendientes: borrar a mano CG-6 a CG-9 (el conector no borra); US06 (edición), US16 y US17.
+
+## 2026-11-24 — Notificar al profesor un entrenamiento por debajo de lo prescripto [US21]
+- Desarrollador: Ulises
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 (orquestador) + Sonnet 5.5 medium (7 subagentes) + Haiku 5.5 low (2 subagentes).
+  - Back, en tres tandas: A (RN-ENT-21), B (publicador) y C (dominio, Haiku) en paralelo; después D (casos de uso); después E (infraestructura, API y e2e).
+  - Front: F (bandeja); después G (contador) y H (`?alumno=` de US18, Haiku) en paralelo; después I (e2e de Playwright).
+- Objetivo: que el profesor reciba, dentro de la app, una notificación cuando un alumno suyo finaliza un entrenamiento con resultados por debajo de lo prescripto. La tarea no tenía tarjeta en Jira.
+- Qué hizo la IA:
+  - **Jira:** creó CG-87 (US21, 11 pts, Sprint 4) con sus subtareas CG-88 (Modelar), CG-89 (Backend) y CG-90 (Frontend).
+  - **Modelado:** preguntó las zonas grises y escribió el modelo en los dos repos:
+    - módulo nuevo `notificaciones` con RN-NOT-01 a 05, RN-ENT-21 y la decisión 45;
+    - glosario (Serie por debajo de lo prescripto, Notificación, Gravedad), plan, trazabilidad y atlas.
+  - **Fichas:** propuso las fichas (25 del back, 8 del front) y las registró una vez confirmadas.
+  - **Back:**
+    - función pura `seriesPorDebajo`;
+    - `EntrenamientoFinalizado` con las series por debajo, publicado por la entidad (`eventoDeFin`);
+    - `PublicadorEventosEnProceso` con el puerto `SuscriptorEventos`, primer suscriptor real (Observador ✅ en `PATRONES.md`);
+    - agregado `Notificacion` y objeto de valor `Gravedad`;
+    - cuatro casos de uso, repositorio TypeORM, adaptador de la Fachada de identidad (`obtenerProfesorPorUsuarioId`), suscriptor, controlador y e2e con el publicador real.
+  - **Front:**
+    - bandeja `/profesor/notificaciones`;
+    - contador "Notificaciones (N)" en el menú, compuesto desde `Aplicacion.tsx` y solo para el Profesor;
+    - enlace a US18 con `?alumno=`;
+    - e2e de Playwright.
+  - **Revisión:** revisó cada reporte y el código de cada subagente, corrió la verificación completa y actualizó fichas, atlas, trazabilidad, `CHANGELOG` y reglas.
+- Decisiones del desarrollador:
+  - **Qué cuenta como por debajo:** una serie queda por debajo con menos repeticiones, segundos o peso (si había peso prescripto) que lo prescripto. Las no registradas cuentan como cero y, en un circuito, cuenta cada ejercicio de cada vuelta.
+  - **Gravedad:** Leve con menos del 40% de las series por debajo; Grave con el 40% o más. Manda el porcentaje: 1 de 2 es Grave.
+  - **Bandeja y módulo:** bandeja con contador de no leídas y "Marcar como leída", en un módulo nuevo que escucha el evento.
+  - **Preparado para US17:** RPE y sensación de fuerza van en la misma notificación. Por ahora es `percepcion: null` en la tabla y en el contrato, con RN-NOT-05 a confirmar.
+  - **Patrones:** énfasis en respetar las convenciones y los patrones de los `.md` antes de codear.
+  - **Confirmaciones:** confirmó las fichas, más 3 nuevas del dominio del front para recuperar el umbral de cobertura de ramas (78,84% → 80,46%); los repartos por tanda y los microcommits.
+- Ideas descartadas:
+  - `@nestjs/event-emitter`: se resolvió con un publicador propio, sin paquetes nuevos.
+  - Volumen total o un umbral de cumplimiento como criterio de "por debajo".
+  - Contar solo las series registradas.
+  - Notificación como agregado dentro de Entrenamiento.
+  - Marca en la página de US18 en lugar de una bandeja.
+  - Desactivar el contador en los tests o agregar una respuesta por defecto en la red falsa compartida. No hizo falta: el contador ignora los errores de red.
+  - Reunificar el recorrido de `registrarSerie` con `seriesPrescriptas`: queda como refactor aparte.
+- Reglas afectadas:
+  - Nuevas: RN-ENT-21, RN-NOT-01 a 04 (vigentes), RN-NOT-05 (a confirmar con US17), RN-UI-NOT-01 y 02.
+  - Ajuste el mismo día: RN-UI-NOT-01 también se actualiza al marcar, como pide la ficha e2e confirmada.
+- Verificación:
+  - Back: `yarn test:cov` 399/399, con cobertura y lint OK.
+  - Front: 188/188 en Vitest con cobertura y 13/13 e2e de navegador, con la base recién sembrada.
+  - En cada ficha el test detectó un cambio hecho a propósito en el código, que después se restauró.
+  - Lo que no detecta ningún test quedó anotado en las fichas: dos cambios en E7 y el `ON CONFLICT DO NOTHING`.
+  - El e2e de Playwright encontró que el contador tardaba 60 s en actualizarse; se corrigió con un aviso interno del módulo.
+- Pendientes:
+  - Ramas `feat/US21-notificar-entrenamiento-por-debajo` sin pushear ni PR.
+  - Cuando se trabaje US17: si cargar la percepción vuelve la notificación a no leída y si una percepción baja notifica aunque no haya series por debajo.
+  - Mover CG-87 a CG-90 en Jira.
+  - El back de test (`yarn start`) deja vivo el proceso `dist/main` al detener la tarea: se cerró a mano dos veces.
+
+## 2026-11-24 — Percepción del alumno y su notificación al profesor [US17]
+- Desarrollador: Ulises
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 (orquestador) + Sonnet 5.5 medium (5 subagentes) + Haiku 5.5 low (1 subagente).
+  - Back: A (entrenamiento) y B (notificaciones, dominio y aplicación) en paralelo; después C (suscriptor, repositorio y e2e).
+  - Front: D (resumen y US18) y E (notificación, Haiku) en paralelo; después F (e2e de Playwright).
+- Objetivo: que el alumno cargue su RPE y su sensación de fuerza (US17, CG-60) y que el profesor lo vea, integrado con la notificación de US21.
+- Qué hizo la IA:
+  - Preguntó las zonas grises y escribió el modelo en los dos repos: RN-ENT-16 cambia, RN-NOT-01 y 05 cambian, se suman RN-NOT-06 y 07, decisión 46, glosario, plan, trazabilidad y atlas.
+  - Propuso 20 fichas (13 del back y 7 del front) y las registró cuando las confirmó Ulises.
+  - **Back:**
+    - objetos de valor `Rpe` y `SensacionFuerza` y método `Entrenamiento.registrarPercepcion`, que emite `PercepcionRegistrada`;
+    - `POST /entrenamiento/entrenamientos/:id/percepcion` con escritura condicional (`fin IS NOT NULL AND percepcion IS NULL`) y la percepción en las dos lecturas;
+    - en notificaciones: `Percepcion.esMala`, `Gravedad.dePercepcion` y `Gravedad.mayor`, `crearPorPercepcion`, `sumarPercepcion` (vuelve a no leída), el caso de uso `SumarPercepcion` y su suscriptor.
+  - **Front:**
+    - formulario de percepción en el resumen, con validación antes de enviar;
+    - la percepción en US18 y en la notificación;
+    - "Percepción mala" sin lista de series.
+  - Revisó cada reporte y completó las mutaciones que faltaban (el rechazo de `crearPorPercepcion` y el camino sin profesor). Alineó el tipo `Percepcion` del front al contrato (siempre numérico), actualizó la documentación y cerró el back de test sin dejar procesos vivos.
+- Decisiones del desarrollador:
+  - **Cuándo y cómo se carga:** solo en un entrenamiento finalizado, una sola vez y los dos valores juntos.
+  - **Notificación existente:** si el entrenamiento ya tiene notificación, la percepción se suma y la notificación vuelve a no leída.
+  - **Percepción mala:** RPE ≥ 9 o sensación ≤ 2. Notifica aunque no haya series por debajo, Leve con una condición y Grave con las dos.
+  - **Gravedad combinada:** con series por debajo, queda la gravedad mayor.
+  - **Confirmaciones:** modelo, fichas, repartos y microcommits.
+- Ideas descartadas:
+  - cargar la percepción en curso;
+  - carga parcial o corregible;
+  - sumar la percepción sin cambiar la lectura;
+  - umbrales "RPE ≥ 9 y sensación ≤ 2" o solo los extremos;
+  - percepción siempre Leve o siempre Grave;
+  - que la percepción no cambie la gravedad;
+  - `PUT` para la carga (se usó `POST`, porque se carga una sola vez).
+- Reglas afectadas: RN-ENT-16 (cambia), RN-NOT-01 y 05 (cambian; la 05 pasa de "a confirmar" a vigente), RN-NOT-06 y 07 (nuevas). En el front: RN-ENT-16 (UI), RN-UI-ENT-04, RN-NOT-05 y 06 (UI).
+- Verificación:
+  - Back: `yarn test:cov` 422/422, con lint y build OK.
+  - Front: `yarn test:cov` 195/195 (ramas 81,28%) y 14/14 e2e de navegador con la base recién sembrada.
+  - En cada ficha se rompió a propósito una línea de producción, el test dio rojo y se restauró.
+  - Quedaron anotados en las fichas:
+    - el rojo previo de N1 a N5 fue un `TypeError`, no una aserción, y N6 no tuvo rojo previo;
+    - ningún test detecta quitar `AND percepcion IS NULL` del UPDATE condicional, porque no hay test de carga simultánea;
+    - no hay caso para la sensación de fuerza 6;
+    - la entrada de P6 se aclaró: en curso propio da 409 y ajeno da 404.
+- Pendientes:
+  - ramas `feat/US17-percepcion` sin pushear ni PR;
+  - mover CG-60 a CG-62 en Jira;
+  - decidir si `GET` de US18 incluye `percepcion` solo en finalizados, como `mi-entrenamiento-en-curso`;
+  - fichas para la carga simultánea y para la sensación de fuerza 6, si se quieren.

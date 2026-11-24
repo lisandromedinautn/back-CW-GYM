@@ -65,3 +65,47 @@ Comprobación por mutación US15: el cálculo de peso corporal con carga extra y
 | `detector-records.spec.ts` › empate | RN-ENT-13 | Unit | Récord 100, marca 100 | No guarda ni emite | ✅ | 22/11/2026 |
 | `detector-records.spec.ts` › marca mayor | RN-ENT-13 | Unit | Récord 100, marca 101 | Guarda 101 y emite `RecordBatido` 100 → 101 | ✅ | 22/11/2026 |
 | `detector-records.spec.ts` › varios tipos | RN-ENT-13 | Unit | Récords rep 5/vol 300/1RM 70; marcas rep 5/vol 360/1RM 84 | Guarda vol 360 y 1RM 84; 2 eventos | ✅ | 22/11/2026 |
+
+## US21 — Series por debajo de lo prescripto (confirmadas por Ulises el 24/11/2026)
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `dominio/entrenamiento/series-por-debajo.spec.ts` › ejemplo de la regla | RN-ENT-21 | Unitario | Bloque press, 5 series de 10 repeticiones con 30 kg. Registradas: 10 × 30, 10 × 30, 8 × 30 y 10 × 25; la 5 sin registrar | `totalSeries` 5; por debajo las series 3, 4 y 5, la 5 con `realizada: null` | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `series-por-debajo.spec.ts` › cumplir o superar no deja series por debajo | RN-ENT-21 | Unitario | Bloque de 2 series de 10 × 30. Registradas: 10 × 30 y 12 × 35 | `totalSeries` 2; ninguna por debajo | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `series-por-debajo.spec.ts` › sin peso prescripto no se compara el peso | RN-ENT-21 | Unitario | Dominada sin peso prescripto, 2 series de 8. Registradas: 8 sin peso y 8 con 5 kg | Ninguna por debajo | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `series-por-debajo.spec.ts` › peso prescripto no informado cuenta como 0 | RN-ENT-21 | Unitario | Bloque de 1 serie de 10 × 30. Registrada: 10 repeticiones sin peso | 1 de 1 por debajo | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `series-por-debajo.spec.ts` › por tiempo | RN-ENT-21 | Unitario | Plancha, 2 series de 60 s. Registradas: 60 s y 45 s | `totalSeries` 2; por debajo la serie 2 | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `series-por-debajo.spec.ts` › circuito cuenta cada ejercicio de cada vuelta | RN-ENT-21 | Unitario | Circuito de 2 vueltas con sentadilla (15) y flexiones (10). Registradas: vuelta 1 15 y 10, vuelta 2 15; falta vuelta 2 flexiones | `totalSeries` 4; por debajo `numero` 2, `posicion` 2, con `realizada: null` | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `aplicacion/finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.spec.ts` › (`describe` nuevo, sin tocar los casos existentes) publica las series por debajo | RN-ENT-21 | Unitario | Rutina "Fuerza", bloque press de 2 series de 10 × 30, sin series registradas; inicio 22/11 10:00, cierre 10:30 | Se publica `EntrenamientoFinalizado` con `inicio` `'2026-11-22T10:00:00.000Z'`, `rutina` `'Fuerza'`, `totalSeries` 2 y las dos series en `seriesPorDebajo`, con `realizada: null` | = esperado (verde el 24/11/2026) | 24/11/2026 |
+
+Comprobación por mutación US21 (24/11/2026). Se rompieron la comparación de peso, la de repeticiones (`<` → `<=`), la de segundos, el límite de vueltas del circuito, la condición "peso prescripto", el `?? 0` del peso no informado, y en el evento `rutina.nombre` y `seriesPorDebajo`. Cada cambio dio rojo y se restauró.
+
+E7 no detecta dos mutaciones:
+
+* que el evento ignore las series registradas;
+* que `totalSeries` se reemplace por la cantidad de series por debajo.
+
+Sin series registradas, los dos valores coinciden. Esos caminos los detectan E1 y E6 en la función de dominio.
+
+## US17 — Percepción del alumno (confirmadas por Ulises el 24/11/2026)
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `dominio/percepcion/rpe.valor.spec.ts` › rango del RPE | RN-ENT-14 | Unitario | 1 y 10; después 0, 11 y 7,5 | 1 y 10 son válidos; 0, 11 y 7,5 dan `ErrorDominio` con código `RN-ENT-14` | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `dominio/percepcion/sensacion-fuerza.valor.spec.ts` › rango de la sensación | RN-ENT-15 | Unitario | 1 y 5; después 0, 6 y 2,5 | 1 y 5 son válidos; 0, 6 y 2,5 dan `ErrorDominio` con código `RN-ENT-15` | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `dominio/entrenamiento/entrenamiento.entidad.spec.ts` › (`describe` nuevo) registra la percepción de un finalizado | RN-ENT-16 | Unitario | Entrenamiento "Fuerza" con 2 series prescriptas, finalizado a las 10:30. A las 11:00 se registra RPE 9 y sensación 2 | Queda guardada la percepción `{ rpe: 9, sensacionFuerza: 2 }`. Evento `PercepcionRegistrada` con `entrenamientoId`, `alumnoId`, `inicio`, `rutina: 'Fuerza'`, `totalSeries: 2` y `percepcion: { rpe: 9, sensacionFuerza: 2 }` | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `entrenamiento.entidad.spec.ts` › (mismo `describe`) solo una vez y solo finalizado | RN-ENT-16 | Unitario | Tres intentos: en curso; abandonado (al día siguiente); un segundo registro con RPE 5 y sensación 5 sobre el finalizado | Los tres dan `ErrorDominio` con código `RN-ENT-16`. Después del tercero sigue la primera percepción (9 y 2) | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `aplicacion/registrar-percepcion/registrar-percepcion.caso-uso.spec.ts` › propio y ajeno | RN-ENT-16, 19 | Unitario | Entrenamiento propio finalizado; después uno de otro alumno | Con el propio guarda la percepción y publica 1 evento; con el ajeno da no encontrado (404) y no publica nada | = esperado (verde el 24/11/2026) | 24/11/2026 |
+| `test/e2e/entrenamiento/registrar-percepcion.e2e-spec.ts` › carga, lectura y rechazos | RN-ENT-14, 15, 16, 19 · RN-IDE-03 | e2e | alumno01 finaliza y envía `{ rpe: 9, sensacionFuerza: 2 }`. Después: `GET mi-entrenamiento-en-curso`; `GET` del profesor (US18); segundo `POST`; RPE 11; sensación 0; `POST` de alumno02 sobre su propio entrenamiento en curso; `POST` de alumno02 sobre el entrenamiento de alumno01; `POST` de un profesor | `201 { rpe: 9, sensacionFuerza: 2 }`. Los dos `GET` traen `percepcion: { rpe: 9, sensacionFuerza: 2 }`. Segundo `POST`: 409 `RN-ENT-16`. RPE 11: 400 `RN-ENT-14`. Sensación 0: 400 `RN-ENT-15`. En curso propio: 409 `RN-ENT-16`. Ajeno: 404. Profesor: 403 | = esperado (verde el 24/11/2026) | 24/11/2026 |
+
+La entrada de esta última fila decía "`POST` sobre un entrenamiento en curso de otro alumno → 409", que era ambigua. Se separó en dos casos el 24/11/2026: en curso propio (409, RN-ENT-16) y ajeno (404, RN-ENT-19). No cambia ninguna regla.
+
+Comprobación por mutación US17 (24/11/2026). En cada caso se rompió la línea de producción, el test dio rojo y se restauró:
+
+* Límites del RPE y de la sensación.
+* Chequeo de estado finalizado y chequeo de percepción ya cargada.
+* `totalSeries` en 0.
+* Chequeo de dueño y `publicar` quitado.
+* El mapper sin leer `percepcion` (cae el e2e).
+
+El e2e se escribió después de implementar, así que no tuvo rojo previo. Ningún test detecta quitar `AND percepcion IS NULL` (ni `fin IS NOT NULL`) del UPDATE condicional: no hay test de carga simultánea y el dominio ya rechaza la segunda carga.

@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryColumn, Unique } from 'typeorm';
 import type { ResumenEntrenamiento } from '../../dominio/entrenamiento/resumen-entrenamiento.js';
 import type { CopiaRutina } from '../../dominio/entrenamiento/copia-rutina.valor.js';
+import type { DatosPercepcion } from '../../dominio/percepcion/percepcion.valor.js';
 
 export const INICIO_UNICO_POR_DIA = 'uq_entrenamientos_alumno_fecha';
 
@@ -30,4 +31,7 @@ export class EntrenamientoEsquema {
 
   @Column({ type: 'jsonb', nullable: true })
   resumen!: ResumenEntrenamiento | null;
+
+  @Column({ type: 'jsonb', nullable: true })
+  percepcion!: DatosPercepcion | null;
 }

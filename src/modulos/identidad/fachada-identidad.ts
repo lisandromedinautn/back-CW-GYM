@@ -45,6 +45,12 @@ export class FachadaIdentidad {
     return alumno ? { id: alumno.id, pesoKg: alumno.salud.pesoKg } : null;
   }
 
+  /** El profesor asociado al usuario del JWT, o null si el usuario no es profesor. */
+  async obtenerProfesorPorUsuarioId(usuarioId: string): Promise<{ id: string } | null> {
+    const profesor = await this.profesores.buscarPorUsuarioId(usuarioId);
+    return profesor ? { id: profesor.id } : null;
+  }
+
   /** RN-PLAN-13: el alumno está vinculado al profesor que recibe el usuario del JWT. */
   async alumnoVinculadoAProfesor(alumnoId: string, profesorUsuarioId: string): Promise<boolean> {
     const [alumno, profesor] = await Promise.all([

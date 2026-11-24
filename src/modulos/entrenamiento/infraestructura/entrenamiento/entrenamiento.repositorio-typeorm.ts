@@ -6,6 +6,7 @@ import { In, LessThanOrEqual, QueryFailedError, Repository } from 'typeorm';
 import { Entrenamiento } from '../../dominio/entrenamiento/entrenamiento.entidad.js';
 import type { RepositorioEntrenamientos } from '../../dominio/entrenamiento/repositorio-entrenamientos.puerto.js';
 import type { SerieRealizada } from '../../dominio/entrenamiento/serie-realizada.valor.js';
+import type { DatosPercepcion } from '../../dominio/percepcion/percepcion.valor.js';
 import { EntrenamientoEsquema, INICIO_UNICO_POR_DIA } from './entrenamiento.esquema.js';
 import { filaAEntrenamiento, serieAFila } from './entrenamiento.mapper.js';
 import { SerieRealizadaEsquema } from './serie-realizada.esquema.js';
@@ -94,6 +95,16 @@ export class RepositorioEntrenamientosTypeorm implements RepositorioEntrenamient
           'posicion',
         ]);
     });
+  }
+
+  async guardarPercepcion(entrenamientoId: string, percepcion: DatosPercepcion): Promise<boolean> {
+    const resultado = await this.filas
+      .createQueryBuilder()
+      .update()
+      .set({ percepcion })
+      .where('id = :id AND fin IS NOT NULL AND percepcion IS NULL', { id: entrenamientoId })
+      .execute();
+    return (resultado.affected ?? 0) === 1;
   }
 
   async finalizarAtomico(

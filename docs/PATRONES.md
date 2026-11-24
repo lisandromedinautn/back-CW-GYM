@@ -1,6 +1,6 @@
 # Patrones de diseño aplicados
 
-Relevamiento del 21/11/2026 sobre `develop` (back `9c23451`, front `82bb99a`), hasta US13. Existe igual en `back-CW-GYM` y `front-CW-GYM`. Los patrones previstos están en [`PLANIFICACION.md`](PLANIFICACION.md) y en la tabla "SOLID y patrones" del `CLAUDE.md` del back (Sommerville, cap. 6 y 7). Este documento registra cuáles están **aplicados en el código**, dónde, y cuáles siguen pendientes.
+Relevamiento del 21/11/2026 sobre `develop` (back `9c23451`, front `82bb99a`), hasta US13. Actualizado el 24/11/2026 con US21 (Observador, módulo `notificaciones`). Existe igual en `back-CW-GYM` y `front-CW-GYM`. Los patrones previstos están en [`PLANIFICACION.md`](PLANIFICACION.md) y en la tabla "SOLID y patrones" del `CLAUDE.md` del back (Sommerville, cap. 6 y 7). Este documento registra cuáles están **aplicados en el código**, dónde, y cuáles siguen pendientes.
 
 Estado: ✅ aplicado · 🔶 aplicado en parte · ⬜ previsto, todavía sin código.
 
@@ -10,8 +10,8 @@ Estado: ✅ aplicado · 🔶 aplicado en parte · ⬜ previsto, todavía sin có
 
 | Patrón | Estado | Dónde se aplica |
 | :-- | :-- | :-- |
-| Arquitectura en capas | ✅ | Los cuatro módulos (`identidad`, `catalogo`, `planificacion`, `entrenamiento`) tienen `dominio`, `aplicacion`, `infraestructura` y `presentacion` |
-| Puertos y adaptadores (hexagonal) | ✅ | 17 puertos `*.puerto.ts` en `dominio` (repositorios, `Reloj`, `PublicadorEventos`, `EmisorTokens`, `HasheadorContrasenias`, `GeneradorCodigos`, `FuenteDatasetEjercicios`, consultas a otros módulos); las implementaciones están en `infraestructura` |
+| Arquitectura en capas | ✅ | Los cinco módulos (`identidad`, `catalogo`, `planificacion`, `entrenamiento` y, desde US21, `notificaciones`) tienen `dominio`, `aplicacion`, `infraestructura` y `presentacion` |
+| Puertos y adaptadores (hexagonal) | ✅ | 22 puertos `*.puerto.ts` en `dominio` al 24/11/2026 (repositorios, `Reloj`, `PublicadorEventos`, `SuscriptorEventos`, `EmisorTokens`, `HasheadorContrasenias`, `GeneradorCodigos`, `FuenteDatasetEjercicios`, consultas a otros módulos); las implementaciones están en `infraestructura` |
 | Monolito modular | ✅ | Un módulo Nest por contexto acotado; un módulo no importa el interior de otro |
 | Kernel compartido | ✅ | `src/compartido/`: `ErrorDominio`, paginación, `Reloj`, `PublicadorEventos`, guard de roles y filtro de errores |
 
@@ -21,7 +21,7 @@ Estado: ✅ aplicado · 🔶 aplicado en parte · ⬜ previsto, todavía sin có
 | :-- | :-- | :-- |
 | Agregado / entidad rica | ✅ | `Rutina` (con `Bloque` y `Circuito`), `Plan` (con `DiaPlan`), `Entrenamiento`, `Alumno`, `Profesor`, `Usuario`, `Ejercicio`. Sin setters: métodos con nombre de dominio |
 | Objeto valor | ✅ | 12 `*.valor.ts`: `ValidezPlan`, `NombreRutina`, `Pausa`, `ObjetivoPrescripto`, `TipoRutina`, `Documento`, `Rol`, `TipoCarga`, `TipoEjercicio`, `Musculo`, `FactorPesoCorporal`, `CopiaRutina` |
-| Evento de dominio | ✅ | `AlumnoVinculado`, `PlanCreado`, `EntrenamientoIniciado` (`*.evento.ts`) |
+| Evento de dominio | ✅ | `AlumnoVinculado`, `PlanCreado`, `EntrenamientoIniciado`, `SerieRealizada` y `EntrenamientoFinalizado` (con las series por debajo de lo prescripto desde US21) (`*.evento.ts`) |
 | Caso de uso (application service) | ✅ | Un caso de uso por archivo en `aplicacion/<accion>/` (SRP) |
 | Data Mapper | ✅ | `*.mapper.ts` traduce entre la entidad de dominio y el esquema de TypeORM (`plan`, `rutina`, `alumno`, `profesor`, `usuario`, `ejercicio`) |
 
@@ -37,8 +37,8 @@ Estado: ✅ aplicado · 🔶 aplicado en parte · ⬜ previsto, todavía sin có
 | Decorador | ✅ | `@Roles(...)` (19 usos) y `@UsuarioActual()` (14 usos) en `compartido/presentacion/guard-roles/guard-roles.ts`; validación de DTO con `class-validator` |
 | Cadena de responsabilidad (pipeline de Nest) | ✅ | `GuardRoles` global (`APP_GUARD`) → `ValidationPipe` → controlador → `FiltroErrorDominio` global (`APP_FILTER`), que traduce `ErrorDominio` a `{ codigo: "RN-...", mensaje }` |
 | DTO | ✅ | 7 `*.dto.ts` en `presentacion` (entrada validada; la respuesta no expone entidades) |
-| Observador | 🔶 | Los casos de uso publican eventos por el puerto `PublicadorEventos`, pero la única implementación (`PublicadorEventosLog`) los registra en el log: **todavía no hay suscriptores**. Se completa cuando un evento dispare otra acción (p. ej. `EntrenamientoFinalizado` → récords, US15/US16) |
-| Estrategia | ✅ | `entrenamiento/dominio/carga-efectiva/estrategias/` (Sin Peso, Peso Extra, Peso Corporal, Peso Corporal + Peso Extra) y `marcas-por-tipo-ejercicio/` (por tiempo, por repeticiones sin peso, por repeticiones con carga). La selección vive en `seleccionar-estrategia-*.ts` (US16, modelado) |
+| Observador | ✅ | Desde US21 (24/11/2026). `PublicadorEventosEnProceso` (`compartido/infraestructura/publicador-eventos/`) implementa los puertos `PublicadorEventos` y `SuscriptorEventos`: registra cada evento en el log y ejecuta en orden sus manejadores. Un manejador que falla no corta la publicación. Primer suscriptor: Notificaciones escucha `EntrenamientoFinalizado` (`notificaciones/infraestructura/suscriptores/entrenamiento-finalizado.suscriptor.ts`) con su propio contrato del evento, sin importar la clase de Entrenamiento |
+| Estrategia | ✅ | `entrenamiento/dominio/carga-efectiva/estrategias/` (Sin Peso, Peso Extra, Peso Corporal, Peso Corporal + Peso Extra) y `marcas-por-tipo-ejercicio/` (por tiempo, por repeticiones sin peso, por repeticiones con carga). La selección vive en `seleccionar-estrategia-*.ts` (US16). Implementada para el cálculo de carga efectiva y la determinación de marcas según el tipo de ejercicio |
 | Doble de prueba por puerto (Reloj fijo) | ✅ | `RelojSistema` en producción y `RelojFijo` en los tests; dobles en `test/dobles/` |
 
 ### Principios SOLID
@@ -67,7 +67,7 @@ Estado: ✅ aplicado · 🔶 aplicado en parte · ⬜ previsto, todavía sin có
 
 ## Pendientes y observaciones
 
-1. **Estrategia** (✅): aplicada en US16 para carga efectiva (4 tipos) y marcas por tipo de ejercicio (3 estrategias). La detección al finalizar, la persistencia de récords y el endpoint siguen pendientes (US15/US16).
-2. **Observador** (🔶): los eventos se publican, pero nadie los escucha. Para que cuente como patrón aplicado hace falta un suscriptor real.
+1. **Estrategia** (✅): aplicada en US16 para calcular la carga efectiva mediante cuatro estrategias según el tipo de carga y determinar las marcas personales mediante tres estrategias según el tipo de ejercicio. La detección de récords al finalizar y su persistencia también están implementadas en US16; la integración de esta funcionalidad en `develop` queda pendiente.
+2. **Observador** (✅): aplicado desde US21 (24/11/2026), con `PublicadorEventosEnProceso` y Notificaciones como primer suscriptor real de `EntrenamientoFinalizado`. Los eventos se registran en el log y se ejecutan los manejadores en orden; un fallo en un manejador no interrumpe la publicación.
 3. **Puertos del front** (🔶): o se agrega la interfaz en `aplicacion`, o se ajusta el `CLAUDE.md` del front a lo que el código hace hoy. Es una decisión del equipo; no se cambió código.
 4. No se usan Singleton, Builder, Comando ni Plantilla, y el plan no los pide.

@@ -1,4 +1,5 @@
 import type { Entrenamiento } from './entrenamiento.entidad.js';
+import type { DatosPercepcion } from '../percepcion/percepcion.valor.js';
 import type { SerieRealizada } from './serie-realizada.valor.js';
 
 export abstract class RepositorioEntrenamientos {
@@ -18,4 +19,12 @@ export abstract class RepositorioEntrenamientos {
     tamanio: number,
   ): Promise<{ items: Entrenamiento[]; total: number }>;
   abstract guardarSerie(entrenamientoId: string, serie: SerieRealizada): Promise<void>;
+  /**
+   * Guarda la percepción solo si el entrenamiento todavía no tiene una (RN-ENT-16). Devuelve
+   * false si ya estaba cargada, para que dos cargas simultáneas no queden las dos.
+   */
+  abstract guardarPercepcion(
+    entrenamientoId: string,
+    percepcion: DatosPercepcion,
+  ): Promise<boolean>;
 }

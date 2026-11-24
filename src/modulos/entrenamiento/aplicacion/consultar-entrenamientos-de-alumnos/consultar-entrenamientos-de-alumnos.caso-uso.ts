@@ -3,9 +3,11 @@ import type { Pagina } from '../../../../compartido/dominio/paginacion/paginacio
 import type { Reloj } from '../../../../compartido/dominio/reloj/reloj.puerto.js';
 import type { ConsultaVinculos } from '../../dominio/entrenamiento/consultas-entrenamiento.puerto.js';
 import type { DatosEntrenamiento } from '../../dominio/entrenamiento/entrenamiento.entidad.js';
+import type { DatosPercepcion } from '../../dominio/percepcion/percepcion.valor.js';
 import type { RepositorioEntrenamientos } from '../../dominio/entrenamiento/repositorio-entrenamientos.puerto.js';
 
-export type EntrenamientoDeAlumno = DatosEntrenamiento & {
+export type EntrenamientoDeAlumno = Omit<DatosEntrenamiento, 'percepcion'> & {
+  percepcion: DatosPercepcion | null;
   estado: 'en-curso' | 'abandonado' | 'finalizado';
 };
 
@@ -38,6 +40,7 @@ export class ConsultarEntrenamientosDeAlumnos {
     return {
       items: items.map((entrenamiento) => ({
         ...entrenamiento.datos,
+        percepcion: entrenamiento.datos.percepcion ?? null,
         estado: entrenamiento.estadoEn(ahora),
       })),
       total,
