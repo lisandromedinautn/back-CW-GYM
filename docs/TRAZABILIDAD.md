@@ -39,6 +39,7 @@ Estados: ⬜ sin empezar · 🟥 test en rojo (TDD; solo en el working tree, nun
 | US17 | RN-ENT-14, 15, 16 | registrar-percepcion | PaginaResumenEntrenamiento | — | — | — | — | ⬜ |
 | US12 | RN-PLAN-12, 13, 14, 16 | alumnos-del-plan | PaginaAlumnosDelPlan | 8 unitarios | 4 API | 3 interfaz | builds aprobados | back 🟩, front 🟩 (integrado el 22/11) |
 | US18 | RN-ENT-18 · RN-UI-ENT-04 · RN-UI-LIS-03 | consultar-entrenamientos-de-alumnos | PaginaEntrenamientosDeAlumnos | `src/modulos/entrenamiento/aplicacion/consultar-entrenamientos-de-alumnos/consultar-entrenamientos-de-alumnos.caso-uso.spec.ts` | — | `test/e2e/entrenamiento/consultar-entrenamientos-de-alumnos.e2e-spec.ts` | `src/modulos/entrenamiento/dominio/entrenamientos-de-alumnos/entrenamientosDeAlumnos.test.ts` (1 caso) · `src/modulos/entrenamiento/presentacion/entrenamientos-de-alumnos/PaginaEntrenamientosDeAlumnos.int.test.tsx` (8 casos) · `e2e/entrenamiento/seguimiento.e2e.ts` (T15) | back 🟩, front 🟩 |
+| US21 | RN-ENT-21 · RN-NOT-01, 02, 03, 04 (05 a confirmar, US17) | cerrar-entrenamiento (evento) · notificar-entrenamiento-por-debajo · consultar-notificaciones · contar-no-leidas · marcar-notificacion-leida | PaginaNotificaciones | — | — | — | — | Modelado el 24/11 (CG-88); sin fichas ni código |
 
 En las columnas Unit, Int, e2e y Front va la ruta del archivo de test (o `archivo › caso`) cuando exista.
 
@@ -106,5 +107,8 @@ Toda RN vigente tiene que tener al menos un test. Una RN sin test es una brecha 
 | RN-UI-ENT-04 | US18: elegir alumno, listado del más nuevo al más viejo con fecha (hora de Argentina), rutina, estado, peso y series junto a lo prescripto (`entrenamientosDeAlumnos.test.ts`, `PaginaEntrenamientosDeAlumnos.int.test.tsx`, 6 casos) | 🟩 front |
 | RN-ENT-05, 06, 07, 08, 09, 17 | US15: cálculo, cierre y resumen; récords de RN-ENT-17 pendientes en US16 | 🟩 parcial |
 | RN-ENT-10 … RN-ENT-16 | Récords y percepción (US16, US17) | ⬜ |
+| RN-ENT-21 | US21: series por debajo de lo prescripto en `EntrenamientoFinalizado` (modelado el 24/11, sin fichas todavía) | ⬜ |
+| RN-NOT-01 … RN-NOT-04 | US21: notificación al profesor, gravedad Leve o Grave, bandeja con no leídas y lectura (modelado el 24/11, sin fichas todavía) | ⬜ |
+| RN-NOT-05 | Percepción en la notificación (US17): **a confirmar**, no se testea | — |
 
 Cuando se escriba el primer test de una RN, se separa en su propia fila.

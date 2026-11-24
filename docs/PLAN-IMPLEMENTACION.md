@@ -290,6 +290,9 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 | 2 | US18 | Frontend: página de entrenamientos de alumnos | front | RN-ENT-18 | 3 | ✅ 23/11 (rama `feat/US18-entrenamientos-de-alumnos`) |
 | 2 | — | e2e de API de los flujos completos (back) | back | todas | 3 (V2) | ⬜ |
 | 2 | T15 | e2e de navegador con Playwright de los flujos principales (front) | front | todas | 5 (V2) | ✅ CG-86: los cuatro flujos en verde el 23/11 (12 e2e de navegador); `importar-rutina.e2e.ts` adaptado al listado de planes de T13 |
+| 2 | US21 | Modelar: Notificación, Gravedad y series por debajo de lo prescripto (decisión 45) | back | RN-ENT-21 · RN-NOT-01…05 | 3 | 🔄 CG-88: modelo escrito el 24/11 (rama `feat/US21-notificar-entrenamiento-por-debajo`); faltan las fichas |
+| 3 | US21 | Backend: series por debajo en `EntrenamientoFinalizado`, publicador con suscriptores y módulo `notificaciones` | back | RN-ENT-21 · RN-NOT-01…04 | 5 | ⬜ CG-89 |
+| 4 | US21 | Frontend: bandeja de notificaciones del profesor con no leídas | front | RN-NOT-01…04 | 3 | ⬜ CG-90 |
 | 3 | — | Patches pendientes y revisión final de calidad | ambos | — | 3 (V2; reserva) | ⬜ |
 | 4 | — | Informe, matriz, métricas y cierres de versión futuros | ambos | — | 3 (V2) | ⬜ |
 
