@@ -82,12 +82,13 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | entrenamiento | `consultar-entrenamiento-en-curso.caso-uso.ts` | `GET /entrenamiento/mi-entrenamiento-en-curso` | US13 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` |
 | entrenamiento | `registrar-serie-realizada.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/series` | US14 | ✅ |
 | entrenamiento | `cerrar-entrenamiento.caso-uso.ts`, `calcular-resumen.ts` | `POST /entrenamiento/entrenamientos/:id/finalizacion` | US15, US21 | ✅ `test/e2e/entrenamiento/finalizar-entrenamiento.e2e-spec.ts`; desde US21 publica el evento de la entidad (`eventoDeFin()`) con las series por debajo (`dominio/entrenamiento/series-por-debajo.ts`, `series-por-debajo.spec.ts`) |
-| entrenamiento | `registrar-percepcion.caso-uso.ts` | `PUT /entrenamiento/entrenamientos/:id/percepcion` | US17 | 📄 |
+| entrenamiento | `registrar-percepcion/registrar-percepcion.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/percepcion` (solo Alumno) | US17 | 📄 |
 | entrenamiento | `consultar-entrenamientos-de-alumnos.caso-uso.ts` | `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` | US18 | ✅ |
 | notificaciones | `notificar-entrenamiento-por-debajo/notificar-entrenamiento-por-debajo.caso-uso.ts` | Suscriptor de `EntrenamientoFinalizado` (sin endpoint) | US21 | ✅ `notificar-entrenamiento-por-debajo.caso-uso.spec.ts` · `test/e2e/notificaciones/notificaciones.e2e-spec.ts` |
 | notificaciones | `consultar-notificaciones/consultar-notificaciones.caso-uso.ts` | `GET /notificaciones/mis-notificaciones` (solo Profesor) | US21 | ✅ `consultar-notificaciones.caso-uso.spec.ts` · e2e |
 | notificaciones | `contar-no-leidas/contar-no-leidas.caso-uso.ts` | `GET /notificaciones/mis-notificaciones/no-leidas` (solo Profesor) | US21 | ✅ `contar-no-leidas.caso-uso.spec.ts` · e2e |
 | notificaciones | `marcar-notificacion-leida/marcar-notificacion-leida.caso-uso.ts` | `PUT /notificaciones/mis-notificaciones/:id/lectura` (solo Profesor) | US21 | ✅ `marcar-notificacion-leida.caso-uso.spec.ts` · e2e |
+| notificaciones | `sumar-percepcion/sumar-percepcion.caso-uso.ts` | Suscriptor de `PercepcionRegistrada` (sin endpoint) | US17 | 📄 |
 
 ## Dependencias entre módulos (solo por Fachada o eventos)
 

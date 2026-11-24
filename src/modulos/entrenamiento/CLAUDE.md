@@ -27,7 +27,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | RN-ENT-13 | Los récords se calculan al finalizar el entrenamiento. Se bate un récord solo si la marca es estrictamente mayor que la anterior: el empate no cuenta. La primera marca de un ejercicio se guarda como récord pero no se anuncia como batido. Cada récord batido emite RécordBatido y se muestra en el resumen | Decisión 12, US16, ZG-10 | Vigente |
 | RN-ENT-14 | El RPE es un entero de 1 a 10 | Glosario, US17 | Vigente |
 | RN-ENT-15 | La sensación de fuerza es un entero de 1 a 5 | Decisión 15, US17 | Vigente |
-| RN-ENT-16 | El RPE y la sensación de fuerza son opcionales: no se piden para finalizar, y el alumno puede cargarlos en un entrenamiento ya finalizado | US17, ZG-11 | Vigente |
+| RN-ENT-16 | El RPE y la sensación de fuerza (la **percepción** del alumno) son opcionales: no se piden para finalizar. El alumno los carga **una sola vez y los dos juntos**, solo en un entrenamiento **finalizado**: en curso o abandonado se rechaza, y una vez cargados no se modifican. Al cargarlos se emite PercepcionRegistrada | US17, ZG-11 | Vigente |
 | RN-ENT-17 | El resumen muestra el peso total levantado (volumen), los grupos musculares trabajados, la duración y los récords batidos | US15, US16 | Vigente |
 | RN-ENT-18 | El profesor consulta solo los entrenamientos de sus alumnos | US18, invariante 2 | Vigente |
 | RN-ENT-19 | Un alumno solo registra series y finaliza sus propios entrenamientos | US14, US15 | Vigente |
@@ -43,7 +43,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | `registrar-serie-realizada.caso-uso.ts` ✅ | US14 | 03, 04, 19, 20 |
 | `finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.ts` ✅, `dominio/entrenamiento/calcular-resumen.ts` ✅ | US15 | 05–09, 17, 19, 20 |
 | `finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.ts` (evento con las series por debajo) ✅, `dominio/entrenamiento/series-por-debajo.ts` ✅ | US21 | 21 |
-| `registrar-percepcion.caso-uso.ts` | US17 | 14, 15, 16 |
+| `registrar-percepcion/registrar-percepcion.caso-uso.ts` | US17 | 14, 15, 16, 19 |
 | `consultar-entrenamientos-de-alumnos.caso-uso.ts` ✅ | US18 | 18 |
 
 ## Endpoints tentativos
@@ -54,7 +54,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | `GET /entrenamiento/mi-entrenamiento-en-curso` ✅ | Alumno | consultar-entrenamiento-en-curso |
 | `POST /entrenamiento/entrenamientos/:id/series` ✅ | Alumno | registrar-serie-realizada |
 | `POST /entrenamiento/entrenamientos/:id/finalizacion` ✅ | Alumno | cerrar-entrenamiento |
-| `PUT /entrenamiento/entrenamientos/:id/percepcion` | Alumno | registrar-percepcion |
+| `POST /entrenamiento/entrenamientos/:id/percepcion` | Alumno | registrar-percepcion |
 | `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` ✅ | Profesor | consultar-entrenamientos-de-alumnos |
 
 ## Historial de cambios de reglas
@@ -65,6 +65,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | 01/11/2026 | RN-ENT-15 | Escala de sensación de fuerza fijada de 1 a 5 | Lisandro |
 | 01/11/2026 | RN-ENT-01, 09, 13, 16; nueva RN-ENT-20 | Se cierran ZG-08 a ZG-12: solo la rutina de hoy y una vez por día, los grupos incluyen el secundario, récord estrictamente mayor sin anunciar la primera marca, RPE y sensación opcionales y cargables después, entrenamiento abandonado a la medianoche | Lisandro |
 | 22/11/2026 | RN-ENT-02 | La copia guarda también el GIF de cada ejercicio, para mostrarlo durante el entrenamiento (T14) | Ulises |
+| 24/11/2026 | RN-ENT-16 | La percepción se carga una sola vez, con RPE y sensación juntos, y solo en un entrenamiento finalizado; emite PercepcionRegistrada (US17) | Ulises |
 | 24/11/2026 | Nueva RN-ENT-21 | Series por debajo de lo prescripto al finalizar, para notificar al profesor (US21): las no registradas cuentan como no hechas y el peso se compara solo si estaba prescripto | Ulises |
 
 ## Decisiones de implementación (CG-46, US13)
@@ -118,3 +119,28 @@ Decidido por Ulises el 24/11/2026. El que notifica es el módulo `notificaciones
   * Cambiar el evento toca los tests existentes que lo comparan (`cerrar-entrenamiento.caso-uso.spec.ts`). **Se pregunta antes de modificarlos.**
 * No hay endpoint nuevo en este módulo. La respuesta de la finalización (el resumen) no cambia.
 * US17 emitirá `PercepcionRegistrada` (`entrenamientoId`, `rpe`, `sensacionFuerza`) para que la notificación la sume (RN-NOT-05, a confirmar).
+
+## Modelo de US17 (CG-60)
+
+Decidido por Ulises el 24/11/2026.
+
+* **Dominio:**
+  * Objetos de valor `dominio/percepcion/rpe.valor.ts` y `dominio/percepcion/sensacion-fuerza.valor.ts`. `crear(valor)` exige un entero en rango: si no, `ErrorDominio` con `RN-ENT-14` o `RN-ENT-15` (400).
+  * `dominio/percepcion/percepcion.valor.ts`: `Percepcion = { rpe, sensacionFuerza }`, siempre los dos.
+* **Entidad:** `Entrenamiento.registrarPercepcion(percepcion, instante)` devuelve el evento `PercepcionRegistrada`. Rechaza con `RN-ENT-16` (409) en estos casos:
+  * entrenamiento en curso o abandonado (`estadoEn(instante) !== 'finalizado'`);
+  * la percepción ya estaba cargada.
+
+  No hay setter: el único camino es este método.
+* **Evento:** `PercepcionRegistrada` lleva primitivos, para que Notificaciones pueda crear una notificación aunque no exista: `entrenamientoId`, `alumnoId`, `inicio`, `rutina` (nombre), `totalSeries` y `percepcion: { rpe, sensacionFuerza }`.
+* **Caso de uso:** `aplicacion/registrar-percepcion/registrar-percepcion.caso-uso.ts`, con el alumno del JWT. Un entrenamiento ajeno o inexistente responde 404, como en RN-ENT-19.
+  * Hace cargar, invocar al dominio, guardar y publicar después de guardar.
+  * Dos cargas simultáneas no pueden quedar las dos: se reutiliza el bloqueo del repositorio de cierre o se usa una escritura condicional (`percepcion IS NULL`).
+* **Endpoint:** `POST /entrenamiento/entrenamientos/:id/percepcion` (Alumno).
+  * Cuerpo `{ rpe, sensacionFuerza }`, los dos obligatorios.
+  * Responde `201` con `{ rpe, sensacionFuerza }`.
+  * Es `POST` y no `PUT`, porque se carga una sola vez y no es idempotente.
+* **Persistencia:** columna `percepcion jsonb null` en `entrenamientos` (el mapper la traduce).
+* **Lecturas:** devuelven `percepcion` (`null` si no se cargó) en el entrenamiento finalizado:
+  * `GET /entrenamiento/mi-entrenamiento-en-curso`;
+  * `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` (US18), para que el profesor la vea, que es el objetivo de la historia.
