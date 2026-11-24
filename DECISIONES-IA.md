@@ -499,3 +499,26 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Observación del review (sin cambio): `CerrarEntrenamientoConRecords` calcula los récords después de cerrar, fuera de la misma transacción; si falla, el entrenamiento queda cerrado y el usuario ve un error.
 - Verificación: back `yarn test:cov` 463/463, `yarn test:int` 12/12 y lint OK; front `yarn test:cov` 203/203 y lint OK.
 - Pendientes: mover US16 en Jira (ya figuraba en Listo antes de integrarse); e2e de Playwright no corridos.
+
+## 2026-11-24 — Editar días del plan, alerta de incumplimiento y volver al inicio [US22, US23, T16]
+
+- Desarrollador: Lisandro
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 orquesta; Haiku 5.5 low (tests en rojo del back de US22 y T16 completa) y Sonnet 5.5 (back y front de US22, US23 completa). US23 y T16 en worktrees aparte (`IyCS-wt/`) para trabajar en paralelo con US22.
+- Objetivo: tres pedidos del desarrollador al probar el sistema: editar los días de un plan vigente (US22, CG-91, 8 pts), alertar al profesor cuando un alumno junta 3 entrenamientos seguidos por debajo de lo prescripto (US23, CG-92, 5 pts) y un enlace para salir del resumen del entrenamiento (T16, CG-93, 1 pt). Las tres quedan fuera de la base V1 de 129 pts.
+- Qué hizo la IA:
+  - Propuso RN-PLAN-23, RN-NOT-08 y RN-UI-ENT-05 con sus fichas; el desarrollador las confirmó antes de escribir tests. Creó las tarjetas en Jira (Sprint 4).
+  - **US22:** `Plan.editarDia`, caso de uso `EditarDiaPlan`, `ConsultarPlanes.porId`, `GET /planificacion/planes/:id` y `PUT /planificacion/planes/:id/dias/:numero`. El chequeo de "entrenamiento iniciado hoy" usa un puerto propio con SQL sobre `entrenamientos`, para no crear un ciclo Planificación → Entrenamiento. Front: "Editar días" en la tarjeta del plan y grilla de 28 días con los pasados bloqueados.
+  - **US23:** función de dominio `detectarRachasDeIncumplimiento`, tabla propia `finalizaciones_alumno` (Notificaciones no lee Entrenamiento), tipo de notificación (`entrenamiento` | `alerta-incumplimiento`) con índice único (`entrenamiento_id`, `tipo`). Front: tarjeta de alerta en la bandeja.
+  - **T16:** enlace "Volver al inicio" debajo del resumen.
+- Decisiones del desarrollador:
+  - La alerta de US23 se suma a la notificación por entrenamiento; cuenta cualquier gravedad; abandonado no cuenta ni corta; la percepción mala sola no cuenta; la racha vuelve a cero al alertar.
+  - Casos extra confirmados: el mismo evento dos veces no duplica la alerta; no hay alertas retroactivas.
+  - Durante el desarrollo se corren solo los tests relacionados con lo trabajado y sin mutaciones; la suite completa, cuando él la pida.
+  - develop se integra en main (decisión 39, con su permiso).
+- Ideas descartadas: que Planificación importe el módulo de Entrenamiento (ciclo); reemplazar la notificación por entrenamiento por la alerta.
+- Reglas afectadas: nuevas RN-PLAN-23, RN-NOT-08 y RN-UI-ENT-05.
+- Verificación (tests relacionados, después de integrar): back planificación, entrenamiento y notificaciones 253/253 unitarios y 12/12 e2e (notificaciones y editar-dia-plan); front planificación, entrenamiento y notificaciones 165/165, tsc y lint OK. Mutaciones hechas antes del cambio de criterio: US22 front (bloqueo de días pasados) y US23 (corte de racha y reinicio), todas detectadas.
+- Pendientes:
+  - `finalizaciones_alumno` arranca vacía: los entrenamientos previos a US23 no cuentan para la racha.
+  - Mutaciones del back de US22 no hechas (fecha pasada, entrenamiento iniciado, propietario).
+  - Suite completa sin correr después de integrar; un e2e de ingreso falló una vez en corrida completa por la base de test compartida entre agentes y pasa solo.
