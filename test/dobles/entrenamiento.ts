@@ -3,6 +3,7 @@
 import type { ConsultaVinculos } from '../../src/modulos/entrenamiento/dominio/entrenamiento/consultas-entrenamiento.puerto.js';
 import { Entrenamiento } from '../../src/modulos/entrenamiento/dominio/entrenamiento/entrenamiento.entidad.js';
 import { RepositorioEntrenamientos } from '../../src/modulos/entrenamiento/dominio/entrenamiento/repositorio-entrenamientos.puerto.js';
+import type { DatosPercepcion } from '../../src/modulos/entrenamiento/dominio/percepcion/percepcion.valor.js';
 import type { SerieRealizada } from '../../src/modulos/entrenamiento/dominio/entrenamiento/serie-realizada.valor.js';
 
 export class RepositorioEntrenamientosEnMemoria extends RepositorioEntrenamientos {
@@ -38,6 +39,16 @@ export class RepositorioEntrenamientosEnMemoria extends RepositorioEntrenamiento
       );
       return Entrenamiento.reconstruir({ ...datos, series: [...otras, serie] });
     });
+  }
+
+  async guardarPercepcion(entrenamientoId: string, percepcion: DatosPercepcion): Promise<boolean> {
+    const indice = this.entrenamientos.findIndex((e) => e.datos.id === entrenamientoId);
+    if (indice === -1) return false;
+    this.entrenamientos[indice] = Entrenamiento.reconstruir({
+      ...this.entrenamientos[indice].datos,
+      percepcion,
+    });
+    return true;
   }
 
   /** Más nuevos primero, por fecha. */

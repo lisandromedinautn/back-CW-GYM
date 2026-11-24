@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
+import { Percepcion } from '../percepcion/percepcion.valor.js';
 import { Entrenamiento } from './entrenamiento.entidad.js';
 
 describe('RN-ENT-02 · el inicio conserva una copia independiente', () => {
@@ -227,5 +228,92 @@ describe('RN-ENT-20 y RN-ENT-04 · un entrenamiento abandonado no admite series'
         ),
       ),
     ).toBe('RN-ENT-20');
+  });
+});
+
+describe('RN-ENT-16 · la percepción se carga una sola vez y solo en un entrenamiento finalizado', () => {
+  const resumen = { volumenKg: 0, duracionSegundos: 1800, gruposMusculares: [] };
+
+  const entrenamientoDeFuerza = () =>
+    Entrenamiento.crear({
+      id: 'entrenamiento',
+      alumnoId: 'alumno',
+      inicio: '2026-11-20T10:00:00.000Z',
+      pesoCorporalKg: 80,
+      rutina: {
+        id: 'rutina',
+        nombre: 'Fuerza',
+        tipo: 'Bloques',
+        bloques: [
+          {
+            orden: 1,
+            ejercicioId: 'press',
+            nombre: 'Press',
+            series: 2,
+            micropausaSegundos: 20,
+            macropausaSegundos: 60,
+            repeticiones: 10,
+            segundos: null,
+            pesoKg: 30,
+          },
+        ],
+        circuitos: [],
+      },
+    });
+
+  it('finalizado a las 10:30, a las 11:00 registra RPE 9 y sensación 2 y emite PercepcionRegistrada', () => {
+    const entrenamiento = entrenamientoDeFuerza();
+    entrenamiento.finalizar(new Date('2026-11-20T10:30:00.000Z'), resumen);
+
+    const evento = entrenamiento.registrarPercepcion(
+      Percepcion.crear(9, 2),
+      new Date('2026-11-20T11:00:00.000Z'),
+    );
+
+    expect(entrenamiento.datos.percepcion).toEqual({ rpe: 9, sensacionFuerza: 2 });
+    expect(evento).toMatchObject({
+      nombre: 'PercepcionRegistrada',
+      entrenamientoId: 'entrenamiento',
+      alumnoId: 'alumno',
+      inicio: '2026-11-20T10:00:00.000Z',
+      rutina: 'Fuerza',
+      totalSeries: 2,
+      percepcion: { rpe: 9, sensacionFuerza: 2 },
+    });
+  });
+
+  it('rechaza con RN-ENT-16 en curso, abandonado y un segundo registro; conserva la primera percepción', () => {
+    const enCursoSinFin = entrenamientoDeFuerza();
+    expect(
+      codigoDelError(() =>
+        enCursoSinFin.registrarPercepcion(
+          Percepcion.crear(9, 2),
+          new Date('2026-11-20T11:00:00.000Z'),
+        ),
+      ),
+    ).toBe('RN-ENT-16');
+
+    const abandonado = entrenamientoDeFuerza();
+    expect(
+      codigoDelError(() =>
+        abandonado.registrarPercepcion(
+          Percepcion.crear(9, 2),
+          new Date('2026-11-21T10:00:00.000Z'),
+        ),
+      ),
+    ).toBe('RN-ENT-16');
+
+    const finalizado = entrenamientoDeFuerza();
+    finalizado.finalizar(new Date('2026-11-20T10:30:00.000Z'), resumen);
+    finalizado.registrarPercepcion(Percepcion.crear(9, 2), new Date('2026-11-20T11:00:00.000Z'));
+    expect(
+      codigoDelError(() =>
+        finalizado.registrarPercepcion(
+          Percepcion.crear(5, 5),
+          new Date('2026-11-20T11:05:00.000Z'),
+        ),
+      ),
+    ).toBe('RN-ENT-16');
+    expect(finalizado.datos.percepcion).toEqual({ rpe: 9, sensacionFuerza: 2 });
   });
 });

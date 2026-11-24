@@ -43,7 +43,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | `registrar-serie-realizada.caso-uso.ts` ✅ | US14 | 03, 04, 19, 20 |
 | `finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.ts` ✅, `dominio/entrenamiento/calcular-resumen.ts` ✅ | US15 | 05–09, 17, 19, 20 |
 | `finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.ts` (evento con las series por debajo) ✅, `dominio/entrenamiento/series-por-debajo.ts` ✅ | US21 | 21 |
-| `registrar-percepcion/registrar-percepcion.caso-uso.ts` | US17 | 14, 15, 16, 19 |
+| `registrar-percepcion/registrar-percepcion.caso-uso.ts` ✅ | US17 | 14, 15, 16, 19 |
 | `consultar-entrenamientos-de-alumnos.caso-uso.ts` ✅ | US18 | 18 |
 
 ## Endpoints tentativos
@@ -54,7 +54,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | `GET /entrenamiento/mi-entrenamiento-en-curso` ✅ | Alumno | consultar-entrenamiento-en-curso |
 | `POST /entrenamiento/entrenamientos/:id/series` ✅ | Alumno | registrar-serie-realizada |
 | `POST /entrenamiento/entrenamientos/:id/finalizacion` ✅ | Alumno | cerrar-entrenamiento |
-| `POST /entrenamiento/entrenamientos/:id/percepcion` | Alumno | registrar-percepcion |
+| `POST /entrenamiento/entrenamientos/:id/percepcion` ✅ | Alumno | registrar-percepcion |
 | `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` ✅ | Profesor | consultar-entrenamientos-de-alumnos |
 
 ## Historial de cambios de reglas
@@ -144,3 +144,13 @@ Decidido por Ulises el 24/11/2026.
 * **Lecturas:** devuelven `percepcion` (`null` si no se cargó) en el entrenamiento finalizado:
   * `GET /entrenamiento/mi-entrenamiento-en-curso`;
   * `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` (US18), para que el profesor la vea, que es el objetivo de la historia.
+
+## Decisiones de implementación (CG-61, US17)
+
+Implementado el 24/11/2026.
+
+* **Validación del cuerpo:** el DTO solo exige que `rpe` y `sensacionFuerza` sean números. El rango lo valida el dominio (`Rpe`, `SensacionFuerza`), así el error trae `RN-ENT-14` o `RN-ENT-15`.
+* **Escritura condicional:** el caso de uso registra la percepción en la entidad y la guarda con `RepositorioEntrenamientos.guardarPercepcion`, un `UPDATE ... WHERE id AND fin IS NOT NULL AND percepcion IS NULL`. Si no actualiza ninguna fila, responde 409 `RN-ENT-16`. Publica después de guardar.
+* **Lecturas:**
+  * `GET mi-entrenamiento-en-curso` incluye `percepcion` (`null` si no se cargó) solo en estado `finalizado`. Así no cambia el contrato del entrenamiento en curso, que un e2e existente compara completo.
+  * `GET .../alumnos/:alumnoId/entrenamientos` la incluye en todos los ítems (`null` si no hay).

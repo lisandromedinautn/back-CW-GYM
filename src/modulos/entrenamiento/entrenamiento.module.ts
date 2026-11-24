@@ -19,6 +19,7 @@ import { PlanificacionModule } from '../planificacion/planificacion.module.js';
 import { ConsultarEntrenamientosDeAlumnos } from './aplicacion/consultar-entrenamientos-de-alumnos/consultar-entrenamientos-de-alumnos.caso-uso.js';
 import { ConsultarEntrenamientoEnCurso } from './aplicacion/consultar-entrenamiento-en-curso/consultar-entrenamiento-en-curso.caso-uso.js';
 import { IniciarEntrenamiento } from './aplicacion/iniciar-entrenamiento/iniciar-entrenamiento.caso-uso.js';
+import { RegistrarPercepcion } from './aplicacion/registrar-percepcion/registrar-percepcion.caso-uso.js';
 import { RegistrarSerieRealizada } from './aplicacion/registrar-serie-realizada/registrar-serie-realizada.caso-uso.js';
 import { RepositorioEntrenamientos } from './dominio/entrenamiento/repositorio-entrenamientos.puerto.js';
 import { EntrenamientoEsquema } from './infraestructura/entrenamiento/entrenamiento.esquema.js';
@@ -109,6 +110,16 @@ import { EntrenamientoControlador } from './presentacion/controlador/entrenamien
         reloj: Reloj,
         publicador: PublicadorEventos,
       ) => new RegistrarSerieRealizada(repositorio, identidad, reloj, publicador),
+    },
+    {
+      provide: RegistrarPercepcion,
+      inject: [RepositorioEntrenamientos, FachadaIdentidad, Reloj, PUBLICADOR_EVENTOS],
+      useFactory: (
+        repositorio: RepositorioEntrenamientos,
+        identidad: FachadaIdentidad,
+        reloj: Reloj,
+        publicador: PublicadorEventos,
+      ) => new RegistrarPercepcion(repositorio, identidad, reloj, publicador),
     },
     {
       provide: ConsultarEntrenamientoEnCurso,
