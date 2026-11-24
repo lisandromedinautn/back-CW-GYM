@@ -7,6 +7,8 @@ export abstract class RepositorioNotificaciones {
   abstract buscarPorId(id: string): Promise<Notificacion | null>;
   /** RN-NOT-01: ya hay una notificación para ese Entrenamiento. */
   abstract existeParaEntrenamiento(entrenamientoId: string): Promise<boolean>;
+  /** RN-NOT-08: ya hay una alerta de incumplimiento anclada a ese Entrenamiento. */
+  abstract existeAlertaParaEntrenamiento(entrenamientoId: string): Promise<boolean>;
   /** RN-NOT-05: la notificación del Entrenamiento, o null si no tiene. */
   abstract buscarPorEntrenamiento(entrenamientoId: string): Promise<Notificacion | null>;
   /** RN-NOT-03: del más nuevo al más viejo por fecha de creación. */
