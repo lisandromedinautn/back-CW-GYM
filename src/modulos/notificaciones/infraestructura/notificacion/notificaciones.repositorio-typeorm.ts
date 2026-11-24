@@ -33,11 +33,15 @@ export class RepositorioNotificacionesTypeorm implements RepositorioNotificacion
   }
 
   existeParaEntrenamiento(entrenamientoId: string): Promise<boolean> {
-    return this.filas.existsBy({ entrenamientoId });
+    return this.filas.existsBy({ entrenamientoId, tipo: 'entrenamiento' });
+  }
+
+  existeAlertaParaEntrenamiento(entrenamientoId: string): Promise<boolean> {
+    return this.filas.existsBy({ entrenamientoId, tipo: 'alerta-incumplimiento' });
   }
 
   async buscarPorEntrenamiento(entrenamientoId: string): Promise<Notificacion | null> {
-    const fila = await this.filas.findOneBy({ entrenamientoId });
+    const fila = await this.filas.findOneBy({ entrenamientoId, tipo: 'entrenamiento' });
     return fila ? filaANotificacion(fila) : null;
   }
 

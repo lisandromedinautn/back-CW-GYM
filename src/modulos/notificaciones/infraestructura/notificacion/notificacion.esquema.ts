@@ -1,4 +1,5 @@
 import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
+import type { EntrenamientoDeAlerta } from '../../dominio/notificacion/notificacion.entidad.js';
 import type { SeriePorDebajo } from '../../dominio/notificacion/serie-por-debajo.valor.js';
 import type { DatosPercepcion } from '../../dominio/notificacion/percepcion.valor.js';
 
@@ -8,10 +9,14 @@ export interface DetalleNotificacion {
   entrenamiento: { id: string; rutina: string; inicio: string };
   totalSeries: number;
   seriesPorDebajo: SeriePorDebajo[];
+  /** Solo en las alertas de incumplimiento (RN-NOT-08). */
+  entrenamientos?: EntrenamientoDeAlerta[];
 }
 
 @Entity('notificaciones')
 @Index('idx_notificaciones_profesor_creada', ['profesorId', 'creada'])
+/** RN-NOT-01, 08: como máximo una notificación y una alerta por Entrenamiento. */
+@Index('uq_notificaciones_entrenamiento_tipo', ['entrenamientoId', 'tipo'], { unique: true })
 export class NotificacionEsquema {
   @PrimaryColumn('uuid')
   id!: string;
@@ -22,10 +27,11 @@ export class NotificacionEsquema {
   @Column({ name: 'alumno_id', type: 'uuid' })
   alumnoId!: string;
 
-  /** RN-NOT-01: un Entrenamiento genera como máximo una notificación. */
-  @Index('uq_notificaciones_entrenamiento', { unique: true })
   @Column({ name: 'entrenamiento_id', type: 'uuid' })
   entrenamientoId!: string;
+
+  @Column({ type: 'varchar', default: 'entrenamiento' })
+  tipo!: string;
 
   @Column({ type: 'timestamptz' })
   creada!: Date;

@@ -72,3 +72,21 @@ Comprobación por mutación US17 (24/11/2026). En cada caso se rompió la línea
   * el mapper sin escribir `percepcion`.
 
 El rojo previo de N1 a N5 fue un `TypeError`, porque los métodos todavía no existían, y no una aserción. N6 se escribió junto con la implementación. Los dos quedan cubiertos por las mutaciones de arriba.
+
+## US23 (confirmadas por Lisandro el 24/11/2026)
+
+"debajo" es un finalizado con al menos una serie por debajo (RN-ENT-21); "cumple", uno sin series por debajo.
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `dominio/incumplimiento/racha-incumplimiento.spec.ts` › A1 | RN-NOT-08 |  | Unitario | finalizados [debajo, debajo, debajo] | = esperado (rojo por assertion antes de implementar; verde el 24/11/2026) | 24/11/2026 |
+| `racha-incumplimiento.spec.ts` › A2 | RN-NOT-08 |  | Unitario | [debajo, cumple, debajo, debajo] | = esperado (rojo por assertion antes de implementar; verde el 24/11/2026) | 24/11/2026 |
+| `racha-incumplimiento.spec.ts` › A3 | RN-NOT-08 |  | Unitario | 6 seguidos por debajo | = esperado (rojo por assertion antes de implementar; verde el 24/11/2026) | 24/11/2026 |
+| `racha-incumplimiento.spec.ts` › A4 | RN-NOT-08 |  | Unitario | [debajo, abandonado, debajo, debajo] | = esperado (rojo por assertion antes de implementar; verde el 24/11/2026) | 24/11/2026 |
+| `racha-incumplimiento.spec.ts` › A5 | RN-NOT-08 |  | Unitario | [debajo, debajo, percepción mala sin series por debajo] | = esperado (rojo por assertion antes de implementar; verde el 24/11/2026) | 24/11/2026 |
+| `aplicacion/alertar-incumplimiento-repetido/alertar-incumplimiento-repetido.caso-uso.spec.ts` › A6 | RN-NOT-08 |  | Unitario | Alumno sin profesor con 3 por debajo | = esperado (rojo por assertion antes de implementar; verde el 24/11/2026) | 24/11/2026 |
+| `test/e2e/notificaciones/incumplimiento-repetido.e2e-spec.ts` › tres finalizaciones por debajo | RN-NOT-08 | RN-NOT-01, 08 | e2e | alumno01 finaliza 3 entrenamientos por debajo en 3 días distintos (Reloj fijo con `overrideProvider`, movido día a día) | = esperado (rojo por assertion antes de implementar; verde el 24/11/2026) | 24/11/2026 |
+
+Casos de apoyo del caso de uso (sin ficha propia en la lista confirmada): alerta Grave no leída con alumno y los 3 Entrenamientos; sin cumplir en el medio no hay alerta; seis seguidos → alertas en e3 y e6; el mismo evento dos veces no duplica; sin alertas retroactivas si el profesor se vincula después.
+
+Mutación US23 (24/11/2026): se quitó el corte por "uno que cumple" (caen A2 y su caso de uso) y el reinicio de la racha al alertar (caen A3 y "seis seguidos"); se restauró.

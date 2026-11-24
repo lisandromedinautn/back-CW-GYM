@@ -19,6 +19,7 @@ Contexto de soporte. Avisa al profesor, dentro de la app, cuando un alumno suyo 
 | RN-NOT-05 | Cuando el alumno carga su percepción (RN-ENT-16) y el Entrenamiento ya tiene notificación, la notificación suma el RPE y la sensación de fuerza, recalcula la gravedad (RN-NOT-07) y **vuelve a no leída**, aunque el profesor ya la hubiera leído | US21, US17 | Vigente |
 | RN-NOT-06 | La percepción es **mala** si el RPE es 9 o más **o** la sensación de fuerza es 2 o menos. Una percepción mala sin series por debajo genera una notificación (sin series en el detalle) con gravedad **Leve** si cumple una sola condición y **Grave** si cumple las dos. Ejemplos: RPE 9 y sensación 3 → Leve; RPE 7 y sensación 2 → Leve; RPE 10 y sensación 1 → Grave; RPE 8 y sensación 3 → no es mala | US17 | Vigente (los ejemplos son literales obligatorios en los tests) |
 | RN-NOT-07 | Si hay series por debajo y percepción mala, la gravedad de la notificación es la **mayor** entre la de las series (RN-NOT-02) y la de la percepción (RN-NOT-06). Ejemplos: series Leve y percepción Grave → Grave; series Leve y percepción Leve → Leve; series Grave y percepción Leve → Grave; series Leve y percepción que no es mala → Leve | US17 | Vigente (los ejemplos son literales obligatorios en los tests) |
+| RN-NOT-08 | Cuando un alumno finaliza su tercer Entrenamiento seguido con al menos una serie por debajo de lo prescripto (RN-ENT-21, cualquier gravedad), su profesor recibe una alerta de incumplimiento. Se cuentan los Entrenamientos finalizados del alumno por fecha: uno que cumple lo prescripto corta la racha; uno abandonado no cuenta ni corta; la percepción mala sola no cuenta. Al alertar, la racha vuelve a cero (6 seguidos → alertas en el 3.º y el 6.º). La alerta nace no leída, con gravedad Grave, el alumno, los 3 Entrenamientos (fecha y rutina) y un enlace a sus entrenamientos. Se suma a la notificación por Entrenamiento (RN-NOT-01), no la reemplaza | US23 | Vigente |
 
 ## Casos de uso planificados
 
@@ -29,6 +30,7 @@ Contexto de soporte. Avisa al profesor, dentro de la app, cuando un alumno suyo 
 | `contar-no-leidas/contar-no-leidas.caso-uso.ts` ✅ | US21 | 03 |
 | `marcar-notificacion-leida/marcar-notificacion-leida.caso-uso.ts` ✅ | US21 | 04 |
 | `sumar-percepcion/sumar-percepcion.caso-uso.ts` ✅ | US17 | 01, 05, 06, 07 |
+| `alertar-incumplimiento-repetido/alertar-incumplimiento-repetido.caso-uso.ts` ✅ | US23 | 08 |
 
 ## Endpoints
 
@@ -122,6 +124,7 @@ Decidido por Ulises el 24/11/2026. Cierra las dos preguntas que US21 había deja
 | :-- | :-- | :-- | :-- |
 | 24/11/2026 | RN-NOT-01 a 05 | Versión inicial (US21): una notificación por Entrenamiento por debajo, gravedad Leve o Grave con el umbral del 40% (inclusive en Grave, manda el porcentaje), bandeja con no leídas, percepción reservada para US17 | Ulises |
 | 24/11/2026 | RN-NOT-01, 05; nuevas RN-NOT-06 y 07 | Con US17 la notificación también nace por percepción mala (RPE ≥ 9 o sensación ≤ 2; Leve con una condición, Grave con las dos), queda la gravedad mayor, y al sumar la percepción vuelve a no leída | Ulises |
+| 24/11/2026 | Nueva RN-NOT-08 | Alerta al profesor cuando el alumno finaliza 3 Entrenamientos seguidos con series por debajo (cualquier gravedad); la racha vuelve a cero al alertar | Lisandro |
 
 ## Decisiones de implementación (CG-89, US21)
 
@@ -140,3 +143,14 @@ Implementado el 24/11/2026.
 * **Tipos de la percepción:** `Percepcion` es una clase. El tipo de datos se llama `DatosPercepcion`: es el de `DatosNotificacion.percepcion` y el de la columna. `rpe` y `sensacionFuerza` admiten `null` en el tipo, y un `null` no cuenta como condición mala; con US17 los dos siempre llegan.
 * **Gravedad:** `Gravedad.reconstruir(valor)` rearma la gravedad guardada para compararla con `mayor`.
 * **Suscriptor:** `infraestructura/suscriptores/percepcion-registrada.suscriptor.ts`. `buscarPorEntrenamiento` usa el índice único de `entrenamiento_id`.
+
+## Decisiones de implementación (US23, RN-NOT-08)
+
+Implementado el 24/11/2026.
+
+* **Tipo de notificación:** `Notificacion` suma `tipo` (`'entrenamiento' | 'alerta-incumplimiento'`) y, en las alertas, `entrenamientos: [{ id, fecha, rutina }]`. La alerta se ancla al 3.º Entrenamiento (`entrenamiento`), con `totalSeries` 0 y sin series. `Notificacion.crearAlertaIncumplimiento`.
+* **Índice único:** pasa de `entrenamiento_id` a (`entrenamiento_id`, `tipo`). `existeParaEntrenamiento` y `buscarPorEntrenamiento` solo miran `tipo = 'entrenamiento'`; `existeAlertaParaEntrenamiento` es nuevo.
+* **Función de dominio pura:** `dominio/incumplimiento/racha-incumplimiento.ts` (`detectarRachasDeIncumplimiento`): ordena los finalizados por fecha, ignora los abandonados, corta con uno que cumple y reinicia al completar 3.
+* **Historia propia:** Notificaciones no puede leer Entrenamiento (regla 4). Registra cada `EntrenamientoFinalizado` en su tabla `finalizaciones_alumno` (puerto `RepositorioFinalizaciones`, idempotente). Los abandonados no emiten evento, así que no entran (no cuentan ni cortan).
+* **Sin alertas retroactivas:** el caso de uso `AlertarIncumplimientoRepetido` solo alerta si el Entrenamiento que llega cierra un grupo de 3; sin profesor registra igual pero no alerta (A6). Suscriptor `incumplimiento-repetido.suscriptor.ts`.
+* **Contrato:** `GET mis-notificaciones` suma `tipo` a todos los ítems y `entrenamientos` solo en las alertas; el resto no cambia.

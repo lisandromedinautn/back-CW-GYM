@@ -36,6 +36,7 @@ export class NotificacionesControlador {
     return {
       items: bandeja.items.map((n) => ({
         id: n.id,
+        tipo: n.tipo,
         creada: n.creada,
         leida: n.leida,
         gravedad: n.gravedad,
@@ -44,6 +45,7 @@ export class NotificacionesControlador {
         totalSeries: n.totalSeries,
         seriesPorDebajo: n.seriesPorDebajo,
         percepcion: n.percepcion,
+        ...(n.entrenamientos ? { entrenamientos: n.entrenamientos } : {}),
       })),
       total: bandeja.total,
       pagina: bandeja.pagina,

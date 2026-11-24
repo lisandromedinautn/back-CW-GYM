@@ -3,8 +3,20 @@ import { Gravedad } from './gravedad.valor.js';
 import type { DatosPercepcion, Percepcion } from './percepcion.valor.js';
 import type { SeriePorDebajo } from './serie-por-debajo.valor.js';
 
+export type TipoNotificacion = 'entrenamiento' | 'alerta-incumplimiento';
+
+/** Un Entrenamiento de la racha que origina una alerta (RN-NOT-08). */
+export interface EntrenamientoDeAlerta {
+  id: string;
+  fecha: string;
+  rutina: string;
+}
+
 export interface DatosNotificacion {
   id: string;
+  tipo: TipoNotificacion;
+  /** Solo en las alertas de incumplimiento: los 3 Entrenamientos, del más viejo al más nuevo. */
+  entrenamientos?: EntrenamientoDeAlerta[];
   profesorId: string;
   alumno: { id: string; nombre: string; apellido: string };
   entrenamiento: { id: string; rutina: string; inicio: string };
@@ -18,8 +30,17 @@ export interface DatosNotificacion {
 
 export type DatosCreacionNotificacion = Omit<
   DatosNotificacion,
-  'gravedad' | 'leidaEn' | 'percepcion'
+  'gravedad' | 'leidaEn' | 'percepcion' | 'tipo' | 'entrenamientos'
 >;
+
+export interface DatosCreacionAlertaIncumplimiento {
+  id: string;
+  profesorId: string;
+  alumno: { id: string; nombre: string; apellido: string };
+  /** Los 3 Entrenamientos seguidos por debajo, del más viejo al más nuevo. */
+  entrenamientos: EntrenamientoDeAlerta[];
+  creada: string;
+}
 
 export type DatosCreacionPorPercepcion = Omit<DatosCreacionNotificacion, 'seriesPorDebajo'> & {
   percepcion: Percepcion;
@@ -40,6 +61,7 @@ export class Notificacion {
     const gravedad = Gravedad.desde(datos.seriesPorDebajo.length, datos.totalSeries);
     return new Notificacion({
       ...structuredClone(datos),
+      tipo: 'entrenamiento',
       gravedad: gravedad.valor,
       leidaEn: null,
       percepcion: null,
@@ -59,10 +81,40 @@ export class Notificacion {
     const { percepcion, ...resto } = datos;
     return new Notificacion({
       ...structuredClone(resto),
+      tipo: 'entrenamiento',
       seriesPorDebajo: [],
       gravedad: gravedad.valor,
       leidaEn: null,
       percepcion: percepcion.datos(),
+    });
+  }
+
+  /**
+   * RN-NOT-08: alerta de incumplimiento repetido. Se ancla al último de los 3 Entrenamientos,
+   * es Grave, nace no leída y no tiene series ni percepción propias.
+   */
+  static crearAlertaIncumplimiento(datos: DatosCreacionAlertaIncumplimiento): Notificacion {
+    if (datos.entrenamientos.length !== 3) {
+      throw new ErrorDominio(
+        'RN-NOT-08',
+        'La alerta de incumplimiento se arma con exactamente 3 Entrenamientos',
+        'validacion',
+      );
+    }
+    const ultimo = datos.entrenamientos[2]!;
+    return new Notificacion({
+      id: datos.id,
+      tipo: 'alerta-incumplimiento',
+      profesorId: datos.profesorId,
+      alumno: structuredClone(datos.alumno),
+      entrenamiento: { id: ultimo.id, rutina: ultimo.rutina, inicio: ultimo.fecha },
+      entrenamientos: structuredClone(datos.entrenamientos),
+      totalSeries: 0,
+      seriesPorDebajo: [],
+      gravedad: 'grave',
+      creada: datos.creada,
+      leidaEn: null,
+      percepcion: null,
     });
   }
 

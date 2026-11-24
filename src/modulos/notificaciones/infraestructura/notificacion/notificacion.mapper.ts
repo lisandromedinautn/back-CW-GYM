@@ -11,6 +11,7 @@ export function notificacionAFila(notificacion: Notificacion): NotificacionEsque
     profesorId: datos.profesorId,
     alumnoId: datos.alumno.id,
     entrenamientoId: datos.entrenamiento.id,
+    tipo: datos.tipo,
     creada: new Date(datos.creada),
     leidaEn: datos.leidaEn === null ? null : new Date(datos.leidaEn),
     gravedad: datos.gravedad,
@@ -19,6 +20,7 @@ export function notificacionAFila(notificacion: Notificacion): NotificacionEsque
       entrenamiento: datos.entrenamiento,
       totalSeries: datos.totalSeries,
       seriesPorDebajo: datos.seriesPorDebajo,
+      ...(datos.entrenamientos ? { entrenamientos: datos.entrenamientos } : {}),
     },
     percepcion: datos.percepcion,
   };
@@ -27,6 +29,8 @@ export function notificacionAFila(notificacion: Notificacion): NotificacionEsque
 export function filaANotificacion(fila: NotificacionEsquema): Notificacion {
   const datos: DatosNotificacion = {
     id: fila.id,
+    tipo: fila.tipo as DatosNotificacion['tipo'],
+    ...(fila.detalle.entrenamientos ? { entrenamientos: fila.detalle.entrenamientos } : {}),
     profesorId: fila.profesorId,
     alumno: fila.detalle.alumno,
     entrenamiento: fila.detalle.entrenamiento,

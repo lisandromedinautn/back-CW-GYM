@@ -8,6 +8,11 @@ import { ContarNoLeidas } from './aplicacion/contar-no-leidas/contar-no-leidas.c
 import { MarcarNotificacionLeida } from './aplicacion/marcar-notificacion-leida/marcar-notificacion-leida.caso-uso.js';
 import { SumarPercepcion } from './aplicacion/sumar-percepcion/sumar-percepcion.caso-uso.js';
 import { NotificarEntrenamientoPorDebajo } from './aplicacion/notificar-entrenamiento-por-debajo/notificar-entrenamiento-por-debajo.caso-uso.js';
+import { AlertarIncumplimientoRepetido } from './aplicacion/alertar-incumplimiento-repetido/alertar-incumplimiento-repetido.caso-uso.js';
+import { RepositorioFinalizaciones } from './dominio/incumplimiento/repositorio-finalizaciones.puerto.js';
+import { FinalizacionEsquema } from './infraestructura/incumplimiento/finalizacion.esquema.js';
+import { RepositorioFinalizacionesTypeorm } from './infraestructura/incumplimiento/finalizaciones.repositorio-typeorm.js';
+import { IncumplimientoRepetidoSuscriptor } from './infraestructura/suscriptores/incumplimiento-repetido.suscriptor.js';
 import { ConsultaProfesores } from './dominio/notificacion/consulta-profesores.puerto.js';
 import { RepositorioNotificaciones } from './dominio/notificacion/repositorio-notificaciones.puerto.js';
 import { ConsultaProfesoresFachadaIdentidad } from './infraestructura/notificacion/consulta-profesores.fachada-identidad.js';
@@ -19,12 +24,23 @@ import { NotificacionesControlador } from './presentacion/controlador/notificaci
 
 /** Notificaciones (US21). Los casos de uso no conocen Nest: se arman acá con fábricas. */
 @Module({
-  imports: [TypeOrmModule.forFeature([NotificacionEsquema]), ModuloIdentidad],
+  imports: [TypeOrmModule.forFeature([NotificacionEsquema, FinalizacionEsquema]), ModuloIdentidad],
   controllers: [NotificacionesControlador],
   providers: [
     { provide: Reloj, useClass: RelojSistema },
     { provide: RepositorioNotificaciones, useClass: RepositorioNotificacionesTypeorm },
+    { provide: RepositorioFinalizaciones, useClass: RepositorioFinalizacionesTypeorm },
     { provide: ConsultaProfesores, useClass: ConsultaProfesoresFachadaIdentidad },
+    {
+      provide: AlertarIncumplimientoRepetido,
+      inject: [RepositorioNotificaciones, RepositorioFinalizaciones, ConsultaProfesores, Reloj],
+      useFactory: (
+        n: RepositorioNotificaciones,
+        f: RepositorioFinalizaciones,
+        p: ConsultaProfesores,
+        reloj: Reloj,
+      ) => new AlertarIncumplimientoRepetido(n, f, p, reloj),
+    },
     {
       provide: NotificarEntrenamientoPorDebajo,
       inject: [RepositorioNotificaciones, ConsultaProfesores, Reloj],
@@ -55,6 +71,7 @@ import { NotificacionesControlador } from './presentacion/controlador/notificaci
         new SumarPercepcion(r, p, reloj),
     },
     EntrenamientoFinalizadoSuscriptor,
+    IncumplimientoRepetidoSuscriptor,
     PercepcionRegistradaSuscriptor,
   ],
 })
