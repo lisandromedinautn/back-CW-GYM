@@ -485,3 +485,17 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
   - ramas sin pushear ni PR;
   - mover US06 en Jira;
   - no se corrieron los e2e de Playwright del front.
+
+## 2026-11-24 — Integración de US16 (récords) y limpieza de ramas [US16]
+
+- Modelo: Opus 5.5 solo, sin subagentes. Pedido de Lisandro.
+- Qué hizo la IA:
+  - Relevó las ramas remotas adelantadas a `develop`: `feat/US16-record-personal` (back, Ramiro), `feat/US16-frontend-records` (front, Ramiro) y `feat/US18-consultar-entrenamientos-de-alumnos` (back, alex, un commit de docs del 22/11).
+  - Revisó US16 y la mergeó con `--no-ff` en ambos repos, sin conflictos.
+  - Detectó que el PR #17 del front y el PR #1 del back se habían mergeado a `main` por error y ya estaban revertidos (#18 y "vuelvo a la version cb9cb89"); `develop` no se vio afectado.
+- Decisiones del desarrollador (Lisandro):
+  - La rama de US18 de alex se borra: sus docs chocaban con versiones posteriores de `develop`.
+  - Se aprueba corregir el test de récords del front: armaba una rutina sin bloques y, desde US15, «Finalizar» aparece solo en el último paso. Se agregó un bloque de una serie, sin cambiar las aserciones.
+- Observación del review (sin cambio): `CerrarEntrenamientoConRecords` calcula los récords después de cerrar, fuera de la misma transacción; si falla, el entrenamiento queda cerrado y el usuario ve un error.
+- Verificación: back `yarn test:cov` 463/463, `yarn test:int` 12/12 y lint OK; front `yarn test:cov` 203/203 y lint OK.
+- Pendientes: mover US16 en Jira (ya figuraba en Listo antes de integrarse); e2e de Playwright no corridos.
