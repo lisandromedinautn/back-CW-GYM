@@ -484,6 +484,11 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
   - Front: `yarn test` 198/198, lint y `tsc -b` OK.
   - Cada test nuevo dio rojo por la razón correcta antes de implementar: la función sin implementar, el método inexistente, la ruta 404 o el enlace inexistente.
   - En el test del front se espera el campo "Repeticiones" con `findByLabelText`, porque aparece cuando llega el catálogo (sin cambiar las aserciones).
+- Segunda parte (misma sesión), pedido de Martina: el lápiz de la tarjeta, que solo editaba el nombre, abre la rutina en el editor.
+  - La IA avisó que cambiaba tests existentes y propuso reemplazarlos. Martina lo aprobó.
+  - Se quitaron el botón "Ver y editar", la edición del nombre en la tarjeta (`usarRenombrarRutina`, `renombrarRutina` y `reemplazar`) y su CSS. El back conserva el `PATCH` del nombre.
+  - Tests: se borraron los 3 de renombrar en la tarjeta. Se sumó uno que cambia el nombre en el editor. `PaginaEditarRutina.int.test.tsx` abre la rutina con el lápiz "Editar rutina", sin cambiar sus aserciones.
+  - Verificación: front `yarn test` 196/196, lint y `tsc -b` OK.
 - Pendientes:
   - ramas sin pushear ni PR;
   - mover US06 en Jira;
