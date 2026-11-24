@@ -8,6 +8,9 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ### Agregado
 
+- `POST /entrenamiento/entrenamientos/:id/percepcion` (Alumno, US17, CG-61): carga RPE (1 a 10) y sensación de fuerza (1 a 5) una sola vez, los dos juntos y solo en un entrenamiento finalizado, y publica `PercepcionRegistrada`. `GET /entrenamiento/mi-entrenamiento-en-curso` (finalizado) y `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` devuelven `percepcion` (RN-ENT-14, 15, 16).
+- La notificación al profesor suma la percepción y vuelve a no leída. Una percepción mala (RPE ≥ 9 o sensación ≤ 2) notifica aunque no haya series por debajo: Leve con una condición, Grave con las dos. Con series por debajo queda la gravedad mayor (RN-NOT-01, 05, 06, 07; US17).
+
 - Módulo `notificaciones` (US21, CG-89). Cuando un alumno finaliza un entrenamiento con series por debajo de lo prescripto, su profesor recibe una notificación Leve o Grave (40% o más). Endpoints `GET /notificaciones/mis-notificaciones` (paginado, con `noLeidas`), `GET /notificaciones/mis-notificaciones/no-leidas` y `PUT /notificaciones/mis-notificaciones/:id/lectura` (Profesor). Cada notificación trae `percepcion: null`, reservado para US17 (RN-NOT-01 a 04).
 
 ### Cambiado
