@@ -7,6 +7,7 @@ import { ModuloIdentidad } from '../identidad/identidad.module.js';
 import { ConsultarRutinas } from './aplicacion/consultar-rutinas/consultar-rutinas.caso-uso.js';
 import { RenombrarRutina } from './aplicacion/renombrar-rutina/renombrar-rutina.caso-uso.js';
 import { CrearRutina } from './aplicacion/crear-rutina/crear-rutina.caso-uso.js';
+import { EditarRutina } from './aplicacion/editar-rutina/editar-rutina.caso-uso.js';
 import { ImportarRutina } from './aplicacion/importar-rutina/importar-rutina.caso-uso.js';
 import { CrearPlan } from './aplicacion/crear-plan/crear-plan.caso-uso.js';
 import { ConsultarRutinaDelDia } from './aplicacion/consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.js';
@@ -74,6 +75,12 @@ import { FachadaPlanificacion } from './fachada-planificacion.js';
       provide: ConsultarRutinas,
       inject: [RepositorioRutinas],
       useFactory: (rutinas: RepositorioRutinas) => new ConsultarRutinas(rutinas),
+    },
+    {
+      provide: EditarRutina,
+      inject: [RepositorioRutinas, ConsultaEjercicios],
+      useFactory: (rutinas: RepositorioRutinas, ejercicios: ConsultaEjercicios) =>
+        new EditarRutina(rutinas, ejercicios),
     },
     {
       provide: RenombrarRutina,

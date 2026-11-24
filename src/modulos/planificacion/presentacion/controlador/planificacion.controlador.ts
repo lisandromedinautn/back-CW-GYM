@@ -10,6 +10,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { ConsultarRutinas } from '../../aplicacion/consultar-rutinas/consultar-rutinas.caso-uso.js';
@@ -21,6 +22,7 @@ import {
 import { PaginacionDto } from '../../../../compartido/presentacion/paginacion/paginacion.dto.js';
 import { RenombrarRutina } from '../../aplicacion/renombrar-rutina/renombrar-rutina.caso-uso.js';
 import { CrearRutina } from '../../aplicacion/crear-rutina/crear-rutina.caso-uso.js';
+import { EditarRutina } from '../../aplicacion/editar-rutina/editar-rutina.caso-uso.js';
 import { ImportarRutina } from '../../aplicacion/importar-rutina/importar-rutina.caso-uso.js';
 import { CrearPlan } from '../../aplicacion/crear-plan/crear-plan.caso-uso.js';
 import {
@@ -140,6 +142,7 @@ const aRespuesta = (rutina: Rutina): RutinaRespuesta => ({
 export class PlanificacionControlador {
   constructor(
     @Inject(CrearRutina) private readonly crearRutina: CrearRutina,
+    @Inject(EditarRutina) private readonly editarRutina: EditarRutina,
     @Inject(ImportarRutina) private readonly importarRutina: ImportarRutina,
     @Inject(ConsultarRutinas) private readonly consultarRutinas: ConsultarRutinas,
     @Inject(RenombrarRutina) private readonly renombrarRutina: RenombrarRutina,
@@ -175,6 +178,27 @@ export class PlanificacionControlador {
     @Body() datos: CrearRutinaDto,
   ): Promise<RutinaRespuesta> {
     return aRespuesta(await this.crearRutina.ejecutar(usuario.sub, datos));
+  }
+
+  /** Solo Profesor (RN-IDE-03). US06: detalle de una rutina propia (RN-PLAN-08). */
+  @Get('rutinas/:id')
+  @Roles('Profesor')
+  async detalle(
+    @UsuarioActual() usuario: UsuarioAutenticado,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<RutinaRespuesta> {
+    return aRespuesta(await this.consultarRutinas.porId(usuario.sub, id));
+  }
+
+  /** Solo Profesor (RN-IDE-03). US06: RN-PLAN-07 y 08; el contenido sigue las reglas de crear. */
+  @Put('rutinas/:id')
+  @Roles('Profesor')
+  async editar(
+    @UsuarioActual() usuario: UsuarioAutenticado,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() datos: CrearRutinaDto,
+  ): Promise<RutinaRespuesta> {
+    return aRespuesta(await this.editarRutina.ejecutar(usuario.sub, id, datos));
   }
 
   /** Solo Profesor (RN-IDE-03). T08: RN-PLAN-21 (nombre) y RN-PLAN-08 (solo sus rutinas). */
