@@ -69,7 +69,8 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | planificacion | `crear-rutina.caso-uso.ts` | `POST /planificacion/rutinas` | US06, US09, US10, T09 | ✅ bloques (US06), circuitos (US09) y nombre (T09) y mixta con `orden` (US10) |
 | planificacion | `consultar-rutinas.caso-uso.ts` | `GET /planificacion/rutinas` | T06 | ✅ |
 | planificacion | `renombrar-rutina.caso-uso.ts` | `PATCH /planificacion/rutinas/:id/nombre` | T09 | ✅ |
-| planificacion | `editar-rutina.caso-uso.ts` | `PUT /planificacion/rutinas/:id` | US06 | 📄 |
+| planificacion | `consultar-rutinas.caso-uso.ts` (`porId`) | `GET /planificacion/rutinas/:id` | US06 | ✅ `consultar-rutina-por-id.caso-uso.spec.ts` y `test/e2e/planificacion/editar-rutina.e2e-spec.ts` |
+| planificacion | `editar-rutina/editar-rutina.caso-uso.ts` | `PUT /planificacion/rutinas/:id` | US06 | ✅ `editar-rutina.caso-uso.spec.ts` y `test/e2e/planificacion/editar-rutina.e2e-spec.ts` |
 | planificacion | `importar-rutina/importar-rutina.caso-uso.ts` | `POST /planificacion/rutinas/:id/importacion` | US20 | ✅ copia independiente de rutina propia |
 | planificacion | `crear-plan.caso-uso.ts` | `POST /planificacion/planes` | US07 | ✅ |
 | identidad | `listar-alumnos-del-profesor.caso-uso.ts` | `GET /identidad/alumnos` | US07 | ✅ |
@@ -126,7 +127,7 @@ Hoy:
 | identidad | infraestructura | usuario, profesor, alumno |
 | identidad | presentacion | controlador, ingreso, alta-profesor, vinculo |
 | planificacion | dominio | rutina (con bloque, circuito, `NombreRutina` y los puertos RepositorioRutinas, ConsultaEjercicios y ConsultaNombresEjercicios), plan (con `DiaPlan`, `ValidezPlan` y los puertos RepositorioPlanes y ConsultaVinculos), objetivo-prescripto, pausa, tipo-rutina |
-| planificacion | aplicacion | crear-rutina, consultar-rutinas (incluye `resolver-rutina-para-alumno.ts`), renombrar-rutina, crear-plan, consultar-rutina-del-dia, consultar-plan-del-alumno, consultar-planes |
+| planificacion | aplicacion | crear-rutina (incluye `resolverContenido`, compartido con editar), editar-rutina, consultar-rutinas (incluye `resolver-rutina-para-alumno.ts`), renombrar-rutina, crear-plan, consultar-rutina-del-dia, consultar-plan-del-alumno, consultar-planes |
 | planificacion | infraestructura | rutina, plan |
 | planificacion | presentacion | controlador, crear-rutina (incluye `RenombrarRutinaDto`), crear-plan |
 | entrenamiento | dominio | entrenamiento (con `CopiaRutina`, `SerieRealizada` valor y evento, `EntrenamientoIniciado`, `EntrenamientoFinalizado`, `series-por-debajo.ts` (RN-ENT-21), puertos y `entrenamiento.entidad.spec.ts`) |
