@@ -18,7 +18,7 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `.claude/skills/tdd`, `.claude/skills/coverage` | Skills de TDD y cobertura |
 | `test/datasets/` | Fixture del dataset de ejercicios (T01) ✅ |
 | `datos/` | Dataset de ejercicios reducido y su licencia (T01) ✅ |
-| `test/dobles/` | Dobles de los puertos para los tests unitarios (`identidad.ts`: repositorios, hasheador y emisor de tokens en memoria; `planificacion.ts`: repositorio de rutinas y de planes en memoria, catálogo fijo, vínculos falsos y reloj fijo; `entrenamiento.ts`: repositorio de entrenamientos en memoria y vínculos fijos). Fuera de `src/`, no cuentan en la cobertura ✅ |
+| `test/dobles/` | Dobles de los puertos para los tests unitarios (`identidad.ts`: repositorios, hasheador y emisor de tokens en memoria; `planificacion.ts`: repositorio de rutinas y de planes en memoria, catálogo fijo, vínculos falsos y reloj fijo; `notificaciones.ts`: repositorio de notificaciones en memoria y consulta de profesores fija; `entrenamiento.ts`: repositorio de entrenamientos en memoria y vínculos fijos). Fuera de `src/`, no cuentan en la cobertura ✅ |
 | `package.json`, `yarn.lock` | Dependencias exactas, scripts y `resolutions` (regla de las 24 h) ✅ |
 | `docker-compose.yml` | Postgres 18 de desarrollo (5442) y de test (5443, en memoria) ✅ |
 | `.env.example`, `.env.test` | Variables de entorno: plantilla de desarrollo y valores de test ✅ |
@@ -34,7 +34,7 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `src/configurar-aplicacion.ts` | Configuración HTTP común a `main.ts` y a los e2e (`ValidationPipe` con `whitelist`) ✅ |
 | `src/compartido/compartido.module.ts` | Kernel compartido: JWT global, `GuardRoles` y `FiltroErrorDominio` registrados como `APP_GUARD` y `APP_FILTER` ✅ |
 | `src/compartido/dominio/publicador-eventos/publicador-eventos.puerto.ts` | Puerto `PublicadorEventos` (publica un `EventoDominio`) y su símbolo de inyección ✅ |
-| `src/compartido/infraestructura/publicador-eventos/publicador-eventos-log.ts` | `PublicadorEventosLog`: implementación del puerto que solo registra el evento en el log, hasta que haya un suscriptor ✅ |
+| `src/compartido/infraestructura/publicador-eventos/publicador-eventos-en-proceso.ts` | `PublicadorEventosEnProceso`: implementa `PublicadorEventos` y `SuscriptorEventos` (`dominio/publicador-eventos/suscriptor-eventos.puerto.ts`); registra cada evento en el log y ejecuta en orden sus manejadores; si uno falla, lo registra y sigue (US21) ✅ |
 | `CHANGELOG.md` | Cambios por versión (decisión 38) ✅ |
 | `src/modulos/planificacion/aplicacion/consultar-rutinas/resolver-rutina-para-alumno.ts` | Respuesta de rutina con nombres y objetivos para consultas del Alumno; extracción de US08 para reutilizar en US11 |
 
@@ -81,13 +81,13 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | entrenamiento | `iniciar-entrenamiento.caso-uso.ts` | `POST /entrenamiento/entrenamientos` | US13, T14 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` · `test/e2e/entrenamiento/gif-en-la-copia.e2e-spec.ts` (GIF en la copia, T14) |
 | entrenamiento | `consultar-entrenamiento-en-curso.caso-uso.ts` | `GET /entrenamiento/mi-entrenamiento-en-curso` | US13 | ✅ `test/e2e/entrenamiento/iniciar-entrenamiento.e2e-spec.ts` |
 | entrenamiento | `registrar-serie-realizada.caso-uso.ts` | `POST /entrenamiento/entrenamientos/:id/series` | US14 | ✅ |
-| entrenamiento | `cerrar-entrenamiento.caso-uso.ts`, `calcular-resumen.ts` | `POST /entrenamiento/entrenamientos/:id/finalizacion` | US15 | ✅ `test/e2e/entrenamiento/finalizar-entrenamiento.e2e-spec.ts` |
+| entrenamiento | `cerrar-entrenamiento.caso-uso.ts`, `calcular-resumen.ts` | `POST /entrenamiento/entrenamientos/:id/finalizacion` | US15, US21 | ✅ `test/e2e/entrenamiento/finalizar-entrenamiento.e2e-spec.ts`; desde US21 publica el evento de la entidad (`eventoDeFin()`) con las series por debajo (`dominio/entrenamiento/series-por-debajo.ts`, `series-por-debajo.spec.ts`) |
 | entrenamiento | `registrar-percepcion.caso-uso.ts` | `PUT /entrenamiento/entrenamientos/:id/percepcion` | US17 | 📄 |
 | entrenamiento | `consultar-entrenamientos-de-alumnos.caso-uso.ts` | `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` | US18 | ✅ |
-| notificaciones | `notificar-entrenamiento-por-debajo/notificar-entrenamiento-por-debajo.caso-uso.ts` | Suscriptor de `EntrenamientoFinalizado` (sin endpoint) | US21 | 📄 |
-| notificaciones | `consultar-notificaciones/consultar-notificaciones.caso-uso.ts` | `GET /notificaciones/mis-notificaciones` (solo Profesor) | US21 | 📄 |
-| notificaciones | `contar-no-leidas/contar-no-leidas.caso-uso.ts` | `GET /notificaciones/mis-notificaciones/no-leidas` (solo Profesor) | US21 | 📄 |
-| notificaciones | `marcar-notificacion-leida/marcar-notificacion-leida.caso-uso.ts` | `PUT /notificaciones/mis-notificaciones/:id/lectura` (solo Profesor) | US21 | 📄 |
+| notificaciones | `notificar-entrenamiento-por-debajo/notificar-entrenamiento-por-debajo.caso-uso.ts` | Suscriptor de `EntrenamientoFinalizado` (sin endpoint) | US21 | ✅ `notificar-entrenamiento-por-debajo.caso-uso.spec.ts` · `test/e2e/notificaciones/notificaciones.e2e-spec.ts` |
+| notificaciones | `consultar-notificaciones/consultar-notificaciones.caso-uso.ts` | `GET /notificaciones/mis-notificaciones` (solo Profesor) | US21 | ✅ `consultar-notificaciones.caso-uso.spec.ts` · e2e |
+| notificaciones | `contar-no-leidas/contar-no-leidas.caso-uso.ts` | `GET /notificaciones/mis-notificaciones/no-leidas` (solo Profesor) | US21 | ✅ `contar-no-leidas.caso-uso.spec.ts` · e2e |
+| notificaciones | `marcar-notificacion-leida/marcar-notificacion-leida.caso-uso.ts` | `PUT /notificaciones/mis-notificaciones/:id/lectura` (solo Profesor) | US21 | ✅ `marcar-notificacion-leida.caso-uso.spec.ts` · e2e |
 
 ## Dependencias entre módulos (solo por Fachada o eventos)
 
@@ -99,8 +99,8 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | entrenamiento | Fachada de identidad | ✅ Peso actual del alumno (RN-ENT-02); profesor para RN-ENT-18 📄 |
 | entrenamiento | Fachada de catalogo | ✅ GIF de cada ejercicio para la copia (RN-ENT-02, T14), por el puerto `ConsultaEjercicios` que la Fachada implementa directo. Pendiente: tipo, tipo de carga, factor y grupo (RN-ENT-07, 09, 10) |
 | entrenamiento | Fachada de catalogo | ✅ Tipo de carga, factor y grupos para el resumen (RN-ENT-07, 09); récords US16 pendientes |
-| notificaciones | Evento `EntrenamientoFinalizado` de entrenamiento | 📄 Observador: suscriptor en `infraestructura/suscriptores/`, con contrato propio del evento (RN-NOT-01, US21) |
-| notificaciones | Fachada de identidad | 📄 Profesor y nombre del alumno (`obtenerAlumnoPorId`) y profesor de un usuario (`obtenerProfesorPorUsuarioId`, nuevo), por el puerto `ConsultaProfesores` (US21) |
+| notificaciones | Evento `EntrenamientoFinalizado` de entrenamiento | ✅ Observador: `infraestructura/suscriptores/entrenamiento-finalizado.suscriptor.ts`, con contrato propio del evento (RN-NOT-01, US21) |
+| notificaciones | Fachada de identidad | ✅ Profesor y nombre del alumno (`obtenerAlumnoPorId`) y profesor de un usuario (`obtenerProfesorPorUsuarioId`), por el puerto `ConsultaProfesores` (`consulta-profesores.fachada-identidad.ts`, US21) |
 
 ## Carpetas por concepto
 
@@ -127,10 +127,14 @@ Hoy:
 | planificacion | aplicacion | crear-rutina, consultar-rutinas (incluye `resolver-rutina-para-alumno.ts`), renombrar-rutina, crear-plan, consultar-rutina-del-dia, consultar-plan-del-alumno, consultar-planes |
 | planificacion | infraestructura | rutina, plan |
 | planificacion | presentacion | controlador, crear-rutina (incluye `RenombrarRutinaDto`), crear-plan |
-| entrenamiento | dominio | entrenamiento (con `CopiaRutina`, `SerieRealizada` valor y evento, `EntrenamientoIniciado`, puertos y `entrenamiento.entidad.spec.ts`) |
+| entrenamiento | dominio | entrenamiento (con `CopiaRutina`, `SerieRealizada` valor y evento, `EntrenamientoIniciado`, `EntrenamientoFinalizado`, `series-por-debajo.ts` (RN-ENT-21), puertos y `entrenamiento.entidad.spec.ts`) |
 | entrenamiento | aplicacion | iniciar-entrenamiento, consultar-entrenamiento-en-curso, registrar-serie-realizada, consultar-entrenamientos-de-alumnos |
 | entrenamiento | infraestructura | entrenamiento (esquema `series_realizadas` en `serie-realizada.esquema.ts`, `entrenamiento.mapper.ts` y repositorio TypeORM) |
 | entrenamiento | presentacion | controlador, registrar-serie-realizada (DTO) |
+| notificaciones | dominio | notificacion (`Notificacion` con su spec, `Gravedad` con su spec, `SeriePorDebajo`, `Percepcion`, `EntrenamientoFinalizadoRecibido` y los puertos `RepositorioNotificaciones` y `ConsultaProfesores`) |
+| notificaciones | aplicacion | notificar-entrenamiento-por-debajo, consultar-notificaciones, contar-no-leidas, marcar-notificacion-leida |
+| notificaciones | infraestructura | notificacion (esquema `notificaciones` con único por `entrenamiento_id`, mapper, repositorio TypeORM y adaptador de la Fachada de identidad), suscriptores (`EntrenamientoFinalizado`) |
+| notificaciones | presentacion | controlador |
 | compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio, reloj, paginacion (`dominio/paginacion/paginacion.ts` con `TAMANIOS_PAGINA` y `Pagina<T>`; `presentacion/paginacion/paginacion.dto.ts` con `PaginacionDto`) |
 
 ## Nombres de archivo
