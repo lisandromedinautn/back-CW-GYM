@@ -49,10 +49,10 @@ Existe igual en `back-CW-GYM` y `front-CW-GYM`. Se basa en [`docs/PLANIFICACION.
 | :-- | :-- | :-- | :-- | --: |
 | CG Sprint 1 | 02/11 – 08/11 | Cerrado el 08/11 | T02, US00, US02, T01, US04, US05, T04, T05 | 26 |
 | CG Sprint 2 | 09/11 – 15/11 | Cerrado el 21/11 (nunca se había iniciado en Jira) | US06, US07, US08, US09 Listo; T08, T09, T10 Listo | 39 (13 + 11 + 4 + 11) |
-| CG Sprint 3 | 16/11 – 22/11 | Activo | US10, US20, US11, US13 Listo; US12 En curso; T06 y T07 arrastradas del sprint 2 | 25 (6 + 6 + 4 + 9) |
-| CG Sprint 4 | 23/11 – 01/12 | Futuro | US14, US15, US16, US17, US18 | — |
+| CG Sprint 3 | 16/11 – 22/11 | Cerrado el 22/11 | US10, US20, US11, US13, US12 Listo; T06, T07, T13 y T14 Listo | 25 (6 + 6 + 4 + 9) |
+| CG Sprint 4 | 23/11 – 01/12 | Activo | US14, US15, US18 y T15 Listo; US16 y US17 Por hacer; US06 reabierta (edición) | 22 al 23/11 (8 + 8 + 6) |
 
-Acumulado según Jira: **90/129 (69,8%)**; faltan 39 de US (US12 4, US14 8, US15 8, US16 11, US17 2, US18 6). **Diferencia con el código:** Jira tiene US06 en Listo, pero la edición de rutinas (RN-PLAN-07) no está implementada y Martina la había dejado parcial el 14/11; sus subtareas Backend y Frontend siguen en Por hacer en Jira. Sin US06, el acumulado es 77/129. US12 está En curso en Jira sin commits ni ramas publicadas al 21/11.
+Acumulado según Jira y develop al 23/11: **103/129 (79,8%)**; faltan 26 (US06 13 por la edición de rutinas, RN-PLAN-07; US16 11; US17 2). El 23/11 se alineó Jira con el código: US06 pasó a En curso (con sus subtareas Backend y Frontend), y se cerraron las subtareas de US15, T06, T07 y T15.
 
 **Reestimación vigente al 14/11/2026.** La base original sigue en 129 puntos; hay 52 puntos técnicos acumulados y 26 corresponden al sprint 2 abierto. US06 sigue parcial por edición pendiente, confirmado por Martina. Fase 2: 15/28 puntos de historias completas; US09 adelanta 11 de la fase 3. No hay registro de horas efectivas ni un cierre formal del sprint; las horas y la velocity formal quedan ND.
 
@@ -83,7 +83,7 @@ El cierre del 15/11 debe distinguir implementación técnica, cumplimiento de Do
 
 ## Resumen
 
-Actualizado al corte del 14/11/2026. **Al 21/11, según Jira:** fase 2 con 28/28 (US06 en Listo, edición sin código), fase 3 con 36/36, fase 4 con US12 en curso y fase 5 sin empezar; 90/129 acumulados. Ninguna minor publicada: los dos repos siguen en 1.1.0.
+Actualizado al corte del 14/11/2026. **Al 23/11, según Jira y develop:** fase 2 con 15/28 (US06 En curso por la edición), fase 3 con 36/36, fase 4 con US12, US14 y US15 terminadas y US16 y US17 pendientes, fase 5 con US18 y T15 terminadas; 103/129 acumulados. Ninguna minor publicada: los dos repos siguen en 1.1.0.
 
 | Fase | Versión prevista | Base V1 | Implementado V1 | Residual V2 | Pronóstico central | Estado observado |
 | :-- | :-- | --: | --: | --: | :-- | :-- |
@@ -256,15 +256,15 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 
 | Orden | Tarjeta | Tarea | Repo | RN | Pts | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| 1 | US14 | Backend: registrar serie realizada | back | RN-ENT-03, 04, 19, 20 | 3 | ⬜ |
+| 1 | US14 | Backend: registrar serie realizada | back | RN-ENT-03, 04, 19, 20 | 3 | ✅ integrado en develop el 23/11 (Martina) |
 | 1 | US16 | Modelar: Récord Personal y Carga Efectiva (Estrategia por tipo de carga, Epley) | back | RN-ENT-10, 11, 12, 13 | 5 | ⬜ |
-| 1 | US12 | Backend: agregar y quitar alumnos de un plan vigente | back | RN-PLAN-12, 13, 14, 16 | 3 | 🔄 En curso en Jira (Martina, Sprint 3); sin commits al 21/11 |
-| 2 | US14 | Frontend: registro de series en el entrenamiento en curso | front | RN-ENT-03, 04, 19, 20 · RN-UI-ENT-01 | 5 | ✅ 22/11 (rama `feat/US14-registrar-serie`) |
-| 2 | US15 | Backend: finalizar entrenamiento (volumen, grupos, duración) | back | RN-ENT-05, 06, 07, 08, 09, 17 | 5 | ⬜ |
-| 2 | US12 | Frontend: página de alumnos del plan | front | RN-PLAN-12, 13, 14, 16 | 1 | ⬜ |
+| 1 | US12 | Backend: agregar y quitar alumnos de un plan vigente | back | RN-PLAN-12, 13, 14, 16 | 3 | ✅ integrado en develop el 22/11 (Martina) |
+| 2 | US14 | Frontend: registro de series en el entrenamiento en curso | front | RN-ENT-03, 04, 19, 20 · RN-UI-ENT-01 | 5 | ✅ integrado en develop el 23/11 |
+| 2 | US15 | Backend: finalizar entrenamiento (volumen, grupos, duración) | back | RN-ENT-05, 06, 07, 08, 09, 17 | 5 | ✅ integrado en develop el 23/11 (Martina) |
+| 2 | US12 | Frontend: página de alumnos del plan | front | RN-PLAN-12, 13, 14, 16 | 1 | ✅ integrado en develop el 22/11 (Martina) |
 | 3 | US16 | Backend: detectar récords al finalizar (evento RécordBatido) | back | RN-ENT-10, 11, 12, 13 | 5 | ⬜ |
 | 3 | US17 | Backend: registrar RPE y sensación de fuerza | back | RN-ENT-14, 15, 16 | 1 | ⬜ |
-| 4 | US15 | Frontend: página de resumen del entrenamiento | front | RN-ENT-05, 06, 07, 08, 09, 17 | 3 | ⬜ |
+| 4 | US15 | Frontend: página de resumen del entrenamiento | front | RN-ENT-05, 06, 07, 08, 09, 17 | 3 | ✅ integrado en develop el 23/11 (Ramiro, Ulises) |
 | 5 | US16 | Frontend: récords batidos en el resumen | front | RN-ENT-10, 11, 12, 13 | 1 | ⬜ |
 | 5 | US17 | Frontend: RPE y sensación en el resumen | front | RN-ENT-14, 15, 16 | 1 | ⬜ |
 
@@ -286,7 +286,7 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 
 | Orden | Tarjeta | Tarea | Repo | RN | Pts | Estado |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| 1 | US18 | Backend: consultar los entrenamientos de mis alumnos | back | RN-ENT-18 | 3 | ⬜ |
+| 1 | US18 | Backend: consultar los entrenamientos de mis alumnos | back | RN-ENT-18 | 3 | ✅ integrado en develop el 22/11 |
 | 2 | US18 | Frontend: página de entrenamientos de alumnos | front | RN-ENT-18 | 3 | ✅ 23/11 (rama `feat/US18-entrenamientos-de-alumnos`) |
 | 2 | — | e2e de API de los flujos completos (back) | back | todas | 3 (V2) | ⬜ |
 | 2 | T15 | e2e de navegador con Playwright de los flujos principales (front) | front | todas | 5 (V2) | ✅ CG-86: los cuatro flujos en verde el 23/11 (12 e2e de navegador); `importar-rutina.e2e.ts` adaptado al listado de planes de T13 |

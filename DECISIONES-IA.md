@@ -352,3 +352,10 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Reglas afectadas: ninguna nueva. Se cubren en navegador RN-IDE-01, 08, 09, 10, 11; RN-PLAN-08, 11, 13, 15, 21; RN-ENT-01, 02, 03, 05, 06, 17, 18; RN-UI-ENT-02, 03, 04.
 - Verificación: front 177 tests de Vitest y 12 e2e de navegador en verde con la base recién sembrada; lint sin errores. Cada e2e nuevo y la adaptación de importar rutina fallaron por aserción al romper una línea de producción (11 mutaciones, restauradas).
 - Pendientes: no hay test de que «Finalizar» no aparezca antes del último paso; P1 calcula la fecha de fin en el test porque depende del día; la parte del alumno en P1 no tiene mutación propia; ramas pusheadas sin PR (`fix/US15-finalizar-ultimo-paso`, `test/T15-e2e-navegador` en el front y `docs/T15-e2e-navegador` en el back).
+
+## 2026-11-23 — Jira y documentación alineados con develop [T11]
+- Desarrollador: Lisandro. Herramienta / modelo: Claude Code · Opus 5.5.
+- Objetivo: que Jira (CG) y la documentación reflejen lo que realmente está integrado en `develop`.
+- Qué hizo la IA: comparó Jira, `TRAZABILIDAD.md`, `PLAN-IMPLEMENTACION.md` y el historial de los dos repos. En Jira pasó a Listo CG-54 y CG-55 (subtareas de US15), CG-73 (T06), CG-74 (T07) y CG-86 (T15); pasó US06 (CG-22) y sus subtareas CG-24 y CG-25 a En curso porque la edición de rutinas (RN-PLAN-07) no tiene código; etiquetó como `descartada` las subtareas de US01 (CG-7, 8, 9). En la documentación marcó US10, US11, US12, US14, US15 y US18 como integradas y recalculó el acumulado: 103/129.
+- Decisiones del desarrollador: «actualizá todo al estado verdadero del repo».
+- Pendientes: borrar a mano CG-6 a CG-9 (el conector no borra); US06 (edición), US16 y US17.
