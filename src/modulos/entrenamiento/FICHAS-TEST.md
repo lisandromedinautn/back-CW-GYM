@@ -43,3 +43,15 @@ Una fila por caso de test. La entrada y el esperado los **confirma el desarrolla
 | `finalizar-entrenamiento.e2e-spec.ts` › permisos y persistencia | RN-ENT-05, 17, 19 | e2e | sin token, profesor, alumno ajeno y alumno propio | 401, 403, 404 y resumen persistido | = esperado (laptop) | 22/11/2026 |
 
 Comprobación por mutación US15: el cálculo de peso corporal con carga extra y la visualización de 540 kg fallaron al alterarse; se restauraron los archivos con las mismas huellas que las versiones aprobadas.
+
+## US21 — Series por debajo de lo prescripto (confirmadas por Ulises el 24/11/2026)
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `dominio/entrenamiento/series-por-debajo.spec.ts` › ejemplo de la regla | RN-ENT-21 | Unitario | Bloque press, 5 series de 10 repeticiones con 30 kg. Registradas: 10 × 30, 10 × 30, 8 × 30 y 10 × 25; la 5 sin registrar | `totalSeries` 5; por debajo las series 3, 4 y 5, la 5 con `realizada: null` | | 24/11/2026 |
+| `series-por-debajo.spec.ts` › cumplir o superar no deja series por debajo | RN-ENT-21 | Unitario | Bloque de 2 series de 10 × 30. Registradas: 10 × 30 y 12 × 35 | `totalSeries` 2; ninguna por debajo | | 24/11/2026 |
+| `series-por-debajo.spec.ts` › sin peso prescripto no se compara el peso | RN-ENT-21 | Unitario | Dominada sin peso prescripto, 2 series de 8. Registradas: 8 sin peso y 8 con 5 kg | Ninguna por debajo | | 24/11/2026 |
+| `series-por-debajo.spec.ts` › peso prescripto no informado cuenta como 0 | RN-ENT-21 | Unitario | Bloque de 1 serie de 10 × 30. Registrada: 10 repeticiones sin peso | 1 de 1 por debajo | | 24/11/2026 |
+| `series-por-debajo.spec.ts` › por tiempo | RN-ENT-21 | Unitario | Plancha, 2 series de 60 s. Registradas: 60 s y 45 s | `totalSeries` 2; por debajo la serie 2 | | 24/11/2026 |
+| `series-por-debajo.spec.ts` › circuito cuenta cada ejercicio de cada vuelta | RN-ENT-21 | Unitario | Circuito de 2 vueltas con sentadilla (15) y flexiones (10). Registradas: vuelta 1 15 y 10, vuelta 2 15; falta vuelta 2 flexiones | `totalSeries` 4; por debajo `numero` 2, `posicion` 2, con `realizada: null` | | 24/11/2026 |
+| `aplicacion/finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.spec.ts` › (`describe` nuevo, sin tocar los casos existentes) publica las series por debajo | RN-ENT-21 | Unitario | Rutina "Fuerza", bloque press de 2 series de 10 × 30, sin series registradas; inicio 22/11 10:00, cierre 10:30 | Se publica `EntrenamientoFinalizado` con `inicio` `'2026-11-22T10:00:00.000Z'`, `rutina` `'Fuerza'`, `totalSeries` 2 y las dos series en `seriesPorDebajo`, con `realizada: null` | | 24/11/2026 |

@@ -46,7 +46,7 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | Catálogo | `src/modulos/catalogo/CLAUDE.md` | `src/modulos/catalogo/FICHAS-TEST.md` | RN-CAT |
 | Planificación | `src/modulos/planificacion/CLAUDE.md` | `src/modulos/planificacion/FICHAS-TEST.md` | RN-PLAN |
 | Entrenamiento | `src/modulos/entrenamiento/CLAUDE.md` | `src/modulos/entrenamiento/FICHAS-TEST.md` | RN-ENT |
-| Notificaciones (US21) | `src/modulos/notificaciones/CLAUDE.md` | 📄 `src/modulos/notificaciones/FICHAS-TEST.md` (se crea con las fichas) | RN-NOT |
+| Notificaciones (US21) | `src/modulos/notificaciones/CLAUDE.md` | `src/modulos/notificaciones/FICHAS-TEST.md` | RN-NOT |
 | Kernel compartido | `src/compartido/CLAUDE.md` | — | — |
 
 ## Casos de uso → endpoint → tests
