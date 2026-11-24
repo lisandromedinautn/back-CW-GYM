@@ -263,10 +263,10 @@ US05 — Vincular alumno con su profesor   (merge --no-ff)
 | 2 | US15 | Backend: finalizar entrenamiento (volumen, grupos, duración) | back | RN-ENT-05, 06, 07, 08, 09, 17 | 5 | ✅ integrado en develop el 23/11 (Martina) |
 | 2 | US12 | Frontend: página de alumnos del plan | front | RN-PLAN-12, 13, 14, 16 | 1 | ✅ integrado en develop el 22/11 (Martina) |
 | 3 | US16 | Backend: detectar récords al finalizar (evento RécordBatido) | back | RN-ENT-10, 11, 12, 13 | 5 | ⬜ |
-| 3 | US17 | Backend: registrar RPE y sensación de fuerza | back | RN-ENT-14, 15, 16 | 1 | ⬜ |
+| 3 | US17 | Backend: registrar RPE y sensación de fuerza y sumarlos a la notificación (US21) | back | RN-ENT-14, 15, 16 · RN-NOT-01, 05, 06, 07 | 1 | ✅ CG-61 (24/11, en rama `feat/US17-percepcion`): 13 fichas en verde (unitarios y 2 e2e de API), con comprobación por mutación; `yarn test:cov` 422/422 |
 | 4 | US15 | Frontend: página de resumen del entrenamiento | front | RN-ENT-05, 06, 07, 08, 09, 17 | 3 | ✅ integrado en develop el 23/11 (Ramiro, Ulises) |
 | 5 | US16 | Frontend: récords batidos en el resumen | front | RN-ENT-10, 11, 12, 13 | 1 | ⬜ |
-| 5 | US17 | Frontend: RPE y sensación en el resumen | front | RN-ENT-14, 15, 16 | 1 | ⬜ |
+| 5 | US17 | Frontend: RPE y sensación en el resumen, en los entrenamientos de alumnos y en la notificación | front | RN-ENT-14, 15, 16 · RN-NOT-05, 06 | 1 | ✅ CG-62 (24/11, en rama `feat/US17-percepcion`): 7 fichas en verde (6 de Vitest y 1 e2e de navegador), con comprobación por mutación; `yarn test:cov` 195/195 |
 
 **Punto de atención:** los cálculos usan el ejemplo de referencia de la planificación como dato literal en los tests (80 kg, dominadas con 10 kg extra, 6 repeticiones → 90 kg, 540 kg, 1RM 108 kg). Registrar una serie tiene que llevar 10 segundos o menos (OKR O3): conviene medirlo en la demo.
 

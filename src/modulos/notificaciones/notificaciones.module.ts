@@ -6,6 +6,7 @@ import { ModuloIdentidad } from '../identidad/identidad.module.js';
 import { ConsultarNotificaciones } from './aplicacion/consultar-notificaciones/consultar-notificaciones.caso-uso.js';
 import { ContarNoLeidas } from './aplicacion/contar-no-leidas/contar-no-leidas.caso-uso.js';
 import { MarcarNotificacionLeida } from './aplicacion/marcar-notificacion-leida/marcar-notificacion-leida.caso-uso.js';
+import { SumarPercepcion } from './aplicacion/sumar-percepcion/sumar-percepcion.caso-uso.js';
 import { NotificarEntrenamientoPorDebajo } from './aplicacion/notificar-entrenamiento-por-debajo/notificar-entrenamiento-por-debajo.caso-uso.js';
 import { ConsultaProfesores } from './dominio/notificacion/consulta-profesores.puerto.js';
 import { RepositorioNotificaciones } from './dominio/notificacion/repositorio-notificaciones.puerto.js';
@@ -13,6 +14,7 @@ import { ConsultaProfesoresFachadaIdentidad } from './infraestructura/notificaci
 import { NotificacionEsquema } from './infraestructura/notificacion/notificacion.esquema.js';
 import { RepositorioNotificacionesTypeorm } from './infraestructura/notificacion/notificaciones.repositorio-typeorm.js';
 import { EntrenamientoFinalizadoSuscriptor } from './infraestructura/suscriptores/entrenamiento-finalizado.suscriptor.js';
+import { PercepcionRegistradaSuscriptor } from './infraestructura/suscriptores/percepcion-registrada.suscriptor.js';
 import { NotificacionesControlador } from './presentacion/controlador/notificaciones.controlador.js';
 
 /** Notificaciones (US21). Los casos de uso no conocen Nest: se arman acá con fábricas. */
@@ -46,7 +48,14 @@ import { NotificacionesControlador } from './presentacion/controlador/notificaci
       useFactory: (r: RepositorioNotificaciones, p: ConsultaProfesores, reloj: Reloj) =>
         new MarcarNotificacionLeida(r, p, reloj),
     },
+    {
+      provide: SumarPercepcion,
+      inject: [RepositorioNotificaciones, ConsultaProfesores, Reloj],
+      useFactory: (r: RepositorioNotificaciones, p: ConsultaProfesores, reloj: Reloj) =>
+        new SumarPercepcion(r, p, reloj),
+    },
     EntrenamientoFinalizadoSuscriptor,
+    PercepcionRegistradaSuscriptor,
   ],
 })
 export class NotificacionesModule {}

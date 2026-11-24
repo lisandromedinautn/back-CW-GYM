@@ -1,6 +1,6 @@
 import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
 import type { SeriePorDebajo } from '../../dominio/notificacion/serie-por-debajo.valor.js';
-import type { Percepcion } from '../../dominio/notificacion/percepcion.valor.js';
+import type { DatosPercepcion } from '../../dominio/notificacion/percepcion.valor.js';
 
 /** Lo que se guarda en `detalle`: todo lo que la bandeja muestra además de las columnas. */
 export interface DetalleNotificacion {
@@ -40,5 +40,5 @@ export class NotificacionEsquema {
   detalle!: DetalleNotificacion;
 
   @Column({ type: 'jsonb', nullable: true })
-  percepcion!: Percepcion | null;
+  percepcion!: DatosPercepcion | null;
 }

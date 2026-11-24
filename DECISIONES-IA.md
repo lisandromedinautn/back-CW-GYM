@@ -413,3 +413,51 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
   - Cuando se trabaje US17: si cargar la percepción vuelve la notificación a no leída y si una percepción baja notifica aunque no haya series por debajo.
   - Mover CG-87 a CG-90 en Jira.
   - El back de test (`yarn start`) deja vivo el proceso `dist/main` al detener la tarea: se cerró a mano dos veces.
+
+## 2026-11-24 — Percepción del alumno y su notificación al profesor [US17]
+- Desarrollador: Ulises
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 (orquestador) + Sonnet 5.5 medium (5 subagentes) + Haiku 5.5 low (1 subagente).
+  - Back: A (entrenamiento) y B (notificaciones, dominio y aplicación) en paralelo; después C (suscriptor, repositorio y e2e).
+  - Front: D (resumen y US18) y E (notificación, Haiku) en paralelo; después F (e2e de Playwright).
+- Objetivo: que el alumno cargue su RPE y su sensación de fuerza (US17, CG-60) y que el profesor lo vea, integrado con la notificación de US21.
+- Qué hizo la IA:
+  - Preguntó las zonas grises y escribió el modelo en los dos repos: RN-ENT-16 cambia, RN-NOT-01 y 05 cambian, se suman RN-NOT-06 y 07, decisión 46, glosario, plan, trazabilidad y atlas.
+  - Propuso 20 fichas (13 del back y 7 del front) y las registró cuando las confirmó Ulises.
+  - **Back:**
+    - objetos de valor `Rpe` y `SensacionFuerza` y método `Entrenamiento.registrarPercepcion`, que emite `PercepcionRegistrada`;
+    - `POST /entrenamiento/entrenamientos/:id/percepcion` con escritura condicional (`fin IS NOT NULL AND percepcion IS NULL`) y la percepción en las dos lecturas;
+    - en notificaciones: `Percepcion.esMala`, `Gravedad.dePercepcion` y `Gravedad.mayor`, `crearPorPercepcion`, `sumarPercepcion` (vuelve a no leída), el caso de uso `SumarPercepcion` y su suscriptor.
+  - **Front:**
+    - formulario de percepción en el resumen, con validación antes de enviar;
+    - la percepción en US18 y en la notificación;
+    - "Percepción mala" sin lista de series.
+  - Revisó cada reporte y completó las mutaciones que faltaban (el rechazo de `crearPorPercepcion` y el camino sin profesor). Alineó el tipo `Percepcion` del front al contrato (siempre numérico), actualizó la documentación y cerró el back de test sin dejar procesos vivos.
+- Decisiones del desarrollador:
+  - **Cuándo y cómo se carga:** solo en un entrenamiento finalizado, una sola vez y los dos valores juntos.
+  - **Notificación existente:** si el entrenamiento ya tiene notificación, la percepción se suma y la notificación vuelve a no leída.
+  - **Percepción mala:** RPE ≥ 9 o sensación ≤ 2. Notifica aunque no haya series por debajo, Leve con una condición y Grave con las dos.
+  - **Gravedad combinada:** con series por debajo, queda la gravedad mayor.
+  - **Confirmaciones:** modelo, fichas, repartos y microcommits.
+- Ideas descartadas:
+  - cargar la percepción en curso;
+  - carga parcial o corregible;
+  - sumar la percepción sin cambiar la lectura;
+  - umbrales "RPE ≥ 9 y sensación ≤ 2" o solo los extremos;
+  - percepción siempre Leve o siempre Grave;
+  - que la percepción no cambie la gravedad;
+  - `PUT` para la carga (se usó `POST`, porque se carga una sola vez).
+- Reglas afectadas: RN-ENT-16 (cambia), RN-NOT-01 y 05 (cambian; la 05 pasa de "a confirmar" a vigente), RN-NOT-06 y 07 (nuevas). En el front: RN-ENT-16 (UI), RN-UI-ENT-04, RN-NOT-05 y 06 (UI).
+- Verificación:
+  - Back: `yarn test:cov` 422/422, con lint y build OK.
+  - Front: `yarn test:cov` 195/195 (ramas 81,28%) y 14/14 e2e de navegador con la base recién sembrada.
+  - En cada ficha se rompió a propósito una línea de producción, el test dio rojo y se restauró.
+  - Quedaron anotados en las fichas:
+    - el rojo previo de N1 a N5 fue un `TypeError`, no una aserción, y N6 no tuvo rojo previo;
+    - ningún test detecta quitar `AND percepcion IS NULL` del UPDATE condicional, porque no hay test de carga simultánea;
+    - no hay caso para la sensación de fuerza 6;
+    - la entrada de P6 se aclaró: en curso propio da 409 y ajeno da 404.
+- Pendientes:
+  - ramas `feat/US17-percepcion` sin pushear ni PR;
+  - mover CG-60 a CG-62 en Jira;
+  - decidir si `GET` de US18 incluye `percepcion` solo en finalizados, como `mi-entrenamiento-en-curso`;
+  - fichas para la carga simultánea y para la sensación de fuerza 6, si se quieren.

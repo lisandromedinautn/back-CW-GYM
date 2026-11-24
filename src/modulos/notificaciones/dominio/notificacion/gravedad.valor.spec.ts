@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import { Gravedad } from './gravedad.valor.js';
+import { Percepcion } from './percepcion.valor.js';
 
 describe('RN-NOT-02 · la gravedad es Grave desde el 40% de series por debajo, Leve antes', () => {
   it('1 de 10 → leve', () => {
@@ -37,5 +38,31 @@ describe('RN-NOT-02 · la gravedad es Grave desde el 40% de series por debajo, L
       }
     });
     expect(codigos).toEqual(['RN-NOT-02', 'RN-NOT-02', 'RN-NOT-02']);
+  });
+});
+
+describe('RN-NOT-06 · la gravedad de la percepción es Leve con una condición y Grave con las dos', () => {
+  it('9/3, 7/2, 10/1 y 8/3 → Leve, Leve, Grave y null', () => {
+    const resultado = [
+      Gravedad.dePercepcion(Percepcion.crear({ rpe: 9, sensacionFuerza: 3 }))?.valor ?? null,
+      Gravedad.dePercepcion(Percepcion.crear({ rpe: 7, sensacionFuerza: 2 }))?.valor ?? null,
+      Gravedad.dePercepcion(Percepcion.crear({ rpe: 10, sensacionFuerza: 1 }))?.valor ?? null,
+      Gravedad.dePercepcion(Percepcion.crear({ rpe: 8, sensacionFuerza: 3 }))?.valor ?? null,
+    ];
+    expect(resultado).toEqual(['leve', 'leve', 'grave', null]);
+  });
+});
+
+describe('RN-NOT-07 · queda la mayor gravedad entre las series y la percepción', () => {
+  it('Leve y Grave → Grave; Leve y Leve → Leve; Grave y Leve → Grave; Leve y null → Leve', () => {
+    const leve = Gravedad.desde(1, 10);
+    const grave = Gravedad.desde(5, 5);
+    const resultado = [
+      Gravedad.mayor(leve, grave).valor,
+      Gravedad.mayor(leve, leve).valor,
+      Gravedad.mayor(grave, leve).valor,
+      Gravedad.mayor(leve, null).valor,
+    ];
+    expect(resultado).toEqual(['grave', 'leve', 'grave', 'leve']);
   });
 });

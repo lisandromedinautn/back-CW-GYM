@@ -32,5 +32,6 @@ export function filaAEntrenamiento(
     series: series.map(filaASerie),
     ...(fila.fin ? { fin: fila.fin.toISOString() } : {}),
     ...(fila.resumen ? { resumen: fila.resumen } : {}),
+    ...(fila.percepcion ? { percepcion: fila.percepcion } : {}),
   });
 }

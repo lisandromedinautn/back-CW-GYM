@@ -5,9 +5,12 @@ import type { CopiaRutina, EjercicioPrescriptoCopiado } from './copia-rutina.val
 import { EntrenamientoIniciado } from './entrenamiento-iniciado.evento.js';
 import { EventoSerieRealizada } from './serie-realizada.evento.js';
 import type { MedidaSerie, RegistroSerie, SerieRealizada } from './serie-realizada.valor.js';
-import { seriesPorDebajo } from './series-por-debajo.js';
+import { seriesPorDebajo, seriesPrescriptas } from './series-por-debajo.js';
+import { PercepcionRegistrada } from './percepcion-registrada.evento.js';
+import type { DatosPercepcion, Percepcion } from '../percepcion/percepcion.valor.js';
 
 export interface DatosEntrenamiento {
+  percepcion?: DatosPercepcion;
   id: string;
   alumnoId: string;
   inicio: string;
@@ -86,6 +89,32 @@ export class Entrenamiento {
       rutina.nombre,
       totalSeries,
       porDebajo,
+    );
+  }
+
+  /**
+   * RN-ENT-16: la percepción se carga una sola vez, solo en un entrenamiento finalizado.
+   */
+  registrarPercepcion(percepcion: Percepcion, instante: Date): PercepcionRegistrada {
+    if (this.estadoEn(instante) !== 'finalizado') {
+      throw new ErrorDominio(
+        'RN-ENT-16',
+        'La percepción solo se carga en un entrenamiento finalizado',
+        'conflicto',
+      );
+    }
+    if (this.registro.percepcion) {
+      throw new ErrorDominio('RN-ENT-16', 'La percepción ya fue cargada', 'conflicto');
+    }
+    this.registro.percepcion = percepcion.datos;
+    const { id, alumnoId, inicio, rutina } = this.registro;
+    return new PercepcionRegistrada(
+      id,
+      alumnoId,
+      inicio,
+      rutina.nombre,
+      seriesPrescriptas(rutina).length,
+      percepcion.datos,
     );
   }
 

@@ -64,6 +64,7 @@ Hay tres roles: **Profesor**, **Alumno** y **Admin**.
 | 43 | Corte y reestimación del sprint 2 (14/11/2026) | A pedido de Martina: US06 se mantiene parcial; las horas y productividad horaria quedan ND. Se conservan los 129 puntos de V1 y se estima un residual V2 de 91, con escenarios condicionales y trazabilidad de fuentes en `docs/METRICAS-SPRINT-2.md`. No cambia el alcance de las RN ni las fechas objetivo acordadas |
 | 44 | Sprints de Jira alineados al calendario (21/11/2026) | A pedido de Lisandro: el Sprint 2 de Jira, que nunca se había iniciado, se inició y cerró con sus fechas (09–15/11); se crearon CG Sprint 3 (16–22/11, activo) y CG Sprint 4 (23/11–01/12) con las historias según su estado en Jira. Acumulado según Jira: 90/129. US06 figura Listo en Jira con la edición (RN-PLAN-07) sin código: queda para decidir. Detalle en `docs/PLAN-IMPLEMENTACION.md` |
 | 45 | Notificación de entrenamiento por debajo de lo prescripto (24/11/2026) | A pedido de Ulises se suma **US21** (CG-87, 11 pts, Sprint 4, fuera de la base V1 de 129 pts). Cuando un alumno finaliza un Entrenamiento con alguna serie por debajo de lo prescripto (las no registradas cuentan como no hechas), su profesor recibe una notificación en la app, Leve (menos del 40% de las series) o Grave (40% o más). Vive en un módulo nuevo, `notificaciones`, que escucha `EntrenamientoFinalizado`: es el primer suscriptor real (Observador). Reglas: RN-ENT-21 y RN-NOT-01 a 05 (la 05, percepción de US17, a confirmar) |
+| 46 | Percepción del alumno y notificación (24/11/2026) | A pedido de Ulises, para US17 (CG-60): RPE y sensación se cargan una sola vez, los dos juntos y solo en un entrenamiento finalizado (precisa la decisión 35). Si el entrenamiento ya tiene notificación, la percepción se suma y la notificación vuelve a no leída. Una percepción mala (RPE ≥ 9 o sensación ≤ 2) notifica aunque no haya series por debajo: Leve con una condición, Grave con las dos; con series por debajo queda la gravedad mayor. Reglas: RN-ENT-16 (cambia), RN-NOT-01 y 05 (cambian), RN-NOT-06 y 07 (nuevas). US17 crece respecto de su estimación (2 pts) por la integración con Notificaciones |
 
 ## Glosario de lenguaje ubicuo
 
@@ -103,6 +104,8 @@ Un término por concepto. Estos nombres se usan igual en conversaciones, tarjeta
 | **Récord Personal** | Mejor marca del alumno en un ejercicio: máx. repeticiones, máx. volumen de serie, 1RM estimado o máx. tiempo |
 | **RPE** | Esfuerzo autopercibido, escala entera de 1 a 10 |
 | **Sensación de fuerza** | Percepción del alumno sobre su fuerza en el entrenamiento, escala entera de 1 a 5 |
+| **Percepción** | RPE y sensación de fuerza que el alumno carga juntos, una sola vez, en un entrenamiento finalizado |
+| **Percepción mala** | Percepción con RPE 9 o más, o con sensación de fuerza 2 o menos. Notifica al profesor aunque no haya series por debajo de lo prescripto |
 
 ## Reglas de cálculo
 
@@ -169,6 +172,7 @@ El 1RM se estima con la fórmula de Epley, solo para series de hasta 10 repetici
 | SerieRealizada | Entrenamiento | Registra lo hecho frente a lo prescripto |
 | EntrenamientoFinalizado | Entrenamiento | Registra la hora de fin y calcula volumen, grupos trabajados y récords. Informa las series por debajo de lo prescripto: Notificaciones lo escucha y avisa al profesor (US21) |
 | RécordBatido | Entrenamiento | Se muestra en el resumen del entrenamiento |
+| PercepcionRegistrada | Entrenamiento | El alumno cargó RPE y sensación de fuerza (una sola vez, en un entrenamiento finalizado). Notificaciones la suma a la notificación o crea una si la percepción es mala (US17) |
 
 **Cálculos de dominio (sin services):** carga efectiva, volumen y 1RM estimado son comportamiento de objetos de valor y entidades (patrón Estrategia por tipo de carga). La detección de récords es comportamiento del agregado Récord Personal. La validación de plan vigente único la hace el caso de uso que asigna alumnos.
 

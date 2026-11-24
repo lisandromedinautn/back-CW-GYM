@@ -1,6 +1,6 @@
 import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import { Gravedad } from './gravedad.valor.js';
-import type { Percepcion } from './percepcion.valor.js';
+import type { DatosPercepcion, Percepcion } from './percepcion.valor.js';
 import type { SeriePorDebajo } from './serie-por-debajo.valor.js';
 
 export interface DatosNotificacion {
@@ -13,13 +13,17 @@ export interface DatosNotificacion {
   gravedad: 'leve' | 'grave';
   creada: string;
   leidaEn: string | null;
-  percepcion: Percepcion | null;
+  percepcion: DatosPercepcion | null;
 }
 
 export type DatosCreacionNotificacion = Omit<
   DatosNotificacion,
   'gravedad' | 'leidaEn' | 'percepcion'
 >;
+
+export type DatosCreacionPorPercepcion = Omit<DatosCreacionNotificacion, 'seriesPorDebajo'> & {
+  percepcion: Percepcion;
+};
 
 /** Notificación al profesor de un Entrenamiento por debajo de lo prescripto (US21). */
 export class Notificacion {
@@ -42,6 +46,26 @@ export class Notificacion {
     });
   }
 
+  /** RN-NOT-01, 06: notificación sin series por debajo, solo por percepción mala. */
+  static crearPorPercepcion(datos: DatosCreacionPorPercepcion): Notificacion {
+    const gravedad = Gravedad.dePercepcion(datos.percepcion);
+    if (gravedad === null) {
+      throw new ErrorDominio(
+        'RN-NOT-01',
+        'Solo se notifica un entrenamiento con series por debajo o con una percepción mala',
+        'validacion',
+      );
+    }
+    const { percepcion, ...resto } = datos;
+    return new Notificacion({
+      ...structuredClone(resto),
+      seriesPorDebajo: [],
+      gravedad: gravedad.valor,
+      leidaEn: null,
+      percepcion: percepcion.datos(),
+    });
+  }
+
   static reconstruir(datos: DatosNotificacion): Notificacion {
     return new Notificacion(structuredClone(datos));
   }
@@ -52,6 +76,14 @@ export class Notificacion {
 
   get leida(): boolean {
     return this.registro.leidaEn !== null;
+  }
+
+  /** RN-NOT-05, 07: suma la percepción, queda la gravedad mayor y vuelve a no leída. */
+  sumarPercepcion(percepcion: Percepcion): void {
+    const actual = Gravedad.reconstruir(this.registro.gravedad);
+    this.registro.gravedad = Gravedad.mayor(actual, Gravedad.dePercepcion(percepcion)).valor;
+    this.registro.percepcion = percepcion.datos();
+    this.registro.leidaEn = null;
   }
 
   /** RN-NOT-04: idempotente. Si ya estaba leída, conserva la primera fecha de lectura. */
