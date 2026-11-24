@@ -3,7 +3,7 @@ import type { ConsultaEjercicios } from '../../dominio/rutina/consulta-ejercicio
 import type { EjercicioDelCatalogo } from '../../dominio/rutina/ejercicio-del-catalogo.js';
 import type { RepositorioRutinas } from '../../dominio/rutina/repositorio-rutinas.puerto.js';
 import { NombreRutina } from '../../dominio/rutina/nombre-rutina.valor.js';
-import { Rutina } from '../../dominio/rutina/rutina.entidad.js';
+import { type DatosRutina, Rutina } from '../../dominio/rutina/rutina.entidad.js';
 
 /** Un bloque tal como llega del profesor: el ejercicio se referencia por id (RN-PLAN-06). */
 export interface PedidoBloque {
@@ -53,25 +53,9 @@ export class CrearRutina {
   ) {}
 
   async ejecutar(profesorUsuarioId: string, pedido: PedidoRutina): Promise<Rutina> {
-    const bloques = await Promise.all(
-      (pedido.bloques ?? []).map(async ({ ejercicioId, ...resto }) => ({
-        ...resto,
-        ejercicio: await this.buscarEjercicio(ejercicioId),
-      })),
-    );
-    const circuitos = await Promise.all(
-      (pedido.circuitos ?? []).map(async ({ ejercicios, ...resto }) => ({
-        ...resto,
-        ejercicios: await Promise.all(
-          ejercicios.map(async ({ ejercicioId, ...objetivo }) => ({
-            ...objetivo,
-            ejercicio: await this.buscarEjercicio(ejercicioId),
-          })),
-        ),
-      })),
-    );
+    const contenido = await resolverContenido(this.ejercicios, pedido);
     const nombre = await this.resolverNombre(profesorUsuarioId, pedido.nombre);
-    const rutina = Rutina.crear({ profesorUsuarioId, nombre, bloques, circuitos });
+    const rutina = Rutina.crear({ profesorUsuarioId, nombre, ...contenido });
     await this.rutinas.guardar(rutina);
     return rutina;
   }
@@ -97,10 +81,18 @@ export class CrearRutina {
     }
     return `Rutina ${numero}`;
   }
+}
 
-  /** RN-PLAN-06: el ejercicio referenciado tiene que existir en el catálogo. */
-  private async buscarEjercicio(id: string): Promise<EjercicioDelCatalogo> {
-    const ejercicio = await this.ejercicios.buscarPorId(id);
+/**
+ * RN-PLAN-06: cambia cada `ejercicioId` del pedido por el ejercicio del catálogo, que tiene que
+ * existir. Lo comparten crear y editar rutina (US06).
+ */
+export async function resolverContenido(
+  ejercicios: ConsultaEjercicios,
+  pedido: PedidoRutina,
+): Promise<Pick<DatosRutina, 'bloques' | 'circuitos'>> {
+  const buscar = async (id: string): Promise<EjercicioDelCatalogo> => {
+    const ejercicio = await ejercicios.buscarPorId(id);
     if (!ejercicio) {
       throw new ErrorDominio(
         'RN-PLAN-06',
@@ -109,5 +101,23 @@ export class CrearRutina {
       );
     }
     return ejercicio;
-  }
+  };
+  const bloques = await Promise.all(
+    (pedido.bloques ?? []).map(async ({ ejercicioId, ...resto }) => ({
+      ...resto,
+      ejercicio: await buscar(ejercicioId),
+    })),
+  );
+  const circuitos = await Promise.all(
+    (pedido.circuitos ?? []).map(async ({ ejercicios: delCircuito, ...resto }) => ({
+      ...resto,
+      ejercicios: await Promise.all(
+        delCircuito.map(async ({ ejercicioId, ...objetivo }) => ({
+          ...objetivo,
+          ejercicio: await buscar(ejercicioId),
+        })),
+      ),
+    })),
+  );
+  return { bloques, circuitos };
 }

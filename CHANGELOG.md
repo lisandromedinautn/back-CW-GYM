@@ -8,6 +8,7 @@ Categorías: Agregado, Cambiado, Corregido, Eliminado, Seguridad. Cada entrada c
 
 ### Agregado
 
+- `GET /planificacion/rutinas/:id` y `PUT /planificacion/rutinas/:id` (Profesor, US06): el detalle de una rutina propia y la edición de su contenido (ejercicios, series, objetivos, peso, pausas, orden y nombre), con las mismas validaciones que al crearla. Conserva el id; los entrenamientos ya realizados no cambian (RN-PLAN-07, 08).
 - `POST /entrenamiento/entrenamientos/:id/percepcion` (Alumno, US17, CG-61): carga RPE (1 a 10) y sensación de fuerza (1 a 5) una sola vez, los dos juntos y solo en un entrenamiento finalizado, y publica `PercepcionRegistrada`. `GET /entrenamiento/mi-entrenamiento-en-curso` (finalizado) y `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` devuelven `percepcion` (RN-ENT-14, 15, 16).
 - La notificación al profesor suma la percepción y vuelve a no leída. Una percepción mala (RPE ≥ 9 o sensación ≤ 2) notifica aunque no haya series por debajo: Leve con una condición, Grave con las dos. Con series por debajo queda la gravedad mayor (RN-NOT-01, 05, 06, 07; US17).
 

@@ -40,8 +40,8 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | Archivo (`aplicacion/`) | US | RN |
 | :-- | :-- | :-- |
 | `crear-rutina.caso-uso.ts` ✅ | US06, US09, US10, T09 | 01–06, 20, 21 |
-| `editar-rutina.caso-uso.ts` | US06 | 01–07 |
-| `consultar-rutinas.caso-uso.ts` ✅ | T06 | 08 |
+| `editar-rutina/editar-rutina.caso-uso.ts` ✅ | US06 | 01–08, 20, 21 |
+| `consultar-rutinas.caso-uso.ts` ✅ (`porId`: detalle de una rutina propia, US06) | T06, US06 | 08 |
 | `renombrar-rutina/renombrar-rutina.caso-uso.ts` ✅ | T09 | 08, 21 |
 | `normalizar-nombres-rutinas/normalizar-nombres-rutinas.caso-uso.ts` ✅ (corre al arrancar, `PlanificacionModule.onApplicationBootstrap`) | T09 | 21 |
 | `importar-rutina/importar-rutina.caso-uso.ts` ✅ | US20 | 08, 21 |
@@ -58,7 +58,8 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `POST /planificacion/rutinas` ✅ (acepta `nombre` opcional, RN-PLAN-21, y `orden` opcional en cada bloque y circuito, US10) | Profesor | crear-rutina |
 | `GET /planificacion/rutinas?pagina=&tamanio=` ✅ (respuesta `{ items, total, pagina, tamanio }`; por defecto 1 y 10) | Profesor | consultar-rutinas |
 | `PATCH /planificacion/rutinas/:id/nombre` ✅ | Profesor | renombrar-rutina |
-| `PUT /planificacion/rutinas/:id` | Profesor | editar-rutina |
+| `GET /planificacion/rutinas/:id` ✅ (misma respuesta que crear) | Profesor | consultar-rutinas (`porId`) |
+| `PUT /planificacion/rutinas/:id` ✅ (mismo body que crear) | Profesor | editar-rutina |
 | `POST /planificacion/rutinas/:id/importacion` ✅ | Profesor | importar-rutina |
 | `POST /planificacion/planes` ✅ (respuesta con `id`, `fechaInicio`, `fechaFin`, `dias[{ numero, fecha, rutinaId, esDescanso }]` y `alumnoIds`) | Profesor | crear-plan |
 | `POST /planificacion/planes/:id/alumnos` | Profesor | agregar-alumno-a-plan |
@@ -90,6 +91,14 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 * T06 (11/11/2026): `GET /planificacion/rutinas` pagina con `PaginacionDto` (`src/compartido/presentacion/paginacion/`): tamaños 5, 10, 20, 50 o 100 (por defecto 10) y página desde 1; un valor inválido responde 400 desde el DTO, sin código RN. El caso de uso ya no acota valores. Orden: más nuevas primero.
 * RN-PLAN-21: la unicidad se comprueba en los casos de uso (crear y renombrar) con `listarNombresPorProfesor` del puerto; no hay índice único en la base. El largo lo valida `NombreRutina` (400 `RN-PLAN-21`), no el DTO. La columna `nombre` es `varchar(60)` con default `'Rutina 1'` para las filas que ya existían.
 * Al renombrar, el mapper deriva el id de las filas de ejercicios de circuito a partir del circuito y la posición, para que guardar de nuevo la rutina actualice esas filas en vez de duplicarlas.
+
+## Decisiones de implementación (US06, consultar y editar)
+
+* Pedido por Martina el 24/11/2026: US06 tenía solo la creación. Se suman el detalle de una rutina propia (`GET /planificacion/rutinas/:id`) y la edición de su contenido (`PUT /planificacion/rutinas/:id`), para cambiar ejercicios, series, objetivos, peso, pausas y el orden, además del nombre.
+* El `PUT` recibe el mismo body que `POST /planificacion/rutinas` (`CrearRutinaDto`) y reemplaza todo el contenido. Valida igual que crear (RN-PLAN-01 a 06, 20) con `resolverContenido`, compartido con `CrearRutina`. Sin `nombre`, la rutina conserva el suyo; con `nombre`, rige RN-PLAN-21 como al renombrar.
+* `Rutina.editar` devuelve la rutina con el mismo id y profesor, así los días de los planes que la referencian ven la versión nueva. Los entrenamientos ya realizados no cambian porque guardan su propia copia (decisión 6, RN-PLAN-07): ninguna tabla de entrenamiento apunta a las de rutinas.
+* `RepositorioRutinasTypeorm.guardar` borra los bloques y circuitos anteriores de la rutina y guarda los nuevos en una transacción; los ejercicios de circuito caen en cascada. Sin esto, los bloques quitados quedaban en la base.
+* Un id con formato inválido responde 400 (`ParseUUIDPipe`); una rutina ajena o inexistente, 404 `RN-PLAN-08`.
 
 ## Decisiones de implementación (US20)
 
