@@ -90,6 +90,7 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | notificaciones | `contar-no-leidas/contar-no-leidas.caso-uso.ts` | `GET /notificaciones/mis-notificaciones/no-leidas` (solo Profesor) | US21 | ✅ `contar-no-leidas.caso-uso.spec.ts` · e2e |
 | notificaciones | `marcar-notificacion-leida/marcar-notificacion-leida.caso-uso.ts` | `PUT /notificaciones/mis-notificaciones/:id/lectura` (solo Profesor) | US21 | ✅ `marcar-notificacion-leida.caso-uso.spec.ts` · e2e |
 | notificaciones | `sumar-percepcion/sumar-percepcion.caso-uso.ts` | Suscriptor de `PercepcionRegistrada` (sin endpoint) | US17 | ✅ `sumar-percepcion.caso-uso.spec.ts` · `test/e2e/notificaciones/percepcion.e2e-spec.ts` |
+| notificaciones | `alertar-incumplimiento-repetido/alertar-incumplimiento-repetido.caso-uso.ts` | Suscriptor de `EntrenamientoFinalizado` (sin endpoint); la alerta sale en `GET /notificaciones/mis-notificaciones` con `tipo` | US23 | ✅ `alertar-incumplimiento-repetido.caso-uso.spec.ts` · `dominio/incumplimiento/racha-incumplimiento.spec.ts` · `test/e2e/notificaciones/incumplimiento-repetido.e2e-spec.ts` |
 
 ## Dependencias entre módulos (solo por Fachada o eventos)
 
@@ -134,9 +135,9 @@ Hoy:
 | entrenamiento | aplicacion | iniciar-entrenamiento, consultar-entrenamiento-en-curso, registrar-serie-realizada, consultar-entrenamientos-de-alumnos |
 | entrenamiento | infraestructura | entrenamiento (esquema `series_realizadas` en `serie-realizada.esquema.ts`, `entrenamiento.mapper.ts` y repositorio TypeORM) |
 | entrenamiento | presentacion | controlador, registrar-serie-realizada (DTO) |
-| notificaciones | dominio | notificacion (`Notificacion` con su spec, `Gravedad` con su spec, `SeriePorDebajo`, `Percepcion`, `EntrenamientoFinalizadoRecibido` y los puertos `RepositorioNotificaciones` y `ConsultaProfesores`) |
+| notificaciones | dominio | incumplimiento (`racha-incumplimiento` con su spec y el puerto `RepositorioFinalizaciones`, US23), notificacion (`Notificacion` con su spec, `Gravedad` con su spec, `SeriePorDebajo`, `Percepcion`, `EntrenamientoFinalizadoRecibido` y los puertos `RepositorioNotificaciones` y `ConsultaProfesores`) |
 | notificaciones | aplicacion | notificar-entrenamiento-por-debajo, consultar-notificaciones, contar-no-leidas, marcar-notificacion-leida |
-| notificaciones | infraestructura | notificacion (esquema `notificaciones` con único por `entrenamiento_id`, mapper, repositorio TypeORM y adaptador de la Fachada de identidad), suscriptores (`EntrenamientoFinalizado`) |
+| notificaciones | infraestructura | incumplimiento (esquema `finalizaciones_alumno` y repositorio TypeORM, US23), notificacion (esquema `notificaciones` con único por `entrenamiento_id`, mapper, repositorio TypeORM y adaptador de la Fachada de identidad), suscriptores (`EntrenamientoFinalizado`) |
 | notificaciones | presentacion | controlador |
 | compartido | todas | semilla, error-dominio, publicador-eventos, guard-roles, filtro-error-dominio, reloj, paginacion (`dominio/paginacion/paginacion.ts` con `TAMANIOS_PAGINA` y `Pagina<T>`; `presentacion/paginacion/paginacion.dto.ts` con `PaginacionDto`) |
 
