@@ -1,3 +1,4 @@
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import type { Pagina } from '../../../../compartido/dominio/paginacion/paginacion.js';
 import type { RepositorioRutinas } from '../../dominio/rutina/repositorio-rutinas.puerto.js';
 import type { Rutina } from '../../dominio/rutina/rutina.entidad.js';
@@ -17,5 +18,14 @@ export class ConsultarRutinas {
       tamanio,
     );
     return { items, total, pagina, tamanio };
+  }
+
+  /** US06: el detalle de una rutina propia, para verla y editarla. Ajena o inexistente: 404. */
+  async porId(profesorUsuarioId: string, rutinaId: string): Promise<Rutina> {
+    const rutina = await this.rutinas.buscarPorId(rutinaId);
+    if (!rutina || rutina.profesorUsuarioId !== profesorUsuarioId) {
+      throw new ErrorDominio('RN-PLAN-08', 'La rutina no existe', 'no-encontrado');
+    }
+    return rutina;
   }
 }
