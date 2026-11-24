@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RepositorioRutinas } from '../../dominio/rutina/repositorio-rutinas.puerto.js';
 import type { Rutina } from '../../dominio/rutina/rutina.entidad.js';
-import { RutinaEsquema } from './rutina.esquema.js';
+import { BloqueRutinaEsquema, CircuitoRutinaEsquema, RutinaEsquema } from './rutina.esquema.js';
 import { RutinaMapper } from './rutina.mapper.js';
 
 @Injectable()
@@ -14,8 +14,22 @@ export class RepositorioRutinasTypeorm extends RepositorioRutinas {
     super();
   }
 
+  /**
+   * RN-PLAN-07: al editar cambian los bloques y circuitos, así que se borran los anteriores y se
+   * guardan los de la rutina, en una transacción. Los ejercicios de circuito caen en cascada.
+   */
   async guardar(rutina: Rutina): Promise<void> {
-    await this.repositorio.save(RutinaMapper.aEsquema(rutina));
+    await this.repositorio.manager.transaction(async (manager) => {
+      for (const esquema of [BloqueRutinaEsquema, CircuitoRutinaEsquema]) {
+        await manager
+          .createQueryBuilder()
+          .delete()
+          .from(esquema)
+          .where('rutina_id = :id', { id: rutina.id })
+          .execute();
+      }
+      await manager.save(RutinaMapper.aEsquema(rutina));
+    });
   }
 
   async buscarPorId(id: string): Promise<Rutina | null> {
