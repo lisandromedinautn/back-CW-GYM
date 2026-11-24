@@ -2,6 +2,7 @@ import { ConsultaEjerciciosResumenFachadaCatalogo } from './infraestructura/entr
 import { RepositorioCierreEntrenamiento } from './dominio/entrenamiento/repositorio-cierre-entrenamiento.puerto.js';
 import { FinalizarEntrenamiento } from './aplicacion/finalizar-entrenamiento/finalizar-entrenamiento.caso-uso.js';
 import { CerrarEntrenamiento } from './aplicacion/finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.js';
+import { CerrarEntrenamientoConRecords } from './aplicacion/finalizar-entrenamiento/cerrar-entrenamiento-con-records.caso-uso.js';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
@@ -22,14 +23,20 @@ import { IniciarEntrenamiento } from './aplicacion/iniciar-entrenamiento/iniciar
 import { RegistrarPercepcion } from './aplicacion/registrar-percepcion/registrar-percepcion.caso-uso.js';
 import { RegistrarSerieRealizada } from './aplicacion/registrar-serie-realizada/registrar-serie-realizada.caso-uso.js';
 import { RepositorioEntrenamientos } from './dominio/entrenamiento/repositorio-entrenamientos.puerto.js';
+import { DetectorRecords } from './dominio/record-personal/detector-records.js';
+import { RepositorioRecords } from './dominio/record-personal/repositorio-records.puerto.js';
+import { MarcasPorTipoEjercicio } from './dominio/marcas-por-tipo-ejercicio/marcas-por-tipo-ejercicio.js';
 import { EntrenamientoEsquema } from './infraestructura/entrenamiento/entrenamiento.esquema.js';
 import { SerieRealizadaEsquema } from './infraestructura/entrenamiento/serie-realizada.esquema.js';
 import { RepositorioEntrenamientosTypeorm } from './infraestructura/entrenamiento/entrenamiento.repositorio-typeorm.js';
+import { ConsultaEjerciciosRecordsFachadaCatalogo } from './infraestructura/entrenamiento/consulta-ejercicios-records.fachada-catalogo.js';
+import { RecordPersonalEsquema } from './infraestructura/record-personal/record-personal.esquema.js';
+import { RepositorioRecordsTypeorm } from './infraestructura/record-personal/record-personal.repositorio-typeorm.js';
 import { EntrenamientoControlador } from './presentacion/controlador/entrenamiento.controlador.js';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([EntrenamientoEsquema, SerieRealizadaEsquema]),
+    TypeOrmModule.forFeature([EntrenamientoEsquema, SerieRealizadaEsquema, RecordPersonalEsquema]),
     ModuloIdentidad,
     PlanificacionModule,
     CatalogoModule,
@@ -39,7 +46,9 @@ import { EntrenamientoControlador } from './presentacion/controlador/entrenamien
     { provide: Reloj, useClass: RelojSistema },
     { provide: RepositorioEntrenamientos, useClass: RepositorioEntrenamientosTypeorm },
     { provide: RepositorioCierreEntrenamiento, useExisting: RepositorioEntrenamientos },
+    { provide: RepositorioRecords, useClass: RepositorioRecordsTypeorm },
     ConsultaEjerciciosResumenFachadaCatalogo,
+    ConsultaEjerciciosRecordsFachadaCatalogo,
     {
       provide: FinalizarEntrenamiento,
       inject: [
@@ -73,6 +82,32 @@ import { EntrenamientoControlador } from './presentacion/controlador/entrenamien
         calculo: FinalizarEntrenamiento,
         publicador: PublicadorEventos,
       ) => new CerrarEntrenamiento(repositorio, cierre, identidad, reloj, calculo, publicador),
+    },
+    {
+      provide: CerrarEntrenamientoConRecords,
+      inject: [
+        CerrarEntrenamiento,
+        RepositorioEntrenamientos,
+        RepositorioRecords,
+        ConsultaEjerciciosRecordsFachadaCatalogo,
+        PUBLICADOR_EVENTOS,
+      ],
+      useFactory: (
+        cerrar: CerrarEntrenamiento,
+        repositorio: RepositorioEntrenamientos,
+        records: RepositorioRecords,
+        catalogo: ConsultaEjerciciosRecordsFachadaCatalogo,
+        publicador: PublicadorEventos,
+      ) =>
+        new CerrarEntrenamientoConRecords(
+          cerrar,
+          repositorio,
+          records,
+          catalogo,
+          new MarcasPorTipoEjercicio(),
+          new DetectorRecords(),
+          publicador,
+        ),
     },
     {
       provide: IniciarEntrenamiento,

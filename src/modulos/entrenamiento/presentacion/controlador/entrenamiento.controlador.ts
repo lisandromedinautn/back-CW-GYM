@@ -1,4 +1,4 @@
-import { CerrarEntrenamiento } from '../../aplicacion/finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.js';
+import { CerrarEntrenamientoConRecords } from '../../aplicacion/finalizar-entrenamiento/cerrar-entrenamiento-con-records.caso-uso.js';
 import { Body, Controller, Get, Inject, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
 import { PaginacionDto } from '../../../../compartido/presentacion/paginacion/paginacion.dto.js';
 import {
@@ -21,8 +21,13 @@ export class EntrenamientoControlador {
     @Inject(ConsultarEntrenamientoEnCurso)
     private readonly consultarEntrenamiento: ConsultarEntrenamientoEnCurso,
     @Inject(RegistrarSerieRealizada) private readonly registrarSerie: RegistrarSerieRealizada,
-    @Inject(RegistrarPercepcion) private readonly registrarPercepcion: RegistrarPercepcion,
-    @Inject(CerrarEntrenamiento) private readonly cerrarEntrenamiento: CerrarEntrenamiento,
+
+    @Inject(RegistrarPercepcion)
+    private readonly registrarPercepcion: RegistrarPercepcion,
+
+    @Inject(CerrarEntrenamientoConRecords)
+    private readonly cerrarEntrenamiento: CerrarEntrenamientoConRecords,
+
     @Inject(ConsultarEntrenamientosDeAlumnos)
     private readonly consultarDeAlumnos: ConsultarEntrenamientosDeAlumnos,
   ) {}

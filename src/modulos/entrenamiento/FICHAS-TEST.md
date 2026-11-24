@@ -44,6 +44,28 @@ Una fila por caso de test. La entrada y el esperado los **confirma el desarrolla
 
 Comprobación por mutación US15: el cálculo de peso corporal con carga extra y la visualización de 540 kg fallaron al alterarse; se restauraron los archivos con las mismas huellas que las versiones aprobadas.
 
+## US16 — Récords personales
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `carga-efectiva.estrategias.spec.ts` › Sin Peso | RN-ENT-07 | Unit | 80 kg, factor 100, extra 10 | Carga 0 | ✅ | 22/11/2026 |
+| `carga-efectiva.estrategias.spec.ts` › Peso Extra | RN-ENT-07 | Unit | Peso extra 10 | Carga 10 | ✅ | 22/11/2026 |
+| `carga-efectiva.estrategias.spec.ts` › Peso Corporal | RN-ENT-07 | Unit | 80 kg, factor 64 | Carga 51.2 | ✅ | 22/11/2026 |
+| `carga-efectiva.estrategias.spec.ts` › Peso Corporal + Extra | RN-ENT-12 | Unit | 80 kg, factor 100, extra 10 | Carga 90 | ✅ | 22/11/2026 |
+| `volumen-serie.valor.spec.ts` › ejemplo de referencia | RN-ENT-06, 12 | Unit | Carga 90, 6 repeticiones | Volumen 540 | ✅ | 22/11/2026 |
+| `uno-rm-estimado.valor.spec.ts` › ejemplo de referencia | RN-ENT-12 | Unit | Carga 90, 6 repeticiones | 1RM 108 | ✅ | 22/11/2026 |
+| `uno-rm-estimado.valor.spec.ts` › límite superior | RN-ENT-11 | Unit | Carga 60, 10 repeticiones | 1RM 80 | ✅ | 22/11/2026 |
+| `uno-rm-estimado.valor.spec.ts` › fuera del límite | RN-ENT-11 | Unit | Carga 60, 11 repeticiones | `null` | ✅ | 22/11/2026 |
+| `uno-rm-estimado.valor.spec.ts` › sin repeticiones | RN-ENT-11 | Unit | Carga 60, 0 repeticiones | `null` | ✅ | 22/11/2026 |
+| `marcas-por-tipo-ejercicio.spec.ts` › repeticiones con carga | RN-ENT-10 | Unit | Peso Extra 60, 5 repeticiones | Rep 5, volumen 300, 1RM 70 | ✅ | 22/11/2026 |
+| `marcas-por-tipo-ejercicio.spec.ts` › repeticiones sin peso | RN-ENT-10 | Unit | Sin Peso, 15 repeticiones | Solo rep 15 | ✅ | 22/11/2026 |
+| `marcas-por-tipo-ejercicio.spec.ts` › por tiempo | RN-ENT-10 | Unit | 60 segundos | Solo tiempo 60 | ✅ | 22/11/2026 |
+| `marcas-por-tipo-ejercicio.spec.ts` › peso corporal | RN-ENT-10 | Unit | 80 kg, factor 100, 3 repeticiones | Rep 3, volumen 240, 1RM 88 | ✅ | 22/11/2026 |
+| `detector-records.spec.ts` › primera marca | RN-ENT-13 | Unit | Sin récord previo, marca 100 | Guarda 100, sin evento | ✅ | 22/11/2026 |
+| `detector-records.spec.ts` › empate | RN-ENT-13 | Unit | Récord 100, marca 100 | No guarda ni emite | ✅ | 22/11/2026 |
+| `detector-records.spec.ts` › marca mayor | RN-ENT-13 | Unit | Récord 100, marca 101 | Guarda 101 y emite `RecordBatido` 100 → 101 | ✅ | 22/11/2026 |
+| `detector-records.spec.ts` › varios tipos | RN-ENT-13 | Unit | Récords rep 5/vol 300/1RM 70; marcas rep 5/vol 360/1RM 84 | Guarda vol 360 y 1RM 84; 2 eventos | ✅ | 22/11/2026 |
+
 ## US21 — Series por debajo de lo prescripto (confirmadas por Ulises el 24/11/2026)
 
 | Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
@@ -76,7 +98,7 @@ Sin series registradas, los dos valores coinciden. Esos caminos los detectan E1 
 | `aplicacion/registrar-percepcion/registrar-percepcion.caso-uso.spec.ts` › propio y ajeno | RN-ENT-16, 19 | Unitario | Entrenamiento propio finalizado; después uno de otro alumno | Con el propio guarda la percepción y publica 1 evento; con el ajeno da no encontrado (404) y no publica nada | = esperado (verde el 24/11/2026) | 24/11/2026 |
 | `test/e2e/entrenamiento/registrar-percepcion.e2e-spec.ts` › carga, lectura y rechazos | RN-ENT-14, 15, 16, 19 · RN-IDE-03 | e2e | alumno01 finaliza y envía `{ rpe: 9, sensacionFuerza: 2 }`. Después: `GET mi-entrenamiento-en-curso`; `GET` del profesor (US18); segundo `POST`; RPE 11; sensación 0; `POST` de alumno02 sobre su propio entrenamiento en curso; `POST` de alumno02 sobre el entrenamiento de alumno01; `POST` de un profesor | `201 { rpe: 9, sensacionFuerza: 2 }`. Los dos `GET` traen `percepcion: { rpe: 9, sensacionFuerza: 2 }`. Segundo `POST`: 409 `RN-ENT-16`. RPE 11: 400 `RN-ENT-14`. Sensación 0: 400 `RN-ENT-15`. En curso propio: 409 `RN-ENT-16`. Ajeno: 404. Profesor: 403 | = esperado (verde el 24/11/2026) | 24/11/2026 |
 
-La entrada de esta última fila decía "`POST` sobre un entrenamiento en curso de otro alumno → 409", que era ambiguo. Se separó en dos casos el 24/11/2026: en curso propio (409, RN-ENT-16) y ajeno (404, RN-ENT-19). No cambia ninguna regla.
+La entrada de esta última fila decía "`POST` sobre un entrenamiento en curso de otro alumno → 409", que era ambigua. Se separó en dos casos el 24/11/2026: en curso propio (409, RN-ENT-16) y ajeno (404, RN-ENT-19). No cambia ninguna regla.
 
 Comprobación por mutación US17 (24/11/2026). En cada caso se rompió la línea de producción, el test dio rojo y se restauró:
 

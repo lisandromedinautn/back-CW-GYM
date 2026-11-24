@@ -295,18 +295,6 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Verificación: back 245 unitarios, 3 de integración y 108 e2e (4 nuevos de US18); `yarn test:cov` con 356 tests y 98,21% de líneas; lint y tipos sin errores.
 - Pendientes: front de US18 (página de entrenamientos de alumnos); sumar el estado `finalizado` con US15.
 
-
-## 2026-11-22 — Entrenamiento paso a paso con GIF y botón de finalizar [US14, T14]
-- Desarrollador: Ulises
-- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 (todo en serie, sin subagentes: el front del GIF dependía del contrato del back)
-- Objetivo: después de probar a mano el front de US14, mostrar un ejercicio por vez con su GIF y el contador siempre visible, avanzar al registrar, y dejar visible el botón de finalizar hasta que exista US15.
-- Qué hizo la IA: verificó que el modo secuencial era solo front, que el GIF necesitaba un cambio en el back y que finalizar dependía de US15 (back inexistente, asignada a Martina). Propuso la regla RN-UI-ENT-03, la ampliación de RN-ENT-02 y las fichas. Front: reescribió los tests de integración de US14 para el paso a paso (aprobado), implementó `PasoActual` y `FormularioSerie`, el GIF con atribución y el botón deshabilitado. Back: puerto `ConsultaEjercicios` implementado por la Fachada de catálogo (`EjercicioPublico` suma `urlGif`) y la función de dominio `conGifs` en `IniciarEntrenamiento`, con 2 unitarios y 2 e2e. Creó la tarjeta CG-85 (T14) en Jira. Sincronizó `TRAZABILIDAD.md` y `PLAN-IMPLEMENTACION.md` entre los repos.
-- Decisiones del desarrollador: paso a paso con Anterior/Siguiente; arranca en el primer paso sin registrar; abandonado sigue como lista de solo lectura; GIF guardado en la copia tocando solo Entrenamiento y la Fachada de catálogo (no Planificación, cuyos e2e comparan con `toEqual`); atribución "GIF © Gym visual"; botón "Finalizar entrenamiento" deshabilitado en el último paso, sin test hasta US15.
-- Ideas descartadas: agregar el GIF en la rutina del día de Planificación (cambiaba sus contratos y rompía e2e); habilitar el catálogo para el rol Alumno (toca RN-IDE-03); implementar la finalización en el back sin coordinar con US15.
-- Reglas afectadas: nueva RN-UI-ENT-03 (front). RN-ENT-02 amplía la copia con el GIF (back, historial del módulo).
-- Verificación: front 164 tests, back 247 unitarios, 3 de integración y 110 e2e; `yarn test:cov` en los dos dentro de los umbrales (back 98,2% de líneas); lint y tipos sin errores. Mutaciones sobre el paso inicial, el avance, Anterior/Siguiente, lo registrado, el GIF y `conGifs` hacen fallar los tests. Un test del GIF pasaba por un error del propio test (`undefined` tomaba el valor por defecto); se corrigió antes de commitear.
-- Pendientes: el back de US15 para habilitar el botón; los entrenamientos anteriores a T14 no tienen GIF; nada pusheado.
-
 ## 2026-11-22 — Entrenamiento paso a paso con GIF y botón de finalizar [US14, T14]
 - Desarrollador: Ulises
 - Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 (todo en serie, sin subagentes: el front del GIF dependía del contrato del back)
@@ -341,6 +329,10 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Decisiones: Martina confirmó los casos, incluido cierre sin series y permisos. Los récords corresponden a US16 y no se simulan.
 - Verificación: 6 unitarios y 2 e2e en back, 4 tests de integración en front y builds aprobados en laptop. Rojo inicial observado en back y front. La comprobación por mutación detectó el cálculo y el texto alterados; los archivos fueron restaurados y sus huellas coinciden con las versiones aprobadas.
 - Reglas: RN-ENT-05, 06, 07, 08, 09, 17, 19 y 20.
+
+## 2026-11-22 — Modelar récords personales y carga efectiva [US16]
+- Desarrollador: Ramiro
+- Agregado 23/11/2026 (cierre): se implementó el backend de US16 sobre US15 ya en develop. Puerto `ConsultaEjerciciosRecords` (adaptador sobre la Fachada de catálogo, devuelve `nombre`, `tipo`, `tipoCarga` y `factorPesoCorporal`), repositorio `RepositorioRecords` con TypeORM (`records_personales`, único por `alumno_id, ejercicio_id, tipo`, upsert conservando el `id`), y `CerrarEntrenamientoConRecords` (A2) que envuelve a `CerrarEntrenamiento` sin tocar sus tests: cierra, re-lee el entrenamiento, calcula marcas con `MarcasPorTipoEjercicio`, agrupa por `(ejercicioId, tipo)` quedándose con la mejor marca, detecta contra los previos con `DetectorRecords`, guarda y publica cada `RecordBatido`, y devuelve `recordsBatidos` solo si hay batidos. `recordsBatidos` es opcional en la respuesta para no romper los tests de US15 (que usan `toEqual`). Endpoint sin cambios: el controlador usa el envoltorio en el mismo `POST /entrenamiento/entrenamientos/:id/finalizacion`. Verificación: 274 unitarios, 12 de integración, 115 e2e, lint y build en verde. Limitación aceptada: si falla la persistencia de récords, el entrenamiento ya quedó finalizado y `EntrenamientoFinalizado` ya se publicó. Diferido: FK `entrenamiento_id` con `ON DELETE CASCADE` y filas de `FICHAS-TEST.md`.
 
 ## 2026-11-23 — Finalizar en el último paso y e2e de navegador del MVP [US15, T15]
 - Desarrollador: Ulises

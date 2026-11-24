@@ -38,7 +38,7 @@ Estado: ✅ aplicado · 🔶 aplicado en parte · ⬜ previsto, todavía sin có
 | Cadena de responsabilidad (pipeline de Nest) | ✅ | `GuardRoles` global (`APP_GUARD`) → `ValidationPipe` → controlador → `FiltroErrorDominio` global (`APP_FILTER`), que traduce `ErrorDominio` a `{ codigo: "RN-...", mensaje }` |
 | DTO | ✅ | 7 `*.dto.ts` en `presentacion` (entrada validada; la respuesta no expone entidades) |
 | Observador | ✅ | Desde US21 (24/11/2026). `PublicadorEventosEnProceso` (`compartido/infraestructura/publicador-eventos/`) implementa los puertos `PublicadorEventos` y `SuscriptorEventos`: registra cada evento en el log y ejecuta en orden sus manejadores. Un manejador que falla no corta la publicación. Primer suscriptor: Notificaciones escucha `EntrenamientoFinalizado` (`notificaciones/infraestructura/suscriptores/entrenamiento-finalizado.suscriptor.ts`) con su propio contrato del evento, sin importar la clase de Entrenamiento |
-| Estrategia | ⬜ | Prevista para la carga efectiva por tipo de carga (US14) y los récords por tipo de ejercicio (US16). No hay código todavía |
+| Estrategia | ✅ | `entrenamiento/dominio/carga-efectiva/estrategias/` (Sin Peso, Peso Extra, Peso Corporal, Peso Corporal + Peso Extra) y `marcas-por-tipo-ejercicio/` (por tiempo, por repeticiones sin peso, por repeticiones con carga). La selección vive en `seleccionar-estrategia-*.ts` (US16). Implementada para el cálculo de carga efectiva y la determinación de marcas según el tipo de ejercicio |
 | Doble de prueba por puerto (Reloj fijo) | ✅ | `RelojSistema` en producción y `RelojFijo` en los tests; dobles en `test/dobles/` |
 
 ### Principios SOLID
@@ -46,7 +46,7 @@ Estado: ✅ aplicado · 🔶 aplicado en parte · ⬜ previsto, todavía sin có
 | Principio | Estado | Evidencia |
 | :-- | :-- | :-- |
 | SRP | ✅ | Un caso de uso por archivo; mapper, esquema y repositorio separados |
-| OCP | 🔶 | Se cumple al sumar casos de uso y endpoints; la parte prevista con estrategias (tipos de carga y récords) depende de US14/US16 |
+| OCP | ✅ | Un tipo de carga o de récord nuevo se agrega como estrategia nueva sin editar las existentes (US16); los casos de uso y endpoints también se suman sin tocar los anteriores |
 | LSP | ✅ | Las implementaciones de cada puerto (TypeORM, dobles en memoria, `RelojFijo`) son intercambiables en los tests |
 | ISP | ✅ | Puertos chicos y específicos (`ConsultaNombresEjercicios` separado de `ConsultaEjercicios`) |
 | DIP | ✅ | `dominio` y `aplicacion` dependen de puertos; `infraestructura` los implementa y el módulo los conecta |
@@ -67,7 +67,7 @@ Estado: ✅ aplicado · 🔶 aplicado en parte · ⬜ previsto, todavía sin có
 
 ## Pendientes y observaciones
 
-1. **Estrategia** (⬜): es el patrón del plan que falta por completo. Corresponde a US14 (carga efectiva) y US16 (récords con límites de Epley).
-2. **Observador**: aplicado desde US21 (24/11/2026), con Notificaciones como primer suscriptor real. Antes los eventos se publicaban, pero nadie los escuchaba.
+1. **Estrategia** (✅): aplicada en US16 para calcular la carga efectiva mediante cuatro estrategias según el tipo de carga y determinar las marcas personales mediante tres estrategias según el tipo de ejercicio. La detección de récords al finalizar y su persistencia también están implementadas en US16; la integración de esta funcionalidad en `develop` queda pendiente.
+2. **Observador** (✅): aplicado desde US21 (24/11/2026), con `PublicadorEventosEnProceso` y Notificaciones como primer suscriptor real de `EntrenamientoFinalizado`. Los eventos se registran en el log y se ejecutan los manejadores en orden; un fallo en un manejador no interrumpe la publicación.
 3. **Puertos del front** (🔶): o se agrega la interfaz en `aplicacion`, o se ajusta el `CLAUDE.md` del front a lo que el código hace hoy. Es una decisión del equipo; no se cambió código.
 4. No se usan Singleton, Builder, Comando ni Plantilla, y el plan no los pide.

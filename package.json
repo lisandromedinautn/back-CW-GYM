@@ -77,5 +77,6 @@
     "*.{json,yml,yaml}": "prettier --write",
     "package.json": "node scripts/verificar-antiguedad-paquetes.mjs",
     "yarn.lock": "node scripts/verificar-antiguedad-paquetes.mjs --lock"
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }

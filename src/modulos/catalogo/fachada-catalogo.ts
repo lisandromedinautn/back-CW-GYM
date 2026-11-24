@@ -40,6 +40,26 @@ export class FachadaCatalogo {
       : null;
   }
 
+  /** Datos de catálogo necesarios para detectar récords al finalizar (US16). */
+  async obtenerDatosParaRecords(id: string): Promise<{
+    id: string;
+    nombre: string;
+    tipo: string;
+    tipoCarga: string;
+    factorPesoCorporal: number | null;
+  } | null> {
+    const ejercicio = await this.ejercicios.buscarPorId(id);
+    return ejercicio
+      ? {
+          id: ejercicio.id,
+          nombre: ejercicio.nombre,
+          tipo: ejercicio.tipo.valor,
+          tipoCarga: ejercicio.tipoCarga.valor,
+          factorPesoCorporal: ejercicio.factorPesoCorporal?.porcentaje ?? null,
+        }
+      : null;
+  }
+
   async obtenerEjercicio(id: string): Promise<EjercicioPublico | null> {
     const ejercicio = await this.ejercicios.buscarPorId(id);
     if (!ejercicio) return null;
