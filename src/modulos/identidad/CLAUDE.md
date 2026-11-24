@@ -5,7 +5,7 @@ Contexto de soporte. Maneja los usuarios (Admin, Profesor, Alumno), el ingreso a
 * **Agregados:** Profesor, Alumno, Admin.
 * **Objetos de valor:** Documento (tipo y número), DatosSalud (altura, peso, edad), CodigoProfesor, Rol.
 * **Eventos que emite:** AlumnoVinculado.
-* **Fachada que expone a otros módulos:** consultar el profesor de un alumno, consultar si un alumno está vinculado a un profesor y obtener el peso actual del alumno.
+* **Fachada que expone a otros módulos:** consultar el profesor de un alumno, consultar si un alumno está vinculado a un profesor y obtener el peso actual del alumno. Con US21 suma `obtenerProfesorPorUsuarioId`, para que Notificaciones traduzca el usuario del JWT a profesor.
 * **Puertos (repositorios):** RepositorioProfesores, RepositorioAlumnos, RepositorioUsuarios. Puerto técnico: HasheadorContrasenias.
 
 ## Reglas de negocio

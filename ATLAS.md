@@ -46,6 +46,7 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | Catálogo | `src/modulos/catalogo/CLAUDE.md` | `src/modulos/catalogo/FICHAS-TEST.md` | RN-CAT |
 | Planificación | `src/modulos/planificacion/CLAUDE.md` | `src/modulos/planificacion/FICHAS-TEST.md` | RN-PLAN |
 | Entrenamiento | `src/modulos/entrenamiento/CLAUDE.md` | `src/modulos/entrenamiento/FICHAS-TEST.md` | RN-ENT |
+| Notificaciones (US21) | `src/modulos/notificaciones/CLAUDE.md` | 📄 `src/modulos/notificaciones/FICHAS-TEST.md` (se crea con las fichas) | RN-NOT |
 | Kernel compartido | `src/compartido/CLAUDE.md` | — | — |
 
 ## Casos de uso → endpoint → tests
@@ -83,6 +84,10 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | entrenamiento | `cerrar-entrenamiento.caso-uso.ts`, `calcular-resumen.ts` | `POST /entrenamiento/entrenamientos/:id/finalizacion` | US15 | ✅ `test/e2e/entrenamiento/finalizar-entrenamiento.e2e-spec.ts` |
 | entrenamiento | `registrar-percepcion.caso-uso.ts` | `PUT /entrenamiento/entrenamientos/:id/percepcion` | US17 | 📄 |
 | entrenamiento | `consultar-entrenamientos-de-alumnos.caso-uso.ts` | `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` | US18 | ✅ |
+| notificaciones | `notificar-entrenamiento-por-debajo/notificar-entrenamiento-por-debajo.caso-uso.ts` | Suscriptor de `EntrenamientoFinalizado` (sin endpoint) | US21 | 📄 |
+| notificaciones | `consultar-notificaciones/consultar-notificaciones.caso-uso.ts` | `GET /notificaciones/mis-notificaciones` (solo Profesor) | US21 | 📄 |
+| notificaciones | `contar-no-leidas/contar-no-leidas.caso-uso.ts` | `GET /notificaciones/mis-notificaciones/no-leidas` (solo Profesor) | US21 | 📄 |
+| notificaciones | `marcar-notificacion-leida/marcar-notificacion-leida.caso-uso.ts` | `PUT /notificaciones/mis-notificaciones/:id/lectura` (solo Profesor) | US21 | 📄 |
 
 ## Dependencias entre módulos (solo por Fachada o eventos)
 
@@ -94,6 +99,8 @@ Base de cada ruta: `src/modulos/<modulo>/aplicacion/<caso-de-uso>/` (una carpeta
 | entrenamiento | Fachada de identidad | ✅ Peso actual del alumno (RN-ENT-02); profesor para RN-ENT-18 📄 |
 | entrenamiento | Fachada de catalogo | ✅ GIF de cada ejercicio para la copia (RN-ENT-02, T14), por el puerto `ConsultaEjercicios` que la Fachada implementa directo. Pendiente: tipo, tipo de carga, factor y grupo (RN-ENT-07, 09, 10) |
 | entrenamiento | Fachada de catalogo | ✅ Tipo de carga, factor y grupos para el resumen (RN-ENT-07, 09); récords US16 pendientes |
+| notificaciones | Evento `EntrenamientoFinalizado` de entrenamiento | 📄 Observador: suscriptor en `infraestructura/suscriptores/`, con contrato propio del evento (RN-NOT-01, US21) |
+| notificaciones | Fachada de identidad | 📄 Profesor y nombre del alumno (`obtenerAlumnoPorId`) y profesor de un usuario (`obtenerProfesorPorUsuarioId`, nuevo), por el puerto `ConsultaProfesores` (US21) |
 
 ## Carpetas por concepto
 
