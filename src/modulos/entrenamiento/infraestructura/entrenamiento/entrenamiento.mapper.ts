@@ -30,5 +30,7 @@ export function filaAEntrenamiento(
     rutina: fila.rutina,
     inicio: fila.inicio.toISOString(),
     series: series.map(filaASerie),
+    ...(fila.fin ? { fin: fila.fin.toISOString() } : {}),
+    ...(fila.resumen ? { resumen: fila.resumen } : {}),
   });
 }

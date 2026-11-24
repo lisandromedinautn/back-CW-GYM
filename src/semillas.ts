@@ -1,4 +1,8 @@
 import 'reflect-metadata';
+import { DataSource } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
+import { Reloj } from './compartido/dominio/reloj/reloj.puerto.js';
+import { SembrarGruposUS12 } from './semillas/sembrar-grupos-us12.js';
 import { Logger, type Type } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import type { Semilla } from './compartido/aplicacion/semilla/semilla.js';
@@ -14,6 +18,7 @@ import { ModuloRaiz } from './modulo-raiz.module.js';
  * - SembrarAdmin (RN-IDE-14): lee ADMIN_EMAIL y ADMIN_PASSWORD del .env.
  * - SembrarUsuarios (RN-IDE-12): 3 profesores y 20 alumnos de prueba con SEMILLA_CONTRASENIA.
  * - CargarDatasetEjercicios (RN-CAT-07, 09): catálogo desde datos/ejercicios-dataset.json.
+ * - SembrarGruposUS12: grupos y planes de prueba con SEMILLA_CONTRASENIA.
  */
 const SEMILLAS: Type<Semilla>[] = [SembrarAdmin, SembrarUsuarios, CargarDatasetEjercicios];
 
@@ -32,6 +37,12 @@ async function sembrar(): Promise<void> {
       logger.log(`Ejecutando ${semilla.nombre}…`);
       await semilla.ejecutar();
     }
+    logger.log('Ejecutando grupos de prueba US12…');
+    await new SembrarGruposUS12(
+      app.get(DataSource),
+      app.get(Reloj).ahora(),
+      app.get(ConfigService).get<string>('SEMILLA_CONTRASENIA') ?? '',
+    ).ejecutar();
     logger.log('Semillas terminadas.');
   } finally {
     await app.close();

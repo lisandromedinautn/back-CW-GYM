@@ -9,6 +9,8 @@ export interface EjercicioPublico {
   tipo: string;
   /** Sin Peso, Peso Corporal, Peso Extra o Peso Corporal + Peso Extra (RN-CAT-03). */
   tipoCarga: string;
+  /** T14: GIF del ejercicio, para la copia del entrenamiento. */
+  urlGif: string;
 }
 
 /**
@@ -20,6 +22,44 @@ export interface EjercicioPublico {
 export class FachadaCatalogo {
   constructor(@Inject(RepositorioEjercicios) private readonly ejercicios: RepositorioEjercicios) {}
 
+  /** Datos de catálogo necesarios al cerrar un entrenamiento. */
+  async obtenerDatosParaResumen(id: string): Promise<{
+    tipoCarga: string;
+    factorPesoCorporal: number | null;
+    grupoPrincipal: string;
+    grupoSecundario: string | null;
+  } | null> {
+    const ejercicio = await this.ejercicios.buscarPorId(id);
+    return ejercicio
+      ? {
+          tipoCarga: ejercicio.tipoCarga.valor,
+          factorPesoCorporal: ejercicio.factorPesoCorporal?.porcentaje ?? null,
+          grupoPrincipal: ejercicio.musculoPrincipal.grupo,
+          grupoSecundario: ejercicio.musculoSecundario?.grupo ?? null,
+        }
+      : null;
+  }
+
+  /** Datos de catálogo necesarios para detectar récords al finalizar (US16). */
+  async obtenerDatosParaRecords(id: string): Promise<{
+    id: string;
+    nombre: string;
+    tipo: string;
+    tipoCarga: string;
+    factorPesoCorporal: number | null;
+  } | null> {
+    const ejercicio = await this.ejercicios.buscarPorId(id);
+    return ejercicio
+      ? {
+          id: ejercicio.id,
+          nombre: ejercicio.nombre,
+          tipo: ejercicio.tipo.valor,
+          tipoCarga: ejercicio.tipoCarga.valor,
+          factorPesoCorporal: ejercicio.factorPesoCorporal?.porcentaje ?? null,
+        }
+      : null;
+  }
+
   async obtenerEjercicio(id: string): Promise<EjercicioPublico | null> {
     const ejercicio = await this.ejercicios.buscarPorId(id);
     if (!ejercicio) return null;
@@ -28,6 +68,7 @@ export class FachadaCatalogo {
       nombre: ejercicio.nombre,
       tipo: ejercicio.tipo.valor,
       tipoCarga: ejercicio.tipoCarga.valor,
+      urlGif: ejercicio.urlGif,
     };
   }
 }

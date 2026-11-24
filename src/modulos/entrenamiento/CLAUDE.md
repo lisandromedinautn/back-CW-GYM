@@ -5,16 +5,16 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 * **Agregados:** Entrenamiento (con sus Series Realizadas) y Récord Personal.
 * **Objetos de valor:** CopiaRutina, SerieRealizada, CargaEfectiva, VolumenSerie, UnoRMEstimado, RPE (1 a 10), SensacionFuerza (1 a 5), Duracion.
 * **Estrategias:** una por tipo de carga para calcular la carga efectiva y una por tipo de ejercicio para determinar qué récords aplican.
-* **Modelado US16:** MarcasPorTipoEjercicio, RecordPersonal, RecordBatido y DetectorRecords (detección sin persistencia).
+* **US16:** MarcasPorTipoEjercicio (3 estrategias), RecordPersonal, RecordBatido, DetectorRecords y la detección/persistencia al finalizar (`CerrarEntrenamientoConRecords`, `RepositorioRecords`).
 * **Eventos que emite:** EntrenamientoIniciado, SerieRealizada, EntrenamientoFinalizado, RécordBatido.
-* **Puertos:** RepositorioEntrenamientos, RepositorioRecords, ConsultaRutinaDelDia (Fachada de planificación), ConsultaAlumno (Fachada de identidad: peso actual y profesor), ConsultaEjercicios (Fachada de catálogo), Reloj.
+* **Puertos:** RepositorioEntrenamientos, RepositorioRecords, ConsultaEjerciciosRecords (Fachada de catálogo para récords), ConsultaRutinaDelDia (Fachada de planificación), ConsultaAlumno (Fachada de identidad), ConsultaEjercicios (Fachada de catálogo para el GIF), Reloj.
 
 ## Reglas de negocio
 
 | ID | Regla | Origen | Estado |
 | :-- | :-- | :-- | :-- |
 | RN-ENT-01 | El alumno solo puede iniciar el entrenamiento de la rutina de hoy de su plan vigente, y una sola vez por día. No se recuperan días pasados ni se adelantan días futuros. Un día de descanso no se puede iniciar | US13, ZG-08 | Vigente |
-| RN-ENT-02 | Al iniciar se guardan una copia independiente de la rutina, el peso corporal actual del alumno y la hora de inicio, y se emite EntrenamientoIniciado | US13, decisiones 6, 12 y 13 | Vigente |
+| RN-ENT-02 | Al iniciar se guardan una copia independiente de la rutina (con el nombre y el GIF del catálogo de cada ejercicio; `urlGif` es `null` si el catálogo no lo tiene), el peso corporal actual del alumno y la hora de inicio, y se emite EntrenamientoIniciado | US13, decisiones 6, 12 y 13, T14 | Vigente |
 | RN-ENT-03 | Cada serie realizada registra lo hecho (repeticiones o tiempo, y peso si corresponde) asociado a la serie prescripta de la copia, para poder compararlos | US14 | Vigente |
 | RN-ENT-04 | Solo se registran series en un entrenamiento iniciado y no finalizado | US14 | Vigente |
 | RN-ENT-05 | Al finalizar se registra la hora de fin. La duración es fin − inicio. Un entrenamiento finalizado no se vuelve a finalizar | US15 | Vigente |
@@ -41,7 +41,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | `iniciar-entrenamiento.caso-uso.ts` ✅ | US13 | 01, 02 |
 | `consultar-entrenamiento-en-curso.caso-uso.ts` ✅ | US13 | 20 |
 | `registrar-serie-realizada.caso-uso.ts` ✅ | US14 | 03, 04, 19, 20 |
-| `finalizar-entrenamiento.caso-uso.ts` | US15, US16 | 05–13, 17, 19, 20 |
+| `finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.ts` ✅, `dominio/entrenamiento/calcular-resumen.ts` ✅ | US15 | 05–09, 17, 19, 20 |
 | `registrar-percepcion.caso-uso.ts` | US17 | 14, 15, 16 |
 | `consultar-entrenamientos-de-alumnos.caso-uso.ts` ✅ | US18 | 18 |
 
@@ -52,7 +52,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | `POST /entrenamiento/entrenamientos` ✅ | Alumno | iniciar-entrenamiento |
 | `GET /entrenamiento/mi-entrenamiento-en-curso` ✅ | Alumno | consultar-entrenamiento-en-curso |
 | `POST /entrenamiento/entrenamientos/:id/series` ✅ | Alumno | registrar-serie-realizada |
-| `POST /entrenamiento/entrenamientos/:id/finalizacion` | Alumno | finalizar-entrenamiento |
+| `POST /entrenamiento/entrenamientos/:id/finalizacion` ✅ | Alumno | cerrar-entrenamiento |
 | `PUT /entrenamiento/entrenamientos/:id/percepcion` | Alumno | registrar-percepcion |
 | `GET /entrenamiento/alumnos/:alumnoId/entrenamientos` ✅ | Profesor | consultar-entrenamientos-de-alumnos |
 
@@ -63,6 +63,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | 01/11/2026 | Todas | Versión inicial | Lisandro |
 | 01/11/2026 | RN-ENT-15 | Escala de sensación de fuerza fijada de 1 a 5 | Lisandro |
 | 01/11/2026 | RN-ENT-01, 09, 13, 16; nueva RN-ENT-20 | Se cierran ZG-08 a ZG-12: solo la rutina de hoy y una vez por día, los grupos incluyen el secundario, récord estrictamente mayor sin anunciar la primera marca, RPE y sensación opcionales y cargables después, entrenamiento abandonado a la medianoche | Lisandro |
+| 22/11/2026 | RN-ENT-02 | La copia guarda también el GIF de cada ejercicio, para mostrarlo durante el entrenamiento (T14) | Ulises |
 
 ## Decisiones de implementación (CG-46, US13)
 
@@ -87,12 +88,31 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 * `GET` devuelve una página `{ items, total, pagina, tamanio }` (tamaños 5, 10, 20, 50 o 100; 10 por defecto), del más nuevo al más viejo por fecha, sin filtros. Cada ítem es el entrenamiento completo (`id, alumnoId, inicio, pesoCorporalKg, rutina, series`) más `estado`.
 * Los abandonados se listan con `estado: 'abandonado'`. El estado `finalizado` se suma con US15.
 
-## Decisiones de implementación (US16, modelado)
+## Decisiones de implementación (US15)
 
-* Se modeló el dominio de récords sin tocar US15: `CargaEfectiva` (4 estrategias), `VolumenSerie`, `UnoRMEstimado`, `MarcasPorTipoEjercicio` (3 estrategias), `RecordPersonal`, `RecordBatido` y `DetectorRecords`.
+* El cierre guarda la hora de fin y el resumen con volumen, duración en segundos y grupos sin repetir. Sin series, devuelve 0 kg y grupos vacíos. Los récords se implementan en US16.
+* La fachada de Catálogo aporta tipo de carga, factor y grupos; el peso corporal es el guardado al iniciar. El resumen queda persistido para recuperarlo en el entrenamiento finalizado.
+* El repositorio bloquea el entrenamiento para serializar el cierre con el registro de series. Una segunda finalización responde RN-ENT-05; registrar una serie tras finalizar responde RN-ENT-04. El alumno se resuelve con el JWT.
+* `GET /entrenamiento/mi-entrenamiento-en-curso` puede devolver estado `finalizado` con `fin` y `resumen`; US14 incluye pantalla de registro de series.
+
+## Decisiones de implementación (US16)
+
+* `CargaEfectiva` (4 estrategias), `VolumenSerie`, `UnoRMEstimado`, `MarcasPorTipoEjercicio` (3 estrategias), `RecordPersonal`, `RecordBatido` y `DetectorRecords` se implementaron en el modelado y ahora se usan al finalizar.
 * `factorPesoCorporal` es un porcentaje: 100 = 100 %, 64 = 64 %. "Por repeticiones sin peso" es solo `Sin Peso`; `Peso Corporal` cuenta como "con carga".
 * El 1RM se estima solo entre 1 y 10 repeticiones. Con 0 repeticiones no se genera 1RM (ni con más de 10).
-* `RecordPersonal` conserva el mismo `id` cuando una marca lo supera, para el upsert futuro. La primera marca se guarda sin evento y el empate no cuenta (RN-ENT-13).
-* `DetectorRecords` recibe las marcas y los récords previos y devuelve los que hay que guardar y los eventos `RecordBatido`; no persiste ni publica.
+* `RecordPersonal` conserva el mismo `id` cuando una marca lo supera (upsert por `(alumno_id, ejercicio_id, tipo)`). La primera marca se guarda sin evento y el empate no cuenta (RN-ENT-13).
 * `RecordBatido` lleva `alumnoId`, `ejercicioId`, `tipo`, `valorAnterior`, `valorNuevo` y `entrenamientoId`.
-* Pendiente para la detección real: `ConsultaEjercicios` de la Fachada de catálogo con `factorPesoCorporal`, repositorio de récords, caso de uso de finalización y e2e. Se resuelve con US15.
+* **Detección al finalizar (A2):** `CerrarEntrenamientoConRecords` envuelve a `CerrarEntrenamiento` sin tocar sus tests. Cierra, re-lee el entrenamiento finalizado, si no hay series devuelve el resumen, carga los datos de catálogo de cada ejercicio único con `ConsultaEjerciciosRecords`, arma un `SerieParaRecords` por serie con el `pesoCorporalKg` del entrenamiento, calcula marcas con `MarcasPorTipoEjercicio`, **agrupa por `(ejercicioId, tipo)` y se queda con la mejor marca** (necesario: `DetectorRecords` actualiza su mapa por marca, dos series del mismo ejercicio podrían emitir un récord intra-entrenamiento y repetir el `id` en el upsert), busca previos con `RepositorioRecords.buscarPorAlumnoYEjercicios`, detecta, guarda con upsert y publica cada `RecordBatido`.
+* **Respuesta:** `ResumenEntrenamientoConRecords` extiende `ResumenEntrenamiento` con `recordsBatidos?: RecordBatidoResumen[]` (`{ ejercicioId, nombre, tipo, valorAnterior, valorNuevo }`). Se omite cuando está vacío para no romper los tests de US15 (usan `toEqual`). El resumen persistido y el `GET` del entrenamiento no cambian.
+* **Catálogo:** `ConsultaEjerciciosRecords` devuelve `{ id, nombre, tipo, tipoCarga, factorPesoCorporal }` o `null`; el adaptador valida `tipo` y `tipoCarga`. Falta el ejercicio → `RN-ENT-09`. Peso corporal sin factor → `RN-ENT-07`. No se tocó `ConsultaEjerciciosResumen` de US15.
+* **Persistencia:** tabla `records_personales` (`id uuid`, `alumno_id`, `ejercicio_id`, `tipo varchar`, `valor double precision`, `entrenamiento_id`, `fecha date`), única por `(alumno_id, ejercicio_id, tipo)`. Repositorio TypeORM con `In` para la búsqueda y `upsert` para el guardado, no-op si la lista está vacía.
+* **Limitación aceptada:** si falla la persistencia de récords, el entrenamiento ya quedó finalizado y `EntrenamientoFinalizado` ya se publicó. Se documenta y no se revierte.
+* **Diferido:** FK `entrenamiento_id` con `ON DELETE CASCADE` (los e2e de US15 hacen `TRUNCATE entrenamientos CASCADE`, que hoy no limpia `records_personales`) y las filas de `FICHAS-TEST.md` con fecha 23/11/2026.
+
+## Decisiones de implementación (CG-85, T14)
+
+Decididas por Ulises el 22/11/2026.
+
+* Para mostrar el GIF durante el entrenamiento, la copia guarda `urlGif` en cada ejercicio de bloques y circuitos (RN-ENT-02). Lo agrega `IniciarEntrenamiento` con la función de dominio `conGifs`, consultando el puerto `ConsultaEjercicios`, que implementa directo la Fachada de catálogo (`EjercicioPublico` suma `urlGif`).
+* No se toca Planificación: sus respuestas (`mi-rutina-del-dia`, `mi-plan`) siguen iguales. El catálogo sigue siendo solo para Admin y Profesor.
+* Los entrenamientos iniciados antes de T14 no tienen `urlGif` en su copia (no se migran); el front los muestra sin imagen.

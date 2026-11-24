@@ -295,14 +295,41 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Verificación: back 245 unitarios, 3 de integración y 108 e2e (4 nuevos de US18); `yarn test:cov` con 356 tests y 98,21% de líneas; lint y tipos sin errores.
 - Pendientes: front de US18 (página de entrenamientos de alumnos); sumar el estado `finalizado` con US15.
 
-## 2026-11-22 — Modelar récords personales y carga efectiva [US16]
-- Desarrollador: Alex
-- Herramienta / modelo / esfuerzo: OpenCode · deepseek-v4.1-flash-free (todo en serie, sin subagentes)
-- Objetivo: modelar el dominio de US16 (RN-ENT-06, 07, 10, 11, 12, 13) sin tocar US15.
-- Qué hizo la IA: con TDD, 17 unitarios nuevos primero en rojo por aserción y después en verde. Implementó `CargaEfectiva` con 4 estrategias, `VolumenSerie`, `UnoRMEstimado`, `MarcasPorTipoEjercicio` con 3 estrategias, `RecordPersonal`, `RecordBatido` y `DetectorRecords`. Actualizó fichas, trazabilidad, atlas, patrones, plan y el `CLAUDE.md` del módulo.
-- Decisiones del desarrollador: alcance solo de modelado; 16 casos confirmados más el borde de 0 repeticiones; `factorPesoCorporal` como porcentaje; "sin peso" es solo `Sin Peso`; 1RM solo de 1 a 10 repeticiones; el récord conserva el `id` al ser superado; evento `RecordBatido`; `DetectorRecords` como punto de extensión.
-- Ideas descartadas: persistir récords, endpoint de finalización, adaptador de catálogo, e2e y cualquier cambio en US15; importar `TipoCarga` del dominio de Catálogo (se duplicó el tipo en Entrenamiento para respetar la regla 4); calcular volumen y 1RM dentro de los casos de uso.
-- Reglas afectadas: ninguna cambió de texto; se modelan RN-ENT-06, 07, 10, 11, 12 y 13.
-- Verificación: 262 unitarios en 48 archivos y lint sin errores; los 17 tests nuevos cubren el 100 % de las líneas de los archivos nuevos (`marcas-por-tipo-ejercicio` queda en 71,42 % de ramas por los guards de medida nula). `yarn test:cov` completo no se corrió porque necesita la base de test; el subconjunto unitario no alcanza los umbrales globales de infraestructura y presentación.
-- Pendientes: `ConsultaEjercicios` de la Fachada de catálogo con `factorPesoCorporal`, repositorio de récords, detección al finalizar y e2e (US15/US16).
+## 2026-11-22 — Entrenamiento paso a paso con GIF y botón de finalizar [US14, T14]
+- Desarrollador: Ulises
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 (todo en serie, sin subagentes: el front del GIF dependía del contrato del back)
+- Objetivo: después de probar a mano el front de US14, mostrar un ejercicio por vez con su GIF y el contador siempre visible, avanzar al registrar, y dejar visible el botón de finalizar hasta que exista US15.
+- Qué hizo la IA: verificó que el modo secuencial era solo front, que el GIF necesitaba un cambio en el back y que finalizar dependía de US15 (back inexistente, asignada a Martina). Propuso la regla RN-UI-ENT-03, la ampliación de RN-ENT-02 y las fichas. Front: reescribió los tests de integración de US14 para el paso a paso (aprobado), implementó `PasoActual` y `FormularioSerie`, el GIF con atribución y el botón deshabilitado. Back: puerto `ConsultaEjercicios` implementado por la Fachada de catálogo (`EjercicioPublico` suma `urlGif`) y la función de dominio `conGifs` en `IniciarEntrenamiento`, con 2 unitarios y 2 e2e. Creó la tarjeta CG-85 (T14) en Jira. Sincronizó `TRAZABILIDAD.md` y `PLAN-IMPLEMENTACION.md` entre los repos.
+- Decisiones del desarrollador: paso a paso con Anterior/Siguiente; arranca en el primer paso sin registrar; abandonado sigue como lista de solo lectura; GIF guardado en la copia tocando solo Entrenamiento y la Fachada de catálogo (no Planificación, cuyos e2e comparan con `toEqual`); atribución "GIF © Gym visual"; botón "Finalizar entrenamiento" deshabilitado en el último paso, sin test hasta US15.
+- Ideas descartadas: agregar el GIF en la rutina del día de Planificación (cambiaba sus contratos y rompía e2e); habilitar el catálogo para el rol Alumno (toca RN-IDE-03); implementar la finalización en el back sin coordinar con US15.
+- Reglas afectadas: nueva RN-UI-ENT-03 (front). RN-ENT-02 amplía la copia con el GIF (back, historial del módulo).
+- Verificación: front 164 tests, back 247 unitarios, 3 de integración y 110 e2e; `yarn test:cov` en los dos dentro de los umbrales (back 98,2% de líneas); lint y tipos sin errores. Mutaciones sobre el paso inicial, el avance, Anterior/Siguiente, lo registrado, el GIF y `conGifs` hacen fallar los tests. Un test del GIF pasaba por un error del propio test (`undefined` tomaba el valor por defecto); se corrigió antes de commitear.
+- Pendientes: el back de US15 para habilitar el botón; los entrenamientos anteriores a T14 no tienen GIF; nada pusheado.
 
+## 2026-11-22 — Datos de prueba para US12 [US12]
+- Desarrolladora: Martina Pineda.
+- Herramienta: Codex.
+- Objetivo: probar el alta y la baja de alumnos de planes vigentes desde la interfaz.
+- Implementación: semilla transaccional con dos profesores y cuatro alumnos dedicados; cada profesor tiene dos alumnos vinculados y un plan con uno asignado. Usa SEMILLA_CONTRASENIA y preserva cuentas, vínculos y asignaciones existentes; informa conflictos y planes vencidos.
+- Decisiones: Martina confirmó los casos y la prueba de integración con base real. Los planes usan la fecha de ejecución y contienen 28 días de descanso.
+- Verificación: tres tests de integración y build aprobados en laptop. Al cambiar temporalmente a 27 días fallaron los dos tests que verifican los 28; se restauró la semilla y volvieron a pasar los tres. Martina ejecutó yarn seed en desarrollo con éxito.
+- Reglas afectadas: ninguna; aplica RN-IDE-09 y RN-PLAN-09, 12, 13, 14 y 16 a datos de prueba.
+
+## 2026-11-22 — Ejercicios en el plan de prueba [US12]
+- Desarrolladora: Martina Pineda. Herramienta: Codex.
+- Objetivo: consultar como alumno un plan con ejercicios en cada uno de sus 28 días.
+- Implementación: comando explícito que completa el plan reservado del alumno 01 con una rutina y dos ejercicios del catálogo; conserva fechas y alumnos, y rechaza sobrescribir rutinas diferentes. Martina confirmó los casos.
+- Verificación: rojo inicial observado; dos tests de integración y build aprobados en laptop; Martina ejecutó el comando correctamente en desarrollo. La comprobación por mutación detectó el cálculo y el texto alterados; los archivos fueron restaurados y sus huellas coinciden con las versiones aprobadas.
+- Reglas afectadas: ninguna; aplica RN-PLAN-06, 10, 11, 12 y 13.
+
+## 2026-11-22 — Finalizar entrenamiento y mostrar resumen [US15]
+- Desarrolladora: Martina Pineda. Herramienta: Codex.
+- Objetivo: finalizar y consultar peso total, grupos musculares y duración, aun sin la pantalla de registro de series de US14.
+- Implementación: el back calcula con las series guardadas, el peso corporal del inicio y datos del catálogo; guarda hora y resumen. El cierre se serializa con el registro de series. El front muestra el resumen y lo recupera al recargar.
+- Decisiones: Martina confirmó los casos, incluido cierre sin series y permisos. Los récords corresponden a US16 y no se simulan.
+- Verificación: 6 unitarios y 2 e2e en back, 4 tests de integración en front y builds aprobados en laptop. Rojo inicial observado en back y front. La comprobación por mutación detectó el cálculo y el texto alterados; los archivos fueron restaurados y sus huellas coinciden con las versiones aprobadas.
+- Reglas: RN-ENT-05, 06, 07, 08, 09, 17, 19 y 20.
+
+## 2026-11-22 — Modelar récords personales y carga efectiva [US16]
+- Desarrollador: Ramiro
+- Agregado 23/11/2026 (cierre): se implementó el backend de US16 sobre US15 ya en develop. Puerto `ConsultaEjerciciosRecords` (adaptador sobre la Fachada de catálogo, devuelve `nombre`, `tipo`, `tipoCarga` y `factorPesoCorporal`), repositorio `RepositorioRecords` con TypeORM (`records_personales`, único por `alumno_id, ejercicio_id, tipo`, upsert conservando el `id`), y `CerrarEntrenamientoConRecords` (A2) que envuelve a `CerrarEntrenamiento` sin tocar sus tests: cierra, re-lee el entrenamiento, calcula marcas con `MarcasPorTipoEjercicio`, agrupa por `(ejercicioId, tipo)` quedándose con la mejor marca, detecta contra los previos con `DetectorRecords`, guarda y publica cada `RecordBatido`, y devuelve `recordsBatidos` solo si hay batidos. `recordsBatidos` es opcional en la respuesta para no romper los tests de US15 (que usan `toEqual`). Endpoint sin cambios: el controlador usa el envoltorio en el mismo `POST /entrenamiento/entrenamientos/:id/finalizacion`. Verificación: 274 unitarios, 12 de integración, 115 e2e, lint y build en verde. Limitación aceptada: si falla la persistencia de récords, el entrenamiento ya quedó finalizado y `EntrenamientoFinalizado` ya se publicó. Diferido: FK `entrenamiento_id` con `ON DELETE CASCADE` y filas de `FICHAS-TEST.md`.

@@ -1,3 +1,5 @@
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
+import type { ResumenEntrenamiento } from '../../dominio/entrenamiento/resumen-entrenamiento.js';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, LessThanOrEqual, QueryFailedError, Repository } from 'typeorm';
@@ -77,12 +79,43 @@ export class RepositorioEntrenamientosTypeorm implements RepositorioEntrenamient
   }
 
   async guardarSerie(entrenamientoId: string, serie: SerieRealizada): Promise<void> {
-    await this.seriesFilas.upsert(serieAFila(entrenamientoId, serie), [
-      'entrenamientoId',
-      'orden',
-      'numero',
-      'posicion',
-    ]);
+    await this.filas.manager.transaction(async (manager) => {
+      const fila = await manager
+        .getRepository(EntrenamientoEsquema)
+        .findOne({ where: { id: entrenamientoId }, lock: { mode: 'pessimistic_write' } });
+      if (!fila || fila.fin)
+        throw new ErrorDominio('RN-ENT-04', 'El entrenamiento ya fue finalizado', 'conflicto');
+      await manager
+        .getRepository(SerieRealizadaEsquema)
+        .upsert(serieAFila(entrenamientoId, serie), [
+          'entrenamientoId',
+          'orden',
+          'numero',
+          'posicion',
+        ]);
+    });
+  }
+
+  async finalizarAtomico(
+    id: string,
+    instante: Date,
+    calcular: (entrenamiento: Entrenamiento) => Promise<ResumenEntrenamiento>,
+  ): Promise<Entrenamiento | null> {
+    return this.filas.manager.transaction(async (manager) => {
+      const filas = manager.getRepository(EntrenamientoEsquema);
+      const fila = await filas.findOne({ where: { id }, lock: { mode: 'pessimistic_write' } });
+      if (!fila) return null;
+      const series = await manager.getRepository(SerieRealizadaEsquema).find({
+        where: { entrenamientoId: id },
+        order: { orden: 'ASC', numero: 'ASC', posicion: 'ASC' },
+      });
+      const entrenamiento = filaAEntrenamiento(fila, series);
+      entrenamiento.asegurarFinalizable(instante);
+      const resumen = await calcular(entrenamiento);
+      entrenamiento.finalizar(instante, resumen);
+      await filas.update({ id }, { fin: instante, resumen });
+      return entrenamiento;
+    });
   }
 
   private async hidratar(fila: EntrenamientoEsquema): Promise<Entrenamiento> {

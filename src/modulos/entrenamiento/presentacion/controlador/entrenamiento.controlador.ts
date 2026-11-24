@@ -1,3 +1,4 @@
+import { CerrarEntrenamientoConRecords } from '../../aplicacion/finalizar-entrenamiento/cerrar-entrenamiento-con-records.caso-uso.js';
 import { Body, Controller, Get, Inject, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
 import { PaginacionDto } from '../../../../compartido/presentacion/paginacion/paginacion.dto.js';
 import {
@@ -18,6 +19,8 @@ export class EntrenamientoControlador {
     @Inject(ConsultarEntrenamientoEnCurso)
     private readonly consultarEntrenamiento: ConsultarEntrenamientoEnCurso,
     @Inject(RegistrarSerieRealizada) private readonly registrarSerie: RegistrarSerieRealizada,
+    @Inject(CerrarEntrenamientoConRecords)
+    private readonly cerrarEntrenamiento: CerrarEntrenamientoConRecords,
     @Inject(ConsultarEntrenamientosDeAlumnos)
     private readonly consultarDeAlumnos: ConsultarEntrenamientosDeAlumnos,
   ) {}
@@ -42,6 +45,12 @@ export class EntrenamientoControlador {
     @Body() dto: RegistrarSerieRealizadaDto,
   ) {
     return this.registrarSerie.ejecutar(usuario.sub, id, dto);
+  }
+
+  @Post('entrenamientos/:id/finalizacion')
+  @Roles('Alumno')
+  finalizar(@UsuarioActual() usuario: UsuarioAutenticado, @Param('id', ParseUUIDPipe) id: string) {
+    return this.cerrarEntrenamiento.ejecutar(usuario.sub, id);
   }
 
   @Get('alumnos/:alumnoId/entrenamientos')
