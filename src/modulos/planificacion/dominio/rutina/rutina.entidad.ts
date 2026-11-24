@@ -105,6 +105,19 @@ export class Rutina {
     this.nombreRutina = NombreRutina.crear(nombre);
   }
 
+  /**
+   * RN-PLAN-07: la rutina se edita siempre. Conserva id y profesor; el contenido nuevo cumple las
+   * mismas reglas que al crearla. Sin nombre, se queda con el que tiene.
+   */
+  editar(datos: Omit<DatosRutina, 'profesorUsuarioId'>): Rutina {
+    const nueva = Rutina.crear({
+      ...datos,
+      profesorUsuarioId: this.profesorUsuarioId,
+      nombre: datos.nombre ?? this.nombre,
+    });
+    return new Rutina(this.id, this.profesorUsuarioId, nueva.elementos, nueva.nombreRutina);
+  }
+
   /** RN-PLAN-08: copia el agregado y da identidad nueva a cada entidad interna. */
   copiar(nombre: string): Rutina {
     const bloques = this.bloques.map((bloque) =>
