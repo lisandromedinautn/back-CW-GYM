@@ -22,19 +22,19 @@ Contexto de soporte. Avisa al profesor, dentro de la app, cuando un alumno suyo 
 
 | Archivo (`aplicacion/`) | US | RN |
 | :-- | :-- | :-- |
-| `notificar-entrenamiento-por-debajo/notificar-entrenamiento-por-debajo.caso-uso.ts` | US21 | 01, 02 |
-| `consultar-notificaciones/consultar-notificaciones.caso-uso.ts` | US21 | 03 |
-| `contar-no-leidas/contar-no-leidas.caso-uso.ts` | US21 | 03 |
-| `marcar-notificacion-leida/marcar-notificacion-leida.caso-uso.ts` | US21 | 04 |
+| `notificar-entrenamiento-por-debajo/notificar-entrenamiento-por-debajo.caso-uso.ts` ✅ | US21 | 01, 02 |
+| `consultar-notificaciones/consultar-notificaciones.caso-uso.ts` ✅ | US21 | 03 |
+| `contar-no-leidas/contar-no-leidas.caso-uso.ts` ✅ | US21 | 03 |
+| `marcar-notificacion-leida/marcar-notificacion-leida.caso-uso.ts` ✅ | US21 | 04 |
 | `sumar-percepcion/sumar-percepcion.caso-uso.ts` | US17 | 05 (a confirmar) |
 
-## Endpoints tentativos
+## Endpoints
 
 | Método y ruta | Rol | Caso de uso |
 | :-- | :-- | :-- |
-| `GET /notificaciones/mis-notificaciones` | Profesor | consultar-notificaciones |
-| `GET /notificaciones/mis-notificaciones/no-leidas` | Profesor | contar-no-leidas |
-| `PUT /notificaciones/mis-notificaciones/:id/lectura` | Profesor | marcar-notificacion-leida |
+| `GET /notificaciones/mis-notificaciones` ✅ | Profesor | consultar-notificaciones |
+| `GET /notificaciones/mis-notificaciones/no-leidas` ✅ | Profesor | contar-no-leidas |
+| `PUT /notificaciones/mis-notificaciones/:id/lectura` ✅ | Profesor | marcar-notificacion-leida |
 
 ## Modelo (decidido por Ulises el 24/11/2026)
 
@@ -84,14 +84,14 @@ Contexto de soporte. Avisa al profesor, dentro de la app, cuando un alumno suyo 
 
 ### Kernel compartido (Observador)
 
-* Hoy `PublicadorEventosLog` solo escribe en el log. Se reemplaza por `PublicadorEventosEnProceso` en `compartido/infraestructura/publicador-eventos/`.
+* `PublicadorEventosLog`, que solo escribía en el log, se reemplazó por `PublicadorEventosEnProceso` en `compartido/infraestructura/publicador-eventos/` ✅.
   * Implementa el puerto `PublicadorEventos` y un puerto nuevo, `SuscriptorEventos` (`suscribir(nombre, manejador)`), en `compartido/dominio/publicador-eventos/`.
   * Sigue escribiendo cada evento en el log.
   * No suma paquetes: no se instala `@nestjs/event-emitter`.
 * El evento se publica después de guardar el cierre (como hoy en `CerrarEntrenamiento`). Los manejadores se esperan en orden.
   * Si un manejador falla, el error se registra en el log y **no revierte ni hace fallar la finalización** del alumno.
   * Riesgo aceptado para el MVP: esa notificación se pierde y no hay reintentos.
-* Con esto, Observador pasa a ✅ en `docs/PATRONES.md`, al implementarse.
+* Con esto, Observador pasó a ✅ en `docs/PATRONES.md` (24/11/2026).
 
 ### Preparado para US17 (RN-NOT-05, a confirmar)
 
@@ -111,3 +111,13 @@ US17 todavía no está implementada. Para no tener que cambiar el contrato despu
 | Fecha | RN | Cambio | Quién lo decidió |
 | :-- | :-- | :-- | :-- |
 | 24/11/2026 | RN-NOT-01 a 05 | Versión inicial (US21): una notificación por Entrenamiento por debajo, gravedad Leve o Grave con el umbral del 40% (inclusive en Grave, manda el porcentaje), bandeja con no leídas, percepción reservada para US17 | Ulises |
+
+## Decisiones de implementación (CG-89, US21)
+
+Implementado el 24/11/2026.
+
+* `PUT .../:id/lectura` valida el id con `ParseUUIDPipe`, como el resto del repo: un id que no es UUID responde `400`, y uno válido ajeno o inexistente, `404` (RN-NOT-04).
+* El repositorio guarda con `INSERT ... ON CONFLICT DO NOTHING` (`orIgnore`) sobre el único de `entrenamiento_id`, así que un evento duplicado concurrente no rompe. Si el id ya existe, actualiza la fila.
+* Si el usuario del JWT no es profesor, la bandeja sale vacía y el contador en 0. En la práctica no pasa, porque el guard exige el rol Profesor.
+* La respuesta no expone `profesorId` ni `leidaEn`: expone `leida` (boolean).
+* Los e2e existentes ahora usan el publicador real (salvo los que lo sobreescriben con un mock), así que al finalizar se crean notificaciones. Ningún e2e existente cambió y todos pasan.

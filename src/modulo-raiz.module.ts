@@ -5,6 +5,7 @@ import { CatalogoModule } from './modulos/catalogo/catalogo.module.js';
 import { EntrenamientoModule } from './modulos/entrenamiento/entrenamiento.module.js';
 import { ModuloCompartido } from './compartido/compartido.module.js';
 import { ModuloIdentidad } from './modulos/identidad/identidad.module.js';
+import { NotificacionesModule } from './modulos/notificaciones/notificaciones.module.js';
 import { PlanificacionModule } from './modulos/planificacion/planificacion.module.js';
 
 /**
@@ -38,6 +39,7 @@ import { PlanificacionModule } from './modulos/planificacion/planificacion.modul
     CatalogoModule,
     PlanificacionModule,
     EntrenamientoModule,
+    NotificacionesModule,
   ],
 })
 export class ModuloRaiz {}
