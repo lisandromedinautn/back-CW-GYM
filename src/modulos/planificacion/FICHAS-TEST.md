@@ -250,3 +250,24 @@ Consulta pública del caso de uso y, en los siguientes bloques, endpoint y panta
 | `test/e2e/planificacion/editar-rutina.e2e-spec.ts` › PUT sobre una rutina de otro profesor responde 404 RN-PLAN-08 | RN-PLAN-08 | e2e | rutina de profesor02; PUT de profesor01 | 404 RN-PLAN-08 | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
 | `test/e2e/planificacion/editar-rutina.e2e-spec.ts` › GET de una rutina de otro profesor responde 404 RN-PLAN-08 | RN-PLAN-08 | e2e | rutina de profesor02; GET de profesor01 | 404 RN-PLAN-08 | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
 | `test/e2e/planificacion/editar-rutina.e2e-spec.ts` › PUT con el token de Alumno responde 403 RN-IDE-03 | RN-IDE-03 | e2e | PUT con JWT de Alumno | 403 RN-IDE-03 | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+
+## US22 — Editar los días de un plan (confirmadas por Lisandro el 24/11/2026)
+
+Reloj fijo en 24/11/2026. Plan del profesor `u-laura` del 21/11 al 18/12 (días 1 a 28); día 4 = hoy. Rutina R propia de `u-laura`, rutina X de otro profesor.
+
+| Test (archivo › caso) | RN | Nivel | Entrada | Esperado | Obtenido (último run) | Fecha |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| `dominio/plan/plan.entidad.spec.ts` › P1 día futuro con rutina | RN-PLAN-23 | Unitario | `editarDia(10, R)` (30/11) | el día 10 queda con R | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+| `dominio/plan/plan.entidad.spec.ts` › P2 día futuro a descanso | RN-PLAN-10, 23 | Unitario | `editarDia(10, null)` | el día 10 queda en descanso | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+| `dominio/plan/plan.entidad.spec.ts` › P3 día pasado | RN-PLAN-23 | Unitario | `editarDia(2, R)` (22/11) | `ErrorDominio` código `RN-PLAN-23` | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+| `dominio/plan/plan.entidad.spec.ts` › P4 hoy sin entrenamiento | RN-PLAN-23 | Unitario | `editarDia(4, R)` sin entrenamiento iniciado | el día 4 queda con R | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+| `dominio/plan/plan.entidad.spec.ts` › P5 plan finalizado | RN-PLAN-23 | Unitario | plan del 01/10 al 28/10, `editarDia(20, R)` | `ErrorDominio` código `RN-PLAN-23` | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+| `dominio/plan/plan.entidad.spec.ts` › P6 día fuera de rango | RN-PLAN-11 | Unitario | `editarDia(0, R)` y `editarDia(29, R)` | `ErrorDominio` código `RN-PLAN-11` | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+| `aplicacion/editar-dia-plan/editar-dia-plan.caso-uso.spec.ts` › C1 rutina ajena | RN-PLAN-23 | Unitario | día 10 con X | `ErrorDominio` `RN-PLAN-23`, categoría `no-encontrado`, sin guardar | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+| `aplicacion/editar-dia-plan/editar-dia-plan.caso-uso.spec.ts` › C2 plan ajeno o inexistente | RN-PLAN-23 | Unitario | plan de otro profesor / id inexistente | categoría `no-encontrado`, sin guardar | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+| `aplicacion/editar-dia-plan/editar-dia-plan.caso-uso.spec.ts` › C3 hoy con entrenamiento iniciado | RN-PLAN-23 | Unitario | día 4 y un alumno del plan con Entrenamiento iniciado el 24/11 | `ErrorDominio` `RN-PLAN-23`, categoría `conflicto`, sin guardar | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+| `test/e2e/planificacion/editar-dia-plan.e2e-spec.ts` › E1 el alumno ve el cambio | RN-PLAN-23, 19 | e2e | `PUT /planificacion/planes/:id/dias/:numero` con R en un día futuro y `GET /planificacion/mi-plan` del alumno | 200 con el día y el alumno ve R en ese día | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+| `test/e2e/planificacion/editar-dia-plan.e2e-spec.ts` › E2 rechazos | RN-PLAN-23, RN-IDE-03 | e2e | día pasado / hoy con Entrenamiento iniciado / plan ajeno / token de Alumno | 409 / 409 / 404 / 403 | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+| `aplicacion/consultar-planes/consultar-planes.caso-uso.spec.ts` › C4 detalle de un plan propio | RN-PLAN-22, 23 | Unitario | `porId` de un plan de `u-laura` / de otro profesor | los 28 días con `numero`, `fecha`, `rutinaId` y `esDescanso` / categoría `no-encontrado` | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+| `test/e2e/planificacion/editar-dia-plan.e2e-spec.ts` › E3 detalle | RN-PLAN-22, RN-IDE-03 | e2e | `GET /planificacion/planes/:id` propio / ajeno / token de Alumno | 200 con 28 días / 404 / 403 | = esperado (Vitest, 24/11/2026) | 24/11/2026 |
+

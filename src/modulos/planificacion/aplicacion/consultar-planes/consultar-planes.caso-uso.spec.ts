@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import { ErrorDominio } from '../../../../compartido/dominio/error-dominio/error-dominio.js';
 import { RelojFijo, RepositorioPlanesEnMemoria } from '../../../../../test/dobles/planificacion.js';
 import { Plan } from '../../dominio/plan/plan.entidad.js';
 import { type ConsultaPlanes, ConsultarPlanes } from './consultar-planes.caso-uso.js';
@@ -175,5 +176,59 @@ describe('RN-PLAN-10 · cada día tiene rutina o es de descanso', () => {
       diasConRutina: resumen.diasConRutina,
       diasDeDescanso: resumen.diasDeDescanso,
     }).toEqual({ diasConRutina: 20, diasDeDescanso: 8 });
+  });
+});
+
+describe('RN-PLAN-22 · el detalle de un plan propio trae sus 28 días', () => {
+  let planes: RepositorioPlanesEnMemoria;
+  let consultarPlanes: ConsultarPlanes;
+
+  beforeEach(() => {
+    planes = new RepositorioPlanesEnMemoria();
+    consultarPlanes = new ConsultarPlanes(planes, relojEl('2026-11-24'));
+  });
+
+  it('C4 el plan propio trae sus 28 días con número, fecha, rutina y descanso', async () => {
+    const plan = Plan.crear({
+      profesorUsuarioId: 'u-laura',
+      fechaInicio: '2026-11-21',
+      dias: dias(1),
+      alumnoIds: ['a1'],
+    });
+    await planes.guardar(plan);
+
+    const detalle = await consultarPlanes.porId('u-laura', plan.id);
+
+    expect({
+      id: detalle.id,
+      fechaInicio: detalle.fechaInicio,
+      fechaFin: detalle.fechaFin,
+      estado: detalle.estado,
+      cantidadDeDias: detalle.dias.length,
+      primero: detalle.dias[0],
+      ultimo: detalle.dias[27],
+    }).toEqual({
+      id: plan.id,
+      fechaInicio: '2026-11-21',
+      fechaFin: '2026-12-18',
+      estado: 'vigente',
+      cantidadDeDias: 28,
+      primero: { numero: 1, fecha: '2026-11-21', rutinaId: 'rutina-1', esDescanso: false },
+      ultimo: { numero: 28, fecha: '2026-12-18', rutinaId: null, esDescanso: true },
+    });
+  });
+
+  it('C4 el plan de otro profesor responde no encontrado', async () => {
+    const plan = Plan.crear({
+      profesorUsuarioId: 'u-diego',
+      fechaInicio: '2026-11-21',
+      dias: dias(),
+      alumnoIds: ['a1'],
+    });
+    await planes.guardar(plan);
+
+    const error = await consultarPlanes.porId('u-laura', plan.id).catch((e: unknown) => e);
+
+    expect(error instanceof ErrorDominio ? error.categoria : error).toBe('no-encontrado');
   });
 });

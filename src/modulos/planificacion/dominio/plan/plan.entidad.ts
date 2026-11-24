@@ -32,9 +32,13 @@ export class Plan {
     readonly id: string,
     readonly profesorUsuarioId: string,
     readonly validez: ValidezPlan,
-    readonly dias: readonly DiaPlan[],
+    private diasDelPlan: readonly DiaPlan[],
     readonly alumnoIds: readonly string[],
   ) {}
+
+  get dias(): readonly DiaPlan[] {
+    return this.diasDelPlan;
+  }
 
   get fechaInicio(): string {
     return this.validez.inicio;
@@ -55,6 +59,34 @@ export class Plan {
    */
   diaPorFecha(fecha: string): DiaPlan | null {
     return this.dias.find((dia) => dia.fecha === fecha) ?? null;
+  }
+
+  /**
+   * RN-PLAN-23: cambia la rutina de un día (`null` = descanso). Rechaza un plan que ya terminó y
+   * un día anterior a `hoy` (`AAAA-MM-DD`). Que el día de hoy tenga un Entrenamiento iniciado lo
+   * valida el caso de uso: es otro agregado.
+   */
+  editarDia(numero: number, rutinaId: string | null, hoy: string): void {
+    if (!Number.isInteger(numero) || numero < 1 || numero > DIAS_DEL_PLAN) {
+      throw new ErrorDominio(
+        'RN-PLAN-11',
+        `El día ${numero} no corresponde a un plan de ${DIAS_DEL_PLAN} días`,
+      );
+    }
+    if (this.validez.fin < hoy) {
+      throw new ErrorDominio('RN-PLAN-23', 'El plan ya terminó y no se puede editar', 'conflicto');
+    }
+    const fecha = this.validez.fechaDelDia(numero);
+    if (fecha < hoy) {
+      throw new ErrorDominio(
+        'RN-PLAN-23',
+        'No se pueden editar días anteriores a hoy',
+        'conflicto',
+      );
+    }
+    this.diasDelPlan = this.diasDelPlan.map((dia) =>
+      dia.numero === numero ? DiaPlan.crear(numero, fecha, rutinaId) : dia,
+    );
   }
 
   /** RN-PLAN-09, 10, 11 y 12. */

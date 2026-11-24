@@ -34,6 +34,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | RN-PLAN-20 | Un circuito no repite ejercicios: cada ejercicio del catálogo aparece una sola vez en el mismo circuito | US09, decisión del 10/11/2026 | Vigente |
 | RN-PLAN-21 | La rutina tiene un nombre de 1 a 60 caracteres, sin contar los espacios de los extremos (se guarda recortado). Si el profesor no lo indica al crearla, se llama `Rutina N` (N = cantidad de rutinas del profesor + 1; si ese nombre ya está usado, el siguiente N libre). Un profesor no puede tener dos rutinas con el mismo nombre, comparando sin mayúsculas y sin espacios de los extremos (409). Se puede renombrar siempre, también con el mismo nombre que ya tiene. Distintos profesores pueden repetir nombres | T08, T09 (Lisandro, 11/11/2026) | Vigente |
 | RN-PLAN-22 | Un profesor solo consulta sus propios planes. El listado se pagina (5, 10, 20, 50 o 100), se ordena por fecha de inicio del más nuevo al más viejo y muestra el estado de cada plan según RN-PLAN-15 con la fecha del reloj: Próximo (todavía no empezó), Vigente o Finalizado (pasó su fecha de fin). Se filtra por estado, por alumno y por rango de fecha de inicio (ambos extremos incluidos) | T13 (Lisandro, 21/11/2026) | Vigente |
+| RN-PLAN-23 | En un plan propio que todavía no terminó (Próximo o Vigente), el profesor cambia la rutina de un día o lo pasa a descanso. La rutina tiene que ser suya. No se cambian los días con fecha anterior a hoy (fecha UTC del Reloj), ni el de hoy si algún alumno del plan ya inició un Entrenamiento ese día. La fecha de inicio y los 28 días no cambian | US22 (Lisandro, 24/11/2026) | Vigente |
 
 ## Casos de uso planificados
 
@@ -50,6 +51,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `consultar-rutina-del-dia/consultar-rutina-del-dia.caso-uso.ts` ✅ | US08 | 11, 15, 18 |
 | `consultar-plan-del-alumno/consultar-plan-del-alumno.caso-uso.ts` ✅ | US11 | 11, 15, 19 |
 | `consultar-planes/consultar-planes.caso-uso.ts` ✅ | T13 | 10, 15, 22 |
+| `editar-dia-plan/editar-dia-plan.caso-uso.ts` ✅ | US22 | 10, 11, 23 |
 
 ## Endpoints tentativos
 
@@ -67,6 +69,8 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | `GET /planificacion/mi-rutina-del-dia` ✅ | Alumno | consultar-rutina-del-dia |
 | `GET /planificacion/mi-plan` ✅ | Alumno | consultar-plan-del-alumno |
 | `GET /planificacion/planes?pagina=&tamanio=&estado=&alumnoId=&inicioDesde=&inicioHasta=` ✅ (respuesta `{ items, total, pagina, tamanio }`) | Profesor | consultar-planes |
+| `PUT /planificacion/planes/:id/dias/:numero` ✅ (body `{ rutinaId: uuid \| null }`; responde el día `{ numero, fecha, rutinaId, esDescanso }`) | Profesor | editar-dia-plan |
+| `GET /planificacion/planes/:id` ✅ (plan propio: `id`, `fechaInicio`, `fechaFin`, `estado`, `dias[{ numero, fecha, rutinaId, esDescanso }]`) | Profesor | consultar-planes (`porId`, US22) |
 
 ## Historial de cambios de reglas
 
@@ -80,6 +84,7 @@ Contexto central. Contiene las rutinas y los planes de entrenamiento que crea el
 | 11/11/2026 | Nueva RN-PLAN-21 | La rutina tiene nombre (1 a 60 caracteres, recortado), por defecto `Rutina N`, único por profesor sin distinguir mayúsculas, y se puede renombrar (T08, T09) | Lisandro |
 | 17/11/2026 | RN-PLAN-08 | Se elimina la pregunta sobre si la copia modificada es una rutina nueva; se conserva la copia independiente y el acceso a las rutinas propias (CG-40, US20) | Desarrollador |
 | 21/11/2026 | Nueva RN-PLAN-22 | El profesor consulta sus propios planes, paginados, con estado y filtros por estado, alumno y rango de fecha de inicio (T13) | Lisandro |
+| 24/11/2026 | Nueva RN-PLAN-23 | El profesor edita los días de un plan Próximo o Vigente: cambia la rutina o pasa a descanso, sin tocar días pasados ni el de hoy si ya hay un Entrenamiento iniciado (US22) | Lisandro |
 
 ## Decisiones de implementación (US06)
 
@@ -162,3 +167,11 @@ T13 (CG-84) ya está en `develop` y toca archivos que US12 también va a tocar. 
 * Solo el profesor propietario puede consultar y modificar los alumnos de un plan vigente. El back valida el vínculo, la ausencia de otro plan vigente y permite quitar al último alumno.
 * La pantalla se abre desde «Alumnos» en el listado de planes vigentes. El alta o la baja actualiza las asignaciones sin recrear los días del plan.
 * La asignación y la creación serializan por alumno en PostgreSQL y vuelven a comprobar la vigencia dentro de la transacción (RN-PLAN-14).
+
+## Decisiones de implementación (US22)
+
+* `Plan.editarDia(numero, rutinaId, hoy)` valida RN-PLAN-11 (1..28) y RN-PLAN-23 (plan terminado o día anterior a hoy) y reemplaza el `DiaPlan`; `dias` pasó a ser un getter sobre un campo privado, sin romper la inmutabilidad hacia afuera.
+* El día de hoy con Entrenamiento iniciado se valida en el caso de uso, antes de mutar el plan, con el puerto `ConsultaEntrenamientosIniciados`. Su adaptador (`infraestructura/plan/consulta-entrenamientos-iniciados.typeorm.ts`) consulta la tabla `entrenamientos` con SQL parametrizado, sin importar el módulo de Entrenamiento (evita el ciclo).
+* Plan o rutina ajenos o inexistentes responden 404 con código RN-PLAN-23; `hoy` es la fecha UTC del `Reloj`.
+* `RepositorioPlanesTypeorm.guardar` conserva los ids de los días existentes (unique `plan_id, numero`), así el cambio actualiza `dias_plan` sin duplicar filas.
+* `ConsultarPlanes.porId` reusa el cálculo de estado del listado.
