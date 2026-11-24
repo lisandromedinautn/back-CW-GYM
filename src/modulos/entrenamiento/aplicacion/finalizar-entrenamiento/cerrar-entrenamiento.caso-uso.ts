@@ -5,7 +5,6 @@ import {
 import type { PublicadorEventos } from '../../../../compartido/dominio/publicador-eventos/publicador-eventos.puerto.js';
 import type { Reloj } from '../../../../compartido/dominio/reloj/reloj.puerto.js';
 import type { ConsultaAlumno } from '../../dominio/entrenamiento/consultas-entrenamiento.puerto.js';
-import { EntrenamientoFinalizado } from '../../dominio/entrenamiento/entrenamiento-finalizado.evento.js';
 import type { RepositorioCierreEntrenamiento } from '../../dominio/entrenamiento/repositorio-cierre-entrenamiento.puerto.js';
 import type { RepositorioEntrenamientos } from '../../dominio/entrenamiento/repositorio-entrenamientos.puerto.js';
 import type { FinalizarEntrenamiento } from './finalizar-entrenamiento.caso-uso.js';
@@ -35,9 +34,7 @@ export class CerrarEntrenamiento {
     );
     if (!finalizado)
       throw new ErrorDominio(CODIGO_NO_ENCONTRADO, 'Entrenamiento no encontrado', 'no-encontrado');
-    await this.publicador.publicar(
-      new EntrenamientoFinalizado(id, alumno.id, instante.toISOString()),
-    );
+    await this.publicador.publicar(finalizado.eventoDeFin());
     return finalizado.datos.resumen!;
   }
 }

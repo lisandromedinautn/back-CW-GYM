@@ -42,7 +42,7 @@ Contexto central. Contiene lo que el alumno realizó y sus récords personales. 
 | `consultar-entrenamiento-en-curso.caso-uso.ts` ✅ | US13 | 20 |
 | `registrar-serie-realizada.caso-uso.ts` ✅ | US14 | 03, 04, 19, 20 |
 | `finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.ts` ✅, `dominio/entrenamiento/calcular-resumen.ts` ✅ | US15 | 05–09, 17, 19, 20 |
-| `finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.ts` (evento con las series por debajo), `dominio/entrenamiento/series-por-debajo.ts` | US21 | 21 |
+| `finalizar-entrenamiento/cerrar-entrenamiento.caso-uso.ts` (evento con las series por debajo) ✅, `dominio/entrenamiento/series-por-debajo.ts` ✅ | US21 | 21 |
 | `registrar-percepcion.caso-uso.ts` | US17 | 14, 15, 16 |
 | `consultar-entrenamientos-de-alumnos.caso-uso.ts` ✅ | US18 | 18 |
 
