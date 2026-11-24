@@ -20,6 +20,11 @@ export class RepositorioNotificacionesEnMemoria extends RepositorioNotificacione
     return this.todas().some((n) => n.datos.entrenamiento.id === entrenamientoId);
   }
 
+  async buscarPorEntrenamiento(entrenamientoId: string): Promise<Notificacion | null> {
+    const encontrada = this.todas().find((n) => n.datos.entrenamiento.id === entrenamientoId);
+    return encontrada ? Notificacion.reconstruir(encontrada.datos) : null;
+  }
+
   async listarDeProfesor(
     profesorId: string,
     pagina: number,

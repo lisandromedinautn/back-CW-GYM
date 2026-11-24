@@ -36,6 +36,11 @@ export class RepositorioNotificacionesTypeorm implements RepositorioNotificacion
     return this.filas.existsBy({ entrenamientoId });
   }
 
+  async buscarPorEntrenamiento(entrenamientoId: string): Promise<Notificacion | null> {
+    const fila = await this.filas.findOneBy({ entrenamientoId });
+    return fila ? filaANotificacion(fila) : null;
+  }
+
   async listarDeProfesor(
     profesorId: string,
     pagina: number,
