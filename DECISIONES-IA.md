@@ -606,3 +606,9 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
 - Pendientes:
   - Correr los e2e (se denegó la suite completa sin pedido del desarrollador).
   - Push y merge de `docs/swagger`.
+- Segunda ronda (revisión del desarrollador en `/api`):
+  - Pedido: dividir Planificación por recurso y que se vean los DTO y las entidades (en "Schemas" no se distinguían).
+  - Decisiones del desarrollador: tags por recurso en todos los módulos (`Identidad · Ingreso / Profesores / Alumnos`, `Planificación · Rutinas / Planes / Mi plan (Alumno)`, `Entrenamiento · Alumno / Profesor`), y schemas agrupados por prefijo y ordenados: `Entidad.*`, `Dto.*`, `Respuesta.*`.
+  - Implementación: `@ApiSchema({ name })` en cada clase; `configurarSwagger` define el orden y la descripción de los tags (`TAGS`), ordena los schemas por grupo y desactiva `autoTagControllers`. Las respuestas que son la forma pública de una entidad pasaron a `Entidad.*` (Ejercicio, Rutina, Bloque, Circuito, EjercicioPrescripto, Plan, DiaPlan, Entrenamiento, SerieRealizada, Notificacion). Las entidades que no salen por ningún endpoint (Usuario, Profesor, Alumno, RecordPersonal) tienen clases solo de documentación en `presentacion/entidades/`, registradas con `@ApiExtraModels`; Usuario no expone la contraseña. Los DTO de query (`ConsultarPlanes`, `ConsultarEjercicios`, `Paginacion`) también se registran para que figuren en Schemas.
+  - Delegación: 9 agentes Haiku 5.5. Dos dejaron `Dtoextends` sin espacio; lo detectaron prettier y `tsc` y se corrigió a mano.
+  - Resultado: 14 entidades, 17 DTO y 47 respuestas, sin schemas fuera de grupo ni propiedades sin descripción; 10 tags.
