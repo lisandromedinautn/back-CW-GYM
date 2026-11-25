@@ -522,3 +522,59 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
   - `finalizaciones_alumno` arranca vacía: los entrenamientos previos a US23 no cuentan para la racha.
   - Mutaciones del back de US22 no hechas (fecha pasada, entrenamiento iniciado, propietario).
   - Suite completa sin correr después de integrar; un e2e de ingreso falló una vez en corrida completa por la base de test compartida entre agentes y pasa solo.
+
+## 2026-11-25 — Mi plan en calendario y estado del día en el inicio del Alumno [T25]
+- Desarrollador: Ulises
+- Herramienta / modelo / esfuerzo: Claude Code · Opus 5.5 (orquestador y diseño, skill Impeccable) + Sonnet 5.5 medium (1 subagente revisor).
+- Objetivo: T25 (CG-103). Mostrar Mi plan como calendario en lugar de una lista de días y sumar al inicio del Alumno el estado de su entrenamiento de hoy con un acceso directo. Sin cambios en la API. Toca los dos repos: el front y la copia de `docs/TRAZABILIDAD.md` del back.
+- Qué hizo la IA:
+  - **Tarjeta de Jira:** redactó la descripción de CG-103 con el formato de las demás (alcance y criterios de aceptación), después de preguntar las cuatro decisiones de diseño, y la cargó.
+  - **Relevamiento:** el back ya informa la fecha de hoy en `GET /planificacion/mi-plan`, así que el día marcado no usa el reloj del navegador. El texto de RN-PLAN-19 en el back nunca mencionó el desplegable, por lo que no cambió; solo cambió la tabla de UI del front.
+  - **Reglas y tests:** propuso el texto de RN-PLAN-19 (UI) y de la nueva RN-UI-ENT-06, la adaptación del test del detalle y las fichas nuevas, y esperó la aprobación. Los tests arrancaron en rojo por aserción y se comprobó que muerden rompiendo la producción.
+  - **Calendario de Mi plan:** lunes a domingo con el día 1 en su columna, hoy en ámbar y elegido al entrar, el día elegido con su detalle en un panel debajo.
+  - **Tarjeta "Hoy":** planificación resuelve el día (rutina, descanso o sin plan) y entrenamiento el estado (pendiente, en curso o hecho); la raíz de composición (`Aplicacion.tsx`) los junta, sin que un módulo importe el interior del otro. La columna del acceso es `AccesoDelDia`, en `compartido`.
+  - **Revisión de terminación:** aplicó lo que no tocaba tests:
+    - desplazar hasta el panel al tocar un día y anunciarlo;
+    - casillas de 45 px a 360 px;
+    - contorno en el punto de color;
+    - foco pegado a la casilla.
+  - **Nombre accesible de los días:** con la aprobación del desarrollador, cada día pasó a nombrarse por lo que muestra más el día del plan y la fecha (WCAG 2.5.3). Se unió con `aria-labelledby` porque el cálculo del nombre recortaba los espacios.
+  - **Revisión manual del desarrollador (dos rondas):**
+    - Mi plan: el nombre de la rutina sale de las casillas, queda un punto de color por rutina con una leyenda al costado (sin leyenda en el celular), los días del mes siguiente van en segundo plano, y en escritorio el punto y el título van centrados.
+    - Inicio: la tarjeta "Hoy" pasa a dos columnas, con la fecha en el mismo rótulo que "Hoy" a la derecha, "Ir al entrenamiento" arriba de la columna en la cancha y las tarjetas de acceso del mismo alto.
+  - **Errores encontrados:**
+    - Editó tests por shell una vez; el permiso lo frenó y los rehízo con Edit.
+    - Bash rompió las comillas invertidas al escribir un componente y las fichas de entrenamiento; los rehízo con Write.
+    - Un reemplazo de CSS empezó en la primera aparición del selector y se llevó dos reglas de relleno; lo vio en la captura y las repuso.
+    - El test de la leyenda no mordía porque los datos no repetían rutinas; se le agregó una repetición, como pide su ficha.
+  - **Commits:** tres en el front (calendario, tarjeta "Hoy" y documentación) y uno en el back (trazabilidad). Los dos `feat` superan las ~150 líneas porque el CSS, el componente y los tests de cada pieza no se separan sin romper la compilación o los tests.
+- Decisiones del desarrollador:
+  - Detalle del día en un panel debajo del calendario, calendario de lunes a domingo, la tarjeta "Hoy" siempre con el estado del día y acceso según el estado.
+  - Nombre accesible de cada día por lo que se ve.
+  - Un color por rutina con leyenda al costado, sin leyenda en el celular, y el mes siguiente en segundo plano.
+  - Columna del acceso en el verde de cancha: amplía la regla de DESIGN.md (la cancha ya no es solo marco y tanteador).
+  - Texto "Tenés un entrenamiento en curso"; aprobó los cambios en los tests de RN-PLAN-19 y RN-UI-ENT-06.
+- Ideas descartadas:
+  - Detalle flotante dentro de cada día (conservaba los tests, pero se superponía).
+  - Semanas del plan sin días de la semana.
+  - Sección "Hoy" solo con entrenamiento pendiente, o acceso que inicia directamente.
+  - Todas las rutinas en lila, o leyenda debajo del calendario en el celular.
+  - Columna del acceso en el verde de acción.
+  - Nombre de la rutina dentro de la casilla, primero en una línea y después en dos (lo sacó la revisión manual).
+  - "Ir al entrenamiento" dentro del enlace (habría roto WCAG 2.5.3 y los tests).
+- Reglas afectadas:
+  - RN-PLAN-19 (UI del front): calendario, hoy marcado, leyenda y detalle del día elegido.
+  - Nueva RN-UI-ENT-06: estado del día en el inicio del Alumno.
+  - Las dos con su historial en los `CLAUDE.md` de planificación y entrenamiento.
+- Verificación:
+  - Lint y `tsc` OK.
+  - Vitest 220/220.
+  - e2e de navegador 14/14.
+  - Detector de la skill sin hallazgos.
+  - Sin desborde horizontal de 320 a 1280 px.
+  - Medidas en el navegador: casillas de 45×54 px a 360 px, el punto centrado en escritorio, "Hoy" e "Ir al entrenamiento" a la misma altura y el panel a la vista al tocar un día.
+- Pendientes:
+  - Ramas `feat/T25-calendario-inicio-alumno` (front) y `docs/T25-trazabilidad` (back) sin pushear ni PR.
+  - Sin revisión de terminación después de la revisión manual.
+  - Mover CG-103 en Jira.
+  - Tres tests existentes que abren `/alumno` ahora piden la rutina del día sin respuesta declarada (MSW solo lo advierte).
