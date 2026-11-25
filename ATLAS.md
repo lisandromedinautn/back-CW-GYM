@@ -32,6 +32,9 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `src/semillas/sembrar-grupos-us12.ts` | Dos grupos de prueba con planes vigentes para US12 ✅ |
 | `src/semillas/completar-plan-us12.ts` | Completa el plan del alumno 01 con ejercicios en 28 días mediante `yarn seed:plan-us12` ✅ |
 | `src/configurar-aplicacion.ts` | Configuración HTTP común a `main.ts` y a los e2e (`ValidationPipe` con `whitelist`) ✅ |
+| `src/compartido/presentacion/swagger/configurar-swagger.ts` | Swagger (OpenAPI) en `/api` (UI) y `/api-json`, con esquema bearer `jwt`; lo llama solo `main.ts` ✅ |
+| `src/compartido/presentacion/error-respuesta/error-respuesta.ts` | `ErrorRespuesta` (`{ codigo, mensaje }`): documenta en Swagger los errores de `FiltroErrorDominio` ✅ |
+| `src/modulos/<modulo>/presentacion/respuestas/` | Clases de respuesta con `@ApiProperty` (lo que devuelve cada endpoint). Documentan las entidades sin decorar el dominio (regla 1) ✅ |
 | `src/compartido/compartido.module.ts` | Kernel compartido: JWT global, `GuardRoles` y `FiltroErrorDominio` registrados como `APP_GUARD` y `APP_FILTER` ✅ |
 | `src/compartido/dominio/publicador-eventos/publicador-eventos.puerto.ts` | Puerto `PublicadorEventos` (publica un `EventoDominio`) y su símbolo de inyección ✅ |
 | `src/compartido/infraestructura/publicador-eventos/publicador-eventos-en-proceso.ts` | `PublicadorEventosEnProceso`: implementa `PublicadorEventos` y `SuscriptorEventos` (`dominio/publicador-eventos/suscriptor-eventos.puerto.ts`); registra cada evento en el log y ejecuta en orden sus manejadores; si uno falla, lo registra y sigue (US21) ✅ |

@@ -578,3 +578,31 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
   - Sin revisión de terminación después de la revisión manual.
   - Mover CG-103 en Jira.
   - Tres tests existentes que abren `/alumno` ahora piden la rutina del día sin respuesta declarada (MSW solo lo advierte).
+
+## 2026-11-25 — Documentación Swagger de toda la API [T26]
+
+- Qué hizo la IA:
+  - Actualizó `develop` con `main` (fast-forward, 5 commits) y lo pusheó. Creó la rama `docs/swagger` desde `develop`.
+  - Instaló `@nestjs/swagger@12.1.2` exacta (12 días de antigüedad; 39 versiones verificadas, todas con más de 24 h).
+  - Tomó como referencia el back de CW Tech (proyecto anterior): `DocumentBuilder` con bearer JWT, `@ApiTags`, `@ApiOkResponse({ type })` y `@ApiProperty` con `description` y `example`.
+  - Armó la base: `configurarSwagger` (UI en `/api`, documento en `/api-json`, esquema `jwt`, versión de `package.json`), `ErrorRespuesta` y `PaginacionDto` documentado.
+  - Delegó en 15 agentes Haiku 5.5 en paralelo, sin archivos compartidos: por módulo, uno para las clases de respuesta, uno para los DTO de entrada y uno para el controlador. Notificaciones llevó 2 (no tiene DTO de entrada) y planificación 4 (respuestas de rutinas y de planes por separado). Los nombres de las clases se fijaron de antemano para que el controlador las importara sin esperar.
+  - Resultado: 32 endpoints en 5 tags, todos con resumen, respuesta tipada y errores `{ codigo, mensaje }`; 68 esquemas, todas las propiedades con descripción.
+- Decisiones del desarrollador:
+  - Swagger en `/api`, como en CW Tech.
+  - Rama `docs/swagger` en lugar de `doc&swagger` (convención de subramas).
+  - Las entidades se documentan con clases de respuesta en `presentacion/respuestas/`; las interfaces de respuesta de los controladores (`RutinaRespuesta`, `PlanRespuesta`, `EjercicioRespuesta`, etc.) pasaron a clases con el mismo nombre y la misma forma.
+  - Repartir en 15 Haiku (3 por módulo) en lugar de 5, con respuestas de no más de 200 caracteres.
+  - Commits con `[T26]` (el validador no acepta `[DOCS]`). `develop` pusheado; la rama nueva queda local.
+- Ideas descartadas:
+  - `@ApiProperty` en las entidades de dominio, como en CW Tech: rompe la regla 1 (el dominio no importa Nest) y documentaría la forma interna, no lo que recibe el front.
+  - Decorar los esquemas TypeORM: no salen por la API.
+  - El plugin de la CLI de Nest que infiere los tipos: con decoradores explícitos el documento no depende del build.
+  - Publicar Swagger desde `configurarAplicacion`: los e2e no lo necesitan.
+- Reglas afectadas: ninguna. Las descripciones citan las RN vigentes de cada `CLAUDE.md` de módulo.
+- Verificación:
+  - `tsc`, lint y prettier OK. `vitest related` no encontró tests afectados.
+  - Levantó el back y auditó `/api-json`: completó a mano `RenombrarRutinaDto` (un agente lo omitió) y comparó los esquemas con los tipos de los casos de uso.
+- Pendientes:
+  - Correr los e2e (se denegó la suite completa sin pedido del desarrollador).
+  - Push y merge de `docs/swagger`.
