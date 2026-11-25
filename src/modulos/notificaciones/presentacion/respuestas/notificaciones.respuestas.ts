@@ -1,6 +1,10 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, ApiSchema } from '@nestjs/swagger';
 
 /** Medida de una serie: repeticiones o segundos, y peso opcional (RN-NOT-01). */
+@ApiSchema({
+  name: 'Respuesta.MedidaSerie',
+  description: 'Medida de una serie: repeticiones o segundos, y peso opcional.',
+})
 export class MedidaSerieRespuesta {
   @ApiProperty({
     description: 'Repeticiones de la serie. Null si la medida es por tiempo.',
@@ -25,6 +29,10 @@ export class MedidaSerieRespuesta {
 }
 
 /** Serie por debajo de lo prescripto (RN-NOT-01): lo prescripto y lo realizado. */
+@ApiSchema({
+  name: 'Respuesta.SeriePorDebajo',
+  description: 'Serie por debajo de lo prescripto, con lo prescripto y lo realizado.',
+})
 export class SeriePorDebajoRespuesta {
   @ApiProperty({ description: 'Orden de la serie dentro del Entrenamiento.', example: 3 })
   orden!: number;
@@ -64,6 +72,10 @@ export class SeriePorDebajoRespuesta {
 }
 
 /** Alumno de la notificación (nombre y apellido, RN-NOT-01). */
+@ApiSchema({
+  name: 'Respuesta.AlumnoNotificacion',
+  description: 'Alumno al que refiere una notificación, con nombre y apellido.',
+})
 export class AlumnoNotificacionRespuesta {
   @ApiProperty({
     description: 'Id del alumno.',
@@ -80,6 +92,10 @@ export class AlumnoNotificacionRespuesta {
 }
 
 /** Entrenamiento al que refiere la notificación (RN-NOT-01). */
+@ApiSchema({
+  name: 'Respuesta.EntrenamientoNotificacion',
+  description: 'Entrenamiento al que refiere una notificación: id, rutina e inicio.',
+})
 export class EntrenamientoNotificacionRespuesta {
   @ApiProperty({
     description: 'Id del Entrenamiento.',
@@ -100,6 +116,10 @@ export class EntrenamientoNotificacionRespuesta {
 }
 
 /** Entrenamiento de la racha de una alerta de incumplimiento (RN-NOT-08). */
+@ApiSchema({
+  name: 'Respuesta.EntrenamientoAlerta',
+  description: 'Entrenamiento de la racha de una alerta de incumplimiento.',
+})
 export class EntrenamientoAlertaRespuesta {
   @ApiProperty({
     description: 'Id del Entrenamiento.',
@@ -123,6 +143,10 @@ export class EntrenamientoAlertaRespuesta {
 }
 
 /** Percepción del alumno sobre el Entrenamiento (RN-NOT-06). */
+@ApiSchema({
+  name: 'Respuesta.PercepcionNotificacion',
+  description: 'Percepción del alumno sobre el Entrenamiento: RPE y sensación de fuerza.',
+})
 export class PercepcionNotificacionRespuesta {
   @ApiProperty({
     description:
@@ -145,6 +169,11 @@ export class PercepcionNotificacionRespuesta {
  * Un ítem de la bandeja de notificaciones del profesor (RN-NOT-03).
  * Solo las alertas de incumplimiento (RN-NOT-08) traen `entrenamientos`.
  */
+@ApiSchema({
+  name: 'Entidad.Notificacion',
+  description:
+    'Forma pública de una notificación de la bandeja del profesor: tipo, gravedad, alumno, entrenamiento y estado de lectura.',
+})
 export class NotificacionRespuesta {
   @ApiProperty({
     description: 'Id de la notificación.',
@@ -224,6 +253,10 @@ export class NotificacionRespuesta {
 }
 
 /** Página de la bandeja de notificaciones del profesor (RN-NOT-03). */
+@ApiSchema({
+  name: 'Respuesta.PaginaNotificaciones',
+  description: 'Página de la bandeja de notificaciones del profesor, con el total y no leídas.',
+})
 export class PaginaNotificacionesRespuesta {
   @ApiProperty({
     description: 'Notificaciones de la página, de la más nueva a la más vieja.',
@@ -256,6 +289,10 @@ export class PaginaNotificacionesRespuesta {
 }
 
 /** Cantidad de notificaciones no leídas del profesor (RN-NOT-03). */
+@ApiSchema({
+  name: 'Respuesta.NoLeidas',
+  description: 'Cantidad de notificaciones no leídas del profesor.',
+})
 export class NoLeidasRespuesta {
   @ApiProperty({
     description:

@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiExtraModels,
   ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
@@ -39,6 +40,7 @@ import {
  * Bandeja de notificaciones del profesor (US21, RN-NOT-03 a RN-NOT-04).
  * Cada notificación avisa de un Entrenamiento de un alumno suyo por debajo de lo prescripto.
  */
+@ApiExtraModels(PaginacionDto)
 @ApiTags('Notificaciones')
 @ApiBearerAuth(ESQUEMA_JWT)
 @Controller('notificaciones')
