@@ -3,7 +3,7 @@ import { IsString, MaxLength } from 'class-validator';
 
 @ApiSchema({
   name: 'Dto.Vinculo',
-  description: 'CÃ³digo de Profesor que ingresa el alumno para vincularse.',
+  description: 'Código de Profesor que ingresa el alumno para vincularse.',
 })
 export class VinculoDto {
   @ApiProperty({

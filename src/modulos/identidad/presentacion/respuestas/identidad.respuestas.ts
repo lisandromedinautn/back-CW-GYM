@@ -47,7 +47,7 @@ export class AltaProfesorRespuesta {
 /** Respuesta de POST /identidad/profesores/codigo (RN-IDE-08). */
 @ApiSchema({
   name: 'Respuesta.CodigoProfesor',
-  description: 'CÃ³digo de Profesor reciÃ©n generado.',
+  description: 'Código de Profesor recién generado.',
 })
 export class CodigoProfesorRespuesta {
   @ApiProperty({
@@ -61,7 +61,7 @@ export class CodigoProfesorRespuesta {
 /** Respuesta de GET /identidad/profesores/codigo (RN-IDE-08). */
 @ApiSchema({
   name: 'Respuesta.CodigoProfesorActual',
-  description: 'CÃ³digo de Profesor vigente, o null si todavÃ­a no hay ninguno.',
+  description: 'Código de Profesor vigente, o null si todavía no hay ninguno.',
 })
 export class CodigoProfesorActualRespuesta {
   @ApiProperty({
@@ -103,7 +103,7 @@ export class AlumnoDelProfesorRespuesta {
 /** Datos del profesor que se devuelven al alumno al vincularse (RN-IDE-09). */
 @ApiSchema({
   name: 'Respuesta.ProfesorVinculado',
-  description: 'Profesor con el que quedÃ³ vinculado el alumno.',
+  description: 'Profesor con el que quedó vinculado el alumno.',
 })
 export class ProfesorVinculadoRespuesta {
   @ApiProperty({
@@ -122,7 +122,7 @@ export class ProfesorVinculadoRespuesta {
 /** Respuesta de POST /identidad/alumnos/vinculo (RN-IDE-09, 10, 11). */
 @ApiSchema({
   name: 'Respuesta.Vinculo',
-  description: 'Resultado del vÃ­nculo entre alumno y profesor.',
+  description: 'Resultado del vínculo entre alumno y profesor.',
 })
 export class VinculoRespuesta {
   @ApiProperty({
