@@ -619,3 +619,4 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
   - Descartado: Redoc en `/docs` (solo lectura, un segundo visor) y endpoints ficticios para colgar los tags.
   - Corrección: un agente había guardado con mala codificación (`CÃ³digo`) las descripciones de `@ApiSchema` de identidad.
   - Verificación: `tsc` y lint OK; capturas de Swagger UI con Playwright para comprobar las secciones y las tablas.
+- Cuarta ronda: el desarrollador revisó las secciones de modelos y pidió volver atrás. Se quitó `secciones-modelos.ts`; los schemas quedan solo en la sección "Schemas" de Swagger UI, agrupados por prefijo. Se conservan `defaultModelExpandDepth: 3` y la corrección de codificación.
