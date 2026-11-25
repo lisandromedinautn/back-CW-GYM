@@ -1,6 +1,5 @@
 import type { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, type OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
-import { seccionesModelos } from './secciones-modelos.js';
 
 /** Nombre del esquema de seguridad que usan los controladores en `@ApiBearerAuth(ESQUEMA_JWT)`. */
 export const ESQUEMA_JWT = 'jwt';
@@ -57,7 +56,6 @@ function ordenarSchemas(documento: OpenAPIObject): OpenAPIObject {
     .sort((a, b) => grupo(a) - grupo(b) || a.localeCompare(b, 'es'))
     .map((nombre) => [nombre, schemas[nombre]] as const);
   documento.components = { ...documento.components, schemas: Object.fromEntries(ordenados) };
-  documento.info.description = `${documento.info.description ?? ''}${seccionesModelos(documento)}`;
   return documento;
 }
 
