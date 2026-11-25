@@ -612,3 +612,10 @@ Registro de cada sesión relevante en la que un desarrollador trabajó con IA. D
   - Implementación: `@ApiSchema({ name })` en cada clase; `configurarSwagger` define el orden y la descripción de los tags (`TAGS`), ordena los schemas por grupo y desactiva `autoTagControllers`. Las respuestas que son la forma pública de una entidad pasaron a `Entidad.*` (Ejercicio, Rutina, Bloque, Circuito, EjercicioPrescripto, Plan, DiaPlan, Entrenamiento, SerieRealizada, Notificacion). Las entidades que no salen por ningún endpoint (Usuario, Profesor, Alumno, RecordPersonal) tienen clases solo de documentación en `presentacion/entidades/`, registradas con `@ApiExtraModels`; Usuario no expone la contraseña. Los DTO de query (`ConsultarPlanes`, `ConsultarEjercicios`, `Paginacion`) también se registran para que figuren en Schemas.
   - Delegación: 9 agentes Haiku 5.5. Dos dejaron `Dtoextends` sin espacio; lo detectaron prettier y `tsc` y se corrigió a mano.
   - Resultado: 14 entidades, 17 DTO y 47 respuestas, sin schemas fuera de grupo ni propiedades sin descripción; 10 tags.
+- Tercera ronda (revisión del desarrollador):
+  - Pedido: los modelos se veían como `[...]` y las entidades y los DTO quedaban mezclados dentro de "Schemas", en lugar de verse como secciones, al estilo de los endpoints.
+  - `[...]` era la profundidad de expansión por defecto de Swagger UI: se subió `defaultModelExpandDepth` a 3.
+  - El desarrollador eligió tags de modelos, pero Swagger UI no muestra tags sin endpoints. Lo más cercano sin dependencias nuevas: `secciones-modelos.ts` genera, a partir de los schemas `Entidad.*` y `Dto.*` del documento, dos secciones al principio de la página con un desplegable por modelo y una tabla (campo, tipo, obligatorio, descripción, ejemplo). Se arma sola en cada arranque, así que no se desincroniza.
+  - Descartado: Redoc en `/docs` (solo lectura, un segundo visor) y endpoints ficticios para colgar los tags.
+  - Corrección: un agente había guardado con mala codificación (`CÃ³digo`) las descripciones de `@ApiSchema` de identidad.
+  - Verificación: `tsc` y lint OK; capturas de Swagger UI con Playwright para comprobar las secciones y las tablas.

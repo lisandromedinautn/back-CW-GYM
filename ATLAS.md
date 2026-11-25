@@ -32,7 +32,8 @@ Mapa del repo para navegar sin recorrer carpetas. **Se actualiza en el mismo com
 | `src/semillas/sembrar-grupos-us12.ts` | Dos grupos de prueba con planes vigentes para US12 ✅ |
 | `src/semillas/completar-plan-us12.ts` | Completa el plan del alumno 01 con ejercicios en 28 días mediante `yarn seed:plan-us12` ✅ |
 | `src/configurar-aplicacion.ts` | Configuración HTTP común a `main.ts` y a los e2e (`ValidationPipe` con `whitelist`) ✅ |
-| `src/compartido/presentacion/swagger/configurar-swagger.ts` | Swagger (OpenAPI) en `/api` (UI) y `/api-json`, con esquema bearer `jwt`; lo llama solo `main.ts` ✅ |
+| `src/compartido/presentacion/swagger/configurar-swagger.ts` | Swagger (OpenAPI) en `/api` (UI) y `/api-json`, con esquema bearer `jwt`, tags por recurso (`TAGS`) y schemas ordenados por grupo; lo llama solo `main.ts` ✅ |
+| `src/compartido/presentacion/swagger/secciones-modelos.ts` | Genera las secciones "Entidades" y "DTO de entrada" (un desplegable con tabla por modelo) al principio de Swagger UI ✅ |
 | `src/compartido/presentacion/error-respuesta/error-respuesta.ts` | `ErrorRespuesta` (`{ codigo, mensaje }`): documenta en Swagger los errores de `FiltroErrorDominio` ✅ |
 | `src/modulos/<modulo>/presentacion/respuestas/` | Clases de respuesta con `@ApiProperty` (lo que devuelve cada endpoint); las que son la forma pública de una entidad se publican como `Entidad.*` con `@ApiSchema`, así no se decora el dominio (regla 1) ✅ |
 | `src/modulos/<modulo>/presentacion/entidades/` | Clases solo de documentación para entidades que no salen por ningún endpoint (identidad: Usuario, Profesor, Alumno; entrenamiento: RecordPersonal) ✅ |
