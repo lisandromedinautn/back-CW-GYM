@@ -1,9 +1,20 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Post } from '@nestjs/common';
 import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import {
   Roles,
   UsuarioActual,
   type UsuarioAutenticado,
 } from '../../../../compartido/presentacion/guard-roles/guard-roles.js';
+import { ESQUEMA_JWT } from '../../../../compartido/presentacion/swagger/configurar-swagger.js';
+import { ErrorRespuesta } from '../../../../compartido/presentacion/error-respuesta/error-respuesta.js';
 import { ConsultarCodigoProfesor } from '../../aplicacion/codigo-profesor/consultar-codigo-profesor.caso-uso.js';
 import { DarAltaProfesor } from '../../aplicacion/dar-alta-profesor/dar-alta-profesor.caso-uso.js';
 import { GenerarCodigoProfesor } from '../../aplicacion/codigo-profesor/generar-codigo-profesor.caso-uso.js';
@@ -22,7 +33,16 @@ import {
 import { AltaProfesorDto } from '../alta-profesor/alta-profesor.dto.js';
 import { IngresoDto } from '../ingreso/ingreso.dto.js';
 import { VinculoDto } from '../vinculo/vinculo.dto.js';
+import {
+  AltaProfesorRespuesta,
+  AlumnoDelProfesorRespuesta,
+  CodigoProfesorActualRespuesta,
+  CodigoProfesorRespuesta,
+  IngresoRespuesta,
+  VinculoRespuesta,
+} from '../respuestas/identidad.respuestas.js';
 
+@ApiTags('Identidad')
 @Controller('identidad')
 export class IdentidadControlador {
   constructor(
@@ -36,6 +56,11 @@ export class IdentidadControlador {
   ) {}
 
   /** Público. RN-IDE-01. */
+  @ApiOperation({
+    summary: 'Ingresar al sistema (público). Devuelve un JWT con el rol del usuario (RN-IDE-01)',
+  })
+  @ApiOkResponse({ type: IngresoRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
   @Post('ingreso')
   @HttpCode(HttpStatus.OK)
   ingreso(@Body() datos: IngresoDto): Promise<Ingreso> {
@@ -43,6 +68,13 @@ export class IdentidadControlador {
   }
 
   /** Solo Admin. RN-IDE-04, 06, 13. */
+  @ApiOperation({
+    summary: 'Dar de alta un profesor (rol Admin, RN-IDE-04, 06, 13)',
+  })
+  @ApiBearerAuth(ESQUEMA_JWT)
+  @ApiCreatedResponse({ type: AltaProfesorRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
   @Post('profesores')
   @Roles('Admin')
   async altaProfesor(@Body() datos: AltaProfesorDto): Promise<{ id: string; legajo: string }> {
@@ -51,6 +83,13 @@ export class IdentidadControlador {
   }
 
   /** Solo Profesor. RN-IDE-08: genera un código nuevo e invalida el anterior. */
+  @ApiOperation({
+    summary: 'Generar un nuevo Código de Profesor (rol Profesor, RN-IDE-08). Invalida el anterior',
+  })
+  @ApiBearerAuth(ESQUEMA_JWT)
+  @ApiCreatedResponse({ type: CodigoProfesorRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
   @Post('profesores/codigo')
   @Roles('Profesor')
   async generarCodigoProfesor(
@@ -60,6 +99,14 @@ export class IdentidadControlador {
   }
 
   /** Solo Profesor. RN-IDE-08: el código vigente, o null si todavía no lo generó. */
+  @ApiOperation({
+    summary:
+      'Consultar el Código de Profesor vigente (rol Profesor, RN-IDE-08). Devuelve null si no se generó',
+  })
+  @ApiBearerAuth(ESQUEMA_JWT)
+  @ApiOkResponse({ type: CodigoProfesorActualRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
   @Get('profesores/codigo')
   @Roles('Profesor')
   async consultarCodigoProfesor(
@@ -69,6 +116,14 @@ export class IdentidadControlador {
   }
 
   /** Solo Profesor. US07: los alumnos vinculados que puede asignar a un plan (RN-PLAN-13). */
+  @ApiOperation({
+    summary:
+      'Listar los alumnos vinculados que el profesor puede asignar a un plan (rol Profesor, US07, RN-PLAN-13)',
+  })
+  @ApiBearerAuth(ESQUEMA_JWT)
+  @ApiOkResponse({ type: [AlumnoDelProfesorRespuesta] })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
   @Get('alumnos')
   @Roles('Profesor')
   async alumnosDelProfesor(
@@ -78,6 +133,13 @@ export class IdentidadControlador {
   }
 
   /** Solo Alumno. RN-IDE-09, 10, 11. */
+  @ApiOperation({
+    summary: 'Vincularse a un profesor con su Código de Profesor (rol Alumno, RN-IDE-09, 10, 11)',
+  })
+  @ApiBearerAuth(ESQUEMA_JWT)
+  @ApiOkResponse({ type: VinculoRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
   @Post('alumnos/vinculo')
   @Roles('Alumno')
   @HttpCode(HttpStatus.OK)
