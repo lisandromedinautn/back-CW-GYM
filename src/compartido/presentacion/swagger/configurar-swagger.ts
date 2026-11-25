@@ -1,5 +1,6 @@
 import type { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, type OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+import { seccionesModelos } from './secciones-modelos.js';
 
 /** Nombre del esquema de seguridad que usan los controladores en `@ApiBearerAuth(ESQUEMA_JWT)`. */
 export const ESQUEMA_JWT = 'jwt';
@@ -56,6 +57,7 @@ function ordenarSchemas(documento: OpenAPIObject): OpenAPIObject {
     .sort((a, b) => grupo(a) - grupo(b) || a.localeCompare(b, 'es'))
     .map((nombre) => [nombre, schemas[nombre]] as const);
   documento.components = { ...documento.components, schemas: Object.fromEntries(ordenados) };
+  documento.info.description = `${documento.info.description ?? ''}${seccionesModelos(documento)}`;
   return documento;
 }
 
@@ -94,6 +96,13 @@ export function configurarSwagger(app: INestApplication, version: string): void 
         // Sin el tag automático con el nombre del controlador: cada método declara el suyo.
         SwaggerModule.createDocument(app, builder.build(), { autoTagControllers: false }),
       ),
-    { swaggerOptions: { persistAuthorization: true } },
+    {
+      swaggerOptions: {
+        persistAuthorization: true,
+        // Al abrir un schema se ven tipo, formato, descripción y ejemplo de cada propiedad
+        // (con 1, Swagger UI las muestra colapsadas como `[...]`).
+        defaultModelExpandDepth: 3,
+      },
+    },
   );
 }
