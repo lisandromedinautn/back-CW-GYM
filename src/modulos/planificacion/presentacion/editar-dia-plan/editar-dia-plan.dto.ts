@@ -1,7 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import { IsUUID, ValidateIf } from 'class-validator';
 
 /** US22: cuerpo de PUT /planificacion/planes/:id/dias/:numero. `rutinaId` null deja el día de descanso. */
+@ApiSchema({
+  name: 'Dto.EditarDiaPlan',
+  description:
+    'Cuerpo para cambiar la rutina de un día del plan; null lo deja de descanso (US22, RN-PLAN-10, RN-PLAN-23).',
+})
 export class EditarDiaPlanDto {
   @ApiProperty({
     description:

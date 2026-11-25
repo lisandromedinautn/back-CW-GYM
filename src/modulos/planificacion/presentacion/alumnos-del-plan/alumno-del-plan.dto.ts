@@ -1,6 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import { IsUUID } from 'class-validator';
 
+@ApiSchema({
+  name: 'Dto.AlumnoDelPlan',
+  description:
+    'Alumno vinculado al profesor que se asigna al plan vigente (RN-PLAN-13, RN-PLAN-14).',
+})
 export class AlumnoDelPlanDto {
   @ApiProperty({
     description:

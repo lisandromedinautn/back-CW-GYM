@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, ApiSchema } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsInt, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
 
@@ -6,6 +6,11 @@ import { IsArray, IsInt, IsOptional, IsString, IsUUID, ValidateNested } from 'cl
  * Un día del plan tal como llega del profesor. `rutinaId` null (o ausente) significa descanso
  * (RN-PLAN-10). El rango 1..28 y la ausencia de repetidos los valida el dominio (RN-PLAN-11).
  */
+@ApiSchema({
+  name: 'Dto.DiaPlan',
+  description:
+    'Día del plan tal como lo envía el profesor; sin rutina es descanso (RN-PLAN-10, RN-PLAN-11).',
+})
 export class DiaPlanDto {
   @ApiProperty({
     description:
@@ -35,6 +40,11 @@ export class DiaPlanDto {
  * US07: cuerpo de POST /planificacion/planes. La fecha de fin no se recibe: se calcula sola
  * (RN-PLAN-09). Las reglas RN-PLAN-09 a 15 las valida el dominio y el caso de uso.
  */
+@ApiSchema({
+  name: 'Dto.CrearPlan',
+  description:
+    'Cuerpo de alta de plan: fecha de inicio, 28 días y alumnos (US07, RN-PLAN-09 a RN-PLAN-13).',
+})
 export class CrearPlanDto {
   @ApiProperty({
     description:

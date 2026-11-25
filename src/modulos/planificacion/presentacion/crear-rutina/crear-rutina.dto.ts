@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, ApiSchema } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -16,6 +16,10 @@ import {
  * RN-PLAN-02, 04 y 05 las valida el dominio y responden con su código.
  * `series` no lleva @Min(1) para que 0 llegue al dominio y responda RN-PLAN-02.
  */
+@ApiSchema({
+  name: 'Dto.Bloque',
+  description: 'Cuerpo de un bloque al crear o reemplazar una rutina. RN-PLAN-02, 04, 05.',
+})
 export class BloqueDto {
   /** US10: posición en la rutina. Que sea 1..N sin repetir ni saltear lo valida el dominio (RN-PLAN-01). */
   @ApiPropertyOptional({
@@ -107,6 +111,11 @@ export class BloqueDto {
 }
 
 /** Un ejercicio de un circuito: sin series ni pausas propias (RN-PLAN-03). */
+@ApiSchema({
+  name: 'Dto.EjercicioCircuito',
+  description:
+    'Cuerpo de un ejercicio dentro de un circuito, sin series ni pausas propias. RN-PLAN-03, 04, 05.',
+})
 export class EjercicioCircuitoDto {
   @ApiProperty({
     description:
@@ -161,6 +170,10 @@ export class EjercicioCircuitoDto {
  * Formato de entrada de un circuito (US09). `vueltas` no lleva @Min(1) y `ejercicios` no
  * exige un mínimo, para que 0 vueltas o un solo ejercicio respondan RN-PLAN-03 desde el dominio.
  */
+@ApiSchema({
+  name: 'Dto.Circuito',
+  description: 'Cuerpo de un circuito al crear o reemplazar una rutina. RN-PLAN-03.',
+})
 export class CircuitoDto {
   /** US10: posición en la rutina. Que sea 1..N sin repetir ni saltear lo valida el dominio (RN-PLAN-01). */
   @ApiPropertyOptional({
@@ -211,6 +224,10 @@ export class CircuitoDto {
  * US06, US09 y US10: bloques y circuitos en listas separadas, las dos opcionales. Sin ninguno,
  * el dominio responde RN-PLAN-01. En una rutina mixta, `orden` ubica cada uno en la secuencia.
  */
+@ApiSchema({
+  name: 'Dto.CrearRutina',
+  description: 'Cuerpo para crear o reemplazar una rutina. RN-PLAN-01, 21.',
+})
 export class CrearRutinaDto {
   /** RN-PLAN-21: el largo lo valida el dominio (400 con código RN-PLAN-21). */
   @ApiPropertyOptional({
@@ -246,6 +263,10 @@ export class CrearRutinaDto {
 }
 
 /** T08: cuerpo de PATCH /planificacion/rutinas/:id/nombre. El largo lo valida el dominio (RN-PLAN-21). */
+@ApiSchema({
+  name: 'Dto.RenombrarRutina',
+  description: 'Cuerpo para renombrar una rutina. RN-PLAN-21.',
+})
 export class RenombrarRutinaDto {
   @ApiProperty({
     description:

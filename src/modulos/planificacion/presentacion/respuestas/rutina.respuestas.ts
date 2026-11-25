@@ -1,6 +1,11 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, ApiSchema } from '@nestjs/swagger';
 
 /** Bloque (ejercicio prescripto con series) de una rutina. RN-PLAN-01, 02. */
+@ApiSchema({
+  name: 'Entidad.Bloque',
+  description:
+    'Forma pública del bloque de una rutina: ejercicio prescripto con series y pausas. RN-PLAN-01, 02.',
+})
 export class BloqueRutinaRespuesta {
   @ApiProperty({
     description:
@@ -67,6 +72,11 @@ export class BloqueRutinaRespuesta {
 }
 
 /** Ejercicio dentro de un circuito. Un circuito no tiene micropausa propia (RN-PLAN-03). */
+@ApiSchema({
+  name: 'Entidad.EjercicioPrescripto',
+  description:
+    'Forma pública del ejercicio prescripto dentro de un circuito, sin series ni pausas propias. RN-PLAN-03.',
+})
 export class EjercicioCircuitoRespuesta {
   @ApiProperty({
     description: 'Identificador del ejercicio del catálogo.',
@@ -102,6 +112,11 @@ export class EjercicioCircuitoRespuesta {
 }
 
 /** Circuito de una rutina: grupo de ejercicios que se repite por vueltas. RN-PLAN-03. */
+@ApiSchema({
+  name: 'Entidad.Circuito',
+  description:
+    'Forma pública del circuito de una rutina: grupo de ejercicios repetido por vueltas. RN-PLAN-03.',
+})
 export class CircuitoRutinaRespuesta {
   @ApiProperty({
     description:
@@ -137,6 +152,10 @@ export class CircuitoRutinaRespuesta {
  * Rutina tal como la recibe el front. Documenta `RutinaRespuesta` del controlador de
  * planificación (listado, detalle, creación, edición, renombrado e importación).
  */
+@ApiSchema({
+  name: 'Entidad.Rutina',
+  description: 'Forma pública de la rutina del profesor, con sus bloques y circuitos. RN-PLAN-01.',
+})
 export class RutinaRespuesta {
   @ApiProperty({
     description: 'Identificador único de la rutina.',
@@ -180,6 +199,10 @@ export class RutinaRespuesta {
  * Una página de la consulta de rutinas del profesor (RN-PLAN-08: solo sus propias rutinas).
  * Documenta `PaginaRutinasRespuesta` del controlador de planificación.
  */
+@ApiSchema({
+  name: 'Respuesta.PaginaRutinas',
+  description: 'Página del listado de rutinas propias del profesor. RN-PLAN-08.',
+})
 export class PaginaRutinasRespuesta {
   @ApiProperty({
     description: 'Rutinas de la página solicitada.',
@@ -210,6 +233,10 @@ export class PaginaRutinasRespuesta {
 }
 
 /** Ejercicio prescripto con su nombre del catálogo ya resuelto. Rutina del día (US08). */
+@ApiSchema({
+  name: 'Respuesta.EjercicioDeLaRutina',
+  description: 'Ejercicio de la rutina del día con su nombre del catálogo resuelto (US08).',
+})
 export class EjercicioDeLaRutinaRespuesta {
   @ApiProperty({
     description: 'Identificador del ejercicio del catálogo.',
@@ -256,6 +283,10 @@ export class EjercicioDeLaRutinaRespuesta {
  * Bloque de la rutina del día. No incluye `orden`: `ConsultarRutinaDelDia` lo quita antes de
  * responder al alumno.
  */
+@ApiSchema({
+  name: 'Respuesta.BloqueDeLaRutina',
+  description: 'Bloque de la rutina del día, sin orden, para el alumno. RN-PLAN-02.',
+})
 export class BloqueDeLaRutinaRespuesta extends EjercicioDeLaRutinaRespuesta {
   @ApiProperty({
     description: 'Cantidad de series a realizar del ejercicio. RN-PLAN-02.',
@@ -283,6 +314,10 @@ export class BloqueDeLaRutinaRespuesta extends EjercicioDeLaRutinaRespuesta {
  * Circuito de la rutina del día. No incluye `orden` (se quita en la respuesta al alumno) ni
  * micropausa (RN-PLAN-03).
  */
+@ApiSchema({
+  name: 'Respuesta.CircuitoDeLaRutina',
+  description: 'Circuito de la rutina del día, sin orden, para el alumno. RN-PLAN-03.',
+})
 export class CircuitoDeLaRutinaRespuesta {
   @ApiProperty({
     description: 'Cantidad de vueltas del circuito.',
@@ -306,6 +341,10 @@ export class CircuitoDeLaRutinaRespuesta {
 }
 
 /** Rutina del día del alumno, con los nombres de sus ejercicios resueltos (US08). */
+@ApiSchema({
+  name: 'Respuesta.RutinaParaAlumno',
+  description: 'Rutina del día del alumno con los nombres de sus ejercicios resueltos (US08).',
+})
 export class RutinaParaAlumnoRespuesta {
   @ApiProperty({
     description: 'Identificador único de la rutina.',
@@ -352,6 +391,10 @@ export class RutinaParaAlumnoRespuesta {
  *   alumno. Solo vienen `fecha`, `numeroDia` y `rutina` como null.
  * La `fecha` siempre es la del reloj del sistema (RN-PLAN-15), en formato ISO `AAAA-MM-DD`.
  */
+@ApiSchema({
+  name: 'Respuesta.RutinaDelDia',
+  description: 'Respuesta de la rutina del día: rutina, descanso o sin plan vigente. RN-PLAN-18.',
+})
 export class RutinaDelDiaRespuesta {
   @ApiProperty({
     description:

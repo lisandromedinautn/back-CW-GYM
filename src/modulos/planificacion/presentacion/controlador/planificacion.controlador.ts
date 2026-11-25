@@ -17,6 +17,7 @@ import {
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiExtraModels,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -34,7 +35,10 @@ import {
   type UsuarioAutenticado,
 } from '../../../../compartido/presentacion/guard-roles/guard-roles.js';
 import { PaginacionDto } from '../../../../compartido/presentacion/paginacion/paginacion.dto.js';
-import { ESQUEMA_JWT } from '../../../../compartido/presentacion/swagger/configurar-swagger.js';
+import {
+  ESQUEMA_JWT,
+  TAGS,
+} from '../../../../compartido/presentacion/swagger/configurar-swagger.js';
 import { ErrorRespuesta } from '../../../../compartido/presentacion/error-respuesta/error-respuesta.js';
 import { RenombrarRutina } from '../../aplicacion/renombrar-rutina/renombrar-rutina.caso-uso.js';
 import { CrearRutina } from '../../aplicacion/crear-rutina/crear-rutina.caso-uso.js';
@@ -130,7 +134,7 @@ const PARAMETRO_NUMERO_DIA = {
   schema: { type: 'integer', minimum: 1, maximum: 28 },
 } as const;
 
-@ApiTags('Planificación')
+@ApiExtraModels(ConsultarPlanesDto, PaginacionDto)
 @ApiBearerAuth(ESQUEMA_JWT)
 @Controller('planificacion')
 export class PlanificacionControlador {
@@ -151,6 +155,7 @@ export class PlanificacionControlador {
   ) {}
 
   /** Solo Profesor (RN-IDE-03). T06: consulta paginada de sus propias rutinas (RN-PLAN-08). */
+  @ApiTags(TAGS.planificacionRutinas)
   @Get('rutinas')
   @Roles('Profesor')
   @ApiOperation({ summary: 'Profesor: lista paginada de sus rutinas (RN-PLAN-08)' })
@@ -170,6 +175,7 @@ export class PlanificacionControlador {
   }
 
   /** Solo Profesor (RN-IDE-03). US06: RN-PLAN-01, 02, 04, 05, 06. US09: RN-PLAN-03, 20. US10: RN-PLAN-01. */
+  @ApiTags(TAGS.planificacionRutinas)
   @Post('rutinas')
   @Roles('Profesor')
   @ApiOperation({
@@ -187,6 +193,7 @@ export class PlanificacionControlador {
   }
 
   /** Solo Profesor (RN-IDE-03). US06: detalle de una rutina propia (RN-PLAN-08). */
+  @ApiTags(TAGS.planificacionRutinas)
   @Get('rutinas/:id')
   @Roles('Profesor')
   @ApiOperation({ summary: 'Profesor: detalle de una rutina propia (US06, RN-PLAN-08)' })
@@ -203,6 +210,7 @@ export class PlanificacionControlador {
   }
 
   /** Solo Profesor (RN-IDE-03). US06: RN-PLAN-07 y 08; el contenido sigue las reglas de crear. */
+  @ApiTags(TAGS.planificacionRutinas)
   @Put('rutinas/:id')
   @Roles('Profesor')
   @ApiOperation({
@@ -223,6 +231,7 @@ export class PlanificacionControlador {
   }
 
   /** Solo Profesor (RN-IDE-03). T08: RN-PLAN-21 (nombre) y RN-PLAN-08 (solo sus rutinas). */
+  @ApiTags(TAGS.planificacionRutinas)
   @Patch('rutinas/:id/nombre')
   @Roles('Profesor')
   @ApiOperation({ summary: 'Profesor: renombra una rutina propia (RN-PLAN-21, 08)' })
@@ -242,6 +251,7 @@ export class PlanificacionControlador {
   }
 
   /** RN-PLAN-08: copia independiente de una rutina propia. */
+  @ApiTags(TAGS.planificacionRutinas)
   @Post('rutinas/:id/importacion')
   @Roles('Profesor')
   @ApiOperation({
@@ -260,6 +270,7 @@ export class PlanificacionControlador {
   }
 
   /** Solo Profesor (RN-IDE-03). US07: RN-PLAN-09 a 15 y 17. */
+  @ApiTags(TAGS.planificacionPlanes)
   @Post('planes')
   @Roles('Profesor')
   @ApiOperation({
@@ -285,6 +296,7 @@ export class PlanificacionControlador {
   }
 
   /** Solo Profesor (RN-IDE-03). T13: RN-PLAN-22 (sus planes, filtros, orden) y RN-PLAN-15 (estado). */
+  @ApiTags(TAGS.planificacionPlanes)
   @Get('planes')
   @Roles('Profesor')
   @ApiOperation({
@@ -302,6 +314,7 @@ export class PlanificacionControlador {
   }
 
   /** Solo Profesor (RN-IDE-03). US22: detalle de un plan propio con sus 28 días. */
+  @ApiTags(TAGS.planificacionPlanes)
   @Get('planes/:id')
   @Roles('Profesor')
   @ApiOperation({ summary: 'Profesor: detalle de un plan propio con sus 28 días (US22)' })
@@ -318,6 +331,7 @@ export class PlanificacionControlador {
   }
 
   /** Solo Profesor (RN-IDE-03). US22: RN-PLAN-23 (editar un día) y RN-PLAN-11. */
+  @ApiTags(TAGS.planificacionPlanes)
   @Put('planes/:id/dias/:numero')
   @Roles('Profesor')
   @ApiOperation({
@@ -339,6 +353,7 @@ export class PlanificacionControlador {
     return this.editarDiaPlan.ejecutar(usuario.sub, id, numero, datos.rutinaId);
   }
 
+  @ApiTags(TAGS.planificacionPlanes)
   @Get('planes/:id/alumnos')
   @Roles('Profesor')
   @ApiOperation({ summary: 'Profesor: ids de los alumnos asignados a un plan propio (US12)' })
@@ -355,6 +370,7 @@ export class PlanificacionControlador {
     return { alumnoIds: [...plan.alumnoIds] };
   }
 
+  @ApiTags(TAGS.planificacionPlanes)
   @Post('planes/:id/alumnos')
   @Roles('Profesor')
   @ApiOperation({
@@ -375,6 +391,7 @@ export class PlanificacionControlador {
     await this.alumnosDelPlan.agregar(usuario.sub, id, datos.alumnoId);
   }
 
+  @ApiTags(TAGS.planificacionPlanes)
   @Delete('planes/:id/alumnos/:alumnoId')
   @Roles('Profesor')
   @ApiOperation({ summary: 'Profesor: quita un alumno de un plan vigente (US12, RN-PLAN-16)' })
@@ -397,6 +414,7 @@ export class PlanificacionControlador {
   }
 
   /** Solo Alumno (RN-IDE-03). US08: RN-PLAN-11, 15 y 18. */
+  @ApiTags(TAGS.planificacionMiPlan)
   @Get('mi-rutina-del-dia')
   @Roles('Alumno')
   @ApiOperation({
@@ -412,6 +430,7 @@ export class PlanificacionControlador {
   }
 
   /** Solo Alumno (RN-IDE-03). US11: RN-PLAN-11, 15 y 19. */
+  @ApiTags(TAGS.planificacionMiPlan)
   @Get('mi-plan')
   @Roles('Alumno')
   @ApiOperation({ summary: 'Alumno: su plan vigente con los 28 días (US11, RN-PLAN-19)' })

@@ -1,4 +1,4 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional, ApiSchema } from '@nestjs/swagger';
 import { IsIn, IsISO8601, IsOptional, IsUUID, Matches } from 'class-validator';
 import { PaginacionDto } from '../../../../compartido/presentacion/paginacion/paginacion.dto.js';
 
@@ -8,6 +8,11 @@ const FORMATO_FECHA = /^\d{4}-\d{2}-\d{2}$/;
  * T13: query de GET /planificacion/planes. RN-PLAN-22: filtros por estado, alumno y rango de
  * inicio. Un valor inválido responde 400 sin código RN.
  */
+@ApiSchema({
+  name: 'Dto.ConsultarPlanes',
+  description:
+    'Query del listado de planes con filtros por estado, alumno y rango de inicio (RN-PLAN-22).',
+})
 export class ConsultarPlanesDto extends PaginacionDto {
   @ApiPropertyOptional({
     description:
