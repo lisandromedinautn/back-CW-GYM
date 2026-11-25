@@ -1,7 +1,11 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, ApiSchema } from '@nestjs/swagger';
 import { IsInt, IsNumber, IsOptional } from 'class-validator';
 
 /** Solo valida formato: los rangos los valida el dominio (RN-ENT-03). */
+@ApiSchema({
+  name: 'Dto.RegistrarSerieRealizada',
+  description: 'Cuerpo para registrar una serie realizada del entrenamiento.',
+})
 export class RegistrarSerieRealizadaDto {
   @ApiProperty({
     description:

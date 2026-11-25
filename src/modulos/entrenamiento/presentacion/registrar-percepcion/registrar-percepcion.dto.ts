@@ -1,7 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import { IsNumber } from 'class-validator';
 
 /** Solo valida formato: los rangos los valida el dominio (RN-ENT-14 y RN-ENT-15). */
+@ApiSchema({
+  name: 'Dto.RegistrarPercepcion',
+  description: 'Cuerpo para registrar el RPE y la sensación de fuerza del entrenamiento.',
+})
 export class RegistrarPercepcionDto {
   @ApiProperty({
     description:

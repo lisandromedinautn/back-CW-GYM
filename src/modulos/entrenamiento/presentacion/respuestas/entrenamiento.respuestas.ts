@@ -1,6 +1,10 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, ApiSchema } from '@nestjs/swagger';
 
 /** Medida de una serie: repeticiones o segundos, y peso si corresponde. */
+@ApiSchema({
+  name: 'Respuesta.MedidaSerie',
+  description: 'Medida de una serie: repeticiones, segundos y peso.',
+})
 export class MedidaSerieRespuesta {
   @ApiProperty({
     description: 'Repeticiones de la serie. `null` si la serie se mide por tiempo.',
@@ -25,6 +29,10 @@ export class MedidaSerieRespuesta {
 }
 
 /** Ejercicio prescripto dentro de la copia de la rutina (RN-ENT-02). */
+@ApiSchema({
+  name: 'Respuesta.EjercicioPrescripto',
+  description: 'Ejercicio prescripto dentro de la copia de la rutina.',
+})
 export class EjercicioPrescriptoRespuesta {
   @ApiProperty({
     description: 'Identificador del ejercicio en el catálogo.',
@@ -70,6 +78,10 @@ export class EjercicioPrescriptoRespuesta {
 }
 
 /** Bloque de la copia de la rutina: un ejercicio con sus series y pausas. */
+@ApiSchema({
+  name: 'Respuesta.BloqueRutina',
+  description: 'Bloque de la copia de la rutina con sus series y pausas.',
+})
 export class BloqueRutinaRespuesta extends EjercicioPrescriptoRespuesta {
   @ApiProperty({
     description:
@@ -98,6 +110,10 @@ export class BloqueRutinaRespuesta extends EjercicioPrescriptoRespuesta {
 }
 
 /** Circuito de la copia de la rutina: varios ejercicios que se repiten por vueltas. */
+@ApiSchema({
+  name: 'Respuesta.CircuitoRutina',
+  description: 'Circuito de la copia de la rutina con sus vueltas y ejercicios.',
+})
 export class CircuitoRutinaRespuesta {
   @ApiProperty({
     description:
@@ -126,6 +142,10 @@ export class CircuitoRutinaRespuesta {
 }
 
 /** Copia independiente de la rutina del día, guardada al iniciar (RN-ENT-02). */
+@ApiSchema({
+  name: 'Respuesta.RutinaCopiada',
+  description: 'Copia independiente de la rutina guardada al iniciar el entrenamiento.',
+})
 export class RutinaCopiadaRespuesta {
   @ApiProperty({
     description: 'Identificador de la rutina de origen.',
@@ -160,6 +180,10 @@ export class RutinaCopiadaRespuesta {
 }
 
 /** Serie Realizada (RN-ENT-03): lo hecho junto a lo prescripto en la copia. */
+@ApiSchema({
+  name: 'Entidad.SerieRealizada',
+  description: 'Serie realizada: lo hecho junto a lo prescripto en la copia.',
+})
 export class SerieRegistradaRespuesta {
   @ApiProperty({
     description: 'Orden del bloque o circuito de la copia al que pertenece la serie.',
@@ -208,6 +232,10 @@ export class SerieRegistradaRespuesta {
 }
 
 /** Percepción del alumno sobre el entrenamiento (RN-ENT-14, RN-ENT-15, RN-ENT-16). */
+@ApiSchema({
+  name: 'Respuesta.PercepcionRegistrada',
+  description: 'Percepción del alumno: RPE y sensación de fuerza.',
+})
 export class PercepcionRegistradaRespuesta {
   @ApiProperty({
     description: 'RPE (esfuerzo percibido), entero de 1 a 10 (RN-ENT-14).',
@@ -227,6 +255,10 @@ export class PercepcionRegistradaRespuesta {
 }
 
 /** Resumen calculado al finalizar el entrenamiento (RN-ENT-05, RN-ENT-06, RN-ENT-09, RN-ENT-17). */
+@ApiSchema({
+  name: 'Respuesta.ResumenEntrenamiento',
+  description: 'Resumen calculado al finalizar el entrenamiento.',
+})
 export class ResumenEntrenamientoRespuesta {
   @ApiProperty({
     description:
@@ -251,6 +283,10 @@ export class ResumenEntrenamientoRespuesta {
 }
 
 /** Récord personal batido al finalizar el entrenamiento (RN-ENT-13). */
+@ApiSchema({
+  name: 'Respuesta.RecordBatido',
+  description: 'Récord personal batido al finalizar el entrenamiento.',
+})
 export class RecordBatidoRespuesta {
   @ApiProperty({
     description: 'Identificador del ejercicio con el récord.',
@@ -288,6 +324,10 @@ export class RecordBatidoRespuesta {
 }
 
 /** Respuesta de POST entrenamientos/:id/finalizacion: resumen y récords batidos, si los hubo. */
+@ApiSchema({
+  name: 'Respuesta.ResumenFinalizacion',
+  description: 'Respuesta de la finalización: resumen y récords batidos.',
+})
 export class ResumenFinalizacionRespuesta extends ResumenEntrenamientoRespuesta {
   @ApiPropertyOptional({
     description:
@@ -298,6 +338,10 @@ export class ResumenFinalizacionRespuesta extends ResumenEntrenamientoRespuesta 
 }
 
 /** Entrenamiento iniciado: copia de la rutina, peso corporal y hora de inicio (RN-ENT-02, RN-ENT-08). */
+@ApiSchema({
+  name: 'Respuesta.IniciarEntrenamiento',
+  description: 'Entrenamiento recién iniciado con su copia de la rutina.',
+})
 export class IniciarEntrenamientoRespuesta {
   @ApiProperty({
     description: 'Identificador del entrenamiento.',
@@ -342,6 +386,10 @@ export class IniciarEntrenamientoRespuesta {
 }
 
 /** Entrenamiento completo con su estado, series, cierre y percepción. */
+@ApiSchema({
+  name: 'Entidad.Entrenamiento',
+  description: 'Entrenamiento completo con su estado, series, cierre y percepción.',
+})
 export class EntrenamientoDetalleRespuesta extends IniciarEntrenamientoRespuesta {
   @ApiPropertyOptional({
     description:
@@ -367,6 +415,10 @@ export class EntrenamientoDetalleRespuesta extends IniciarEntrenamientoRespuesta
 }
 
 /** Respuesta de GET mi-entrenamiento-en-curso: el último entrenamiento del alumno o su ausencia. */
+@ApiSchema({
+  name: 'Respuesta.EntrenamientoEnCurso',
+  description: 'Último entrenamiento del alumno o su ausencia.',
+})
 export class EntrenamientoEnCursoRespuesta {
   @ApiProperty({
     description:
@@ -384,6 +436,10 @@ export class EntrenamientoEnCursoRespuesta {
 }
 
 /** Entrenamiento de la lista del profesor, con su estado y percepción siempre presentes (US18). */
+@ApiSchema({
+  name: 'Respuesta.EntrenamientoDeAlumno',
+  description: 'Entrenamiento de la lista del profesor, con estado y percepción.',
+})
 export class EntrenamientoDeAlumnoRespuesta {
   @ApiProperty({
     description: 'Identificador del entrenamiento.',
@@ -455,6 +511,10 @@ export class EntrenamientoDeAlumnoRespuesta {
 }
 
 /** Página de entrenamientos de un alumno, del más nuevo al más viejo (US18, RN-ENT-18). */
+@ApiSchema({
+  name: 'Respuesta.PaginaEntrenamientosDeAlumno',
+  description: 'Página de entrenamientos de un alumno, del más nuevo al más viejo.',
+})
 export class PaginaEntrenamientosDeAlumnoRespuesta {
   @ApiProperty({
     description: 'Entrenamientos de la página solicitada.',

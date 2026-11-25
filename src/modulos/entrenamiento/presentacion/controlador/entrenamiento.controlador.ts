@@ -5,6 +5,7 @@ import {
   ApiBadRequestResponse,
   ApiConflictResponse,
   ApiCreatedResponse,
+  ApiExtraModels,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -20,7 +21,11 @@ import {
   type UsuarioAutenticado,
 } from '../../../../compartido/presentacion/guard-roles/guard-roles.js';
 import { ErrorRespuesta } from '../../../../compartido/presentacion/error-respuesta/error-respuesta.js';
-import { ESQUEMA_JWT } from '../../../../compartido/presentacion/swagger/configurar-swagger.js';
+import {
+  ESQUEMA_JWT,
+  TAGS,
+} from '../../../../compartido/presentacion/swagger/configurar-swagger.js';
+import { RecordPersonalEntidadDoc } from '../entidades/entrenamiento.entidades.js';
 import { ConsultarEntrenamientosDeAlumnos } from '../../aplicacion/consultar-entrenamientos-de-alumnos/consultar-entrenamientos-de-alumnos.caso-uso.js';
 import { ConsultarEntrenamientoEnCurso } from '../../aplicacion/consultar-entrenamiento-en-curso/consultar-entrenamiento-en-curso.caso-uso.js';
 import { IniciarEntrenamiento } from '../../aplicacion/iniciar-entrenamiento/iniciar-entrenamiento.caso-uso.js';
@@ -41,8 +46,8 @@ import {
  * Entrenamiento realizado por el alumno: inicio, registro de series, finalización y percepción
  * (US13 a US18). El alumno sale del JWT; nunca viaja en la ruta ni en el cuerpo.
  */
-@ApiTags('Entrenamiento')
 @ApiBearerAuth(ESQUEMA_JWT)
+@ApiExtraModels(RecordPersonalEntidadDoc, PaginacionDto)
 @Controller('entrenamiento')
 export class EntrenamientoControlador {
   constructor(
@@ -67,6 +72,7 @@ export class EntrenamientoControlador {
    * Responde 409 con RN-ENT-01 si no hay plan vigente, si es día de descanso o si ya se inició hoy.
    */
   @Post('entrenamientos')
+  @ApiTags(TAGS.entrenamientoAlumno)
   @Roles('Alumno')
   @ApiOperation({
     summary:
@@ -92,6 +98,7 @@ export class EntrenamientoControlador {
    * (sin `entrenamiento`).
    */
   @Get('mi-entrenamiento-en-curso')
+  @ApiTags(TAGS.entrenamientoAlumno)
   @Roles('Alumno')
   @ApiOperation({
     summary:
@@ -115,6 +122,7 @@ export class EntrenamientoControlador {
    * entrenamiento no es del alumno, y 409 con RN-ENT-04 o RN-ENT-20 si está finalizado o abandonado.
    */
   @Post('entrenamientos/:id/series')
+  @ApiTags(TAGS.entrenamientoAlumno)
   @Roles('Alumno')
   @ApiOperation({
     summary:
@@ -159,6 +167,7 @@ export class EntrenamientoControlador {
    * con RN-ENT-20 si quedó abandonado.
    */
   @Post('entrenamientos/:id/finalizacion')
+  @ApiTags(TAGS.entrenamientoAlumno)
   @Roles('Alumno')
   @ApiOperation({
     summary:
@@ -195,6 +204,7 @@ export class EntrenamientoControlador {
    * del alumno y 409 con RN-ENT-16 si no está finalizado o la percepción ya fue cargada.
    */
   @Post('entrenamientos/:id/percepcion')
+  @ApiTags(TAGS.entrenamientoAlumno)
   @Roles('Alumno')
   @ApiOperation({
     summary:
@@ -238,6 +248,7 @@ export class EntrenamientoControlador {
    * Responde 403 con RN-ENT-18 si el alumno no es del profesor o no existe.
    */
   @Get('alumnos/:alumnoId/entrenamientos')
+  @ApiTags(TAGS.entrenamientoProfesor)
   @Roles('Profesor')
   @ApiOperation({
     summary:
