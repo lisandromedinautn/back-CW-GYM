@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Post } from '@nest
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiExtraModels,
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
@@ -13,7 +14,15 @@ import {
   UsuarioActual,
   type UsuarioAutenticado,
 } from '../../../../compartido/presentacion/guard-roles/guard-roles.js';
-import { ESQUEMA_JWT } from '../../../../compartido/presentacion/swagger/configurar-swagger.js';
+import {
+  ESQUEMA_JWT,
+  TAGS,
+} from '../../../../compartido/presentacion/swagger/configurar-swagger.js';
+import {
+  AlumnoEntidadDoc,
+  ProfesorEntidadDoc,
+  UsuarioEntidadDoc,
+} from '../entidades/identidad.entidades.js';
 import { ErrorRespuesta } from '../../../../compartido/presentacion/error-respuesta/error-respuesta.js';
 import { ConsultarCodigoProfesor } from '../../aplicacion/codigo-profesor/consultar-codigo-profesor.caso-uso.js';
 import { DarAltaProfesor } from '../../aplicacion/dar-alta-profesor/dar-alta-profesor.caso-uso.js';
@@ -42,7 +51,7 @@ import {
   VinculoRespuesta,
 } from '../respuestas/identidad.respuestas.js';
 
-@ApiTags('Identidad')
+@ApiExtraModels(UsuarioEntidadDoc, ProfesorEntidadDoc, AlumnoEntidadDoc)
 @Controller('identidad')
 export class IdentidadControlador {
   constructor(
@@ -56,6 +65,7 @@ export class IdentidadControlador {
   ) {}
 
   /** Público. RN-IDE-01. */
+  @ApiTags(TAGS.identidadIngreso)
   @ApiOperation({
     summary: 'Ingresar al sistema (público). Devuelve un JWT con el rol del usuario (RN-IDE-01)',
   })
@@ -68,6 +78,7 @@ export class IdentidadControlador {
   }
 
   /** Solo Admin. RN-IDE-04, 06, 13. */
+  @ApiTags(TAGS.identidadProfesores)
   @ApiOperation({
     summary: 'Dar de alta un profesor (rol Admin, RN-IDE-04, 06, 13)',
   })
@@ -83,6 +94,7 @@ export class IdentidadControlador {
   }
 
   /** Solo Profesor. RN-IDE-08: genera un código nuevo e invalida el anterior. */
+  @ApiTags(TAGS.identidadProfesores)
   @ApiOperation({
     summary: 'Generar un nuevo Código de Profesor (rol Profesor, RN-IDE-08). Invalida el anterior',
   })
@@ -99,6 +111,7 @@ export class IdentidadControlador {
   }
 
   /** Solo Profesor. RN-IDE-08: el código vigente, o null si todavía no lo generó. */
+  @ApiTags(TAGS.identidadProfesores)
   @ApiOperation({
     summary:
       'Consultar el Código de Profesor vigente (rol Profesor, RN-IDE-08). Devuelve null si no se generó',
@@ -116,6 +129,7 @@ export class IdentidadControlador {
   }
 
   /** Solo Profesor. US07: los alumnos vinculados que puede asignar a un plan (RN-PLAN-13). */
+  @ApiTags(TAGS.identidadAlumnos)
   @ApiOperation({
     summary:
       'Listar los alumnos vinculados que el profesor puede asignar a un plan (rol Profesor, US07, RN-PLAN-13)',
@@ -133,6 +147,7 @@ export class IdentidadControlador {
   }
 
   /** Solo Alumno. RN-IDE-09, 10, 11. */
+  @ApiTags(TAGS.identidadAlumnos)
   @ApiOperation({
     summary: 'Vincularse a un profesor con su Código de Profesor (rol Alumno, RN-IDE-09, 10, 11)',
   })

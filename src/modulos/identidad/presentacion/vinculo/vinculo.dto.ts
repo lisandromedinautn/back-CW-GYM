@@ -1,6 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import { IsString, MaxLength } from 'class-validator';
 
+@ApiSchema({
+  name: 'Dto.Vinculo',
+  description: 'CÃ³digo de Profesor que ingresa el alumno para vincularse.',
+})
 export class VinculoDto {
   @ApiProperty({
     description:

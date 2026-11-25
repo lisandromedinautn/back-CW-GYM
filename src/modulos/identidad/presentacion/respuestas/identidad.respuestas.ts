@@ -1,9 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 
 /** Roles que puede tener un usuario (RN-IDE-02). */
 const ROLES = ['Admin', 'Profesor', 'Alumno'];
 
 /** Respuesta de POST /identidad/ingreso (RN-IDE-01). */
+@ApiSchema({
+  name: 'Respuesta.Ingreso',
+  description: 'Respuesta del ingreso: JWT y rol del usuario.',
+})
 export class IngresoRespuesta {
   @ApiProperty({
     description:
@@ -21,6 +25,10 @@ export class IngresoRespuesta {
 }
 
 /** Respuesta de POST /identidad/profesores (RN-IDE-04). */
+@ApiSchema({
+  name: 'Respuesta.AltaProfesor',
+  description: 'Profesor dado de alta: identificador y legajo.',
+})
 export class AltaProfesorRespuesta {
   @ApiProperty({
     description: 'Identificador del profesor dado de alta.',
@@ -37,6 +45,10 @@ export class AltaProfesorRespuesta {
 }
 
 /** Respuesta de POST /identidad/profesores/codigo (RN-IDE-08). */
+@ApiSchema({
+  name: 'Respuesta.CodigoProfesor',
+  description: 'CÃ³digo de Profesor reciÃ©n generado.',
+})
 export class CodigoProfesorRespuesta {
   @ApiProperty({
     description:
@@ -47,6 +59,10 @@ export class CodigoProfesorRespuesta {
 }
 
 /** Respuesta de GET /identidad/profesores/codigo (RN-IDE-08). */
+@ApiSchema({
+  name: 'Respuesta.CodigoProfesorActual',
+  description: 'CÃ³digo de Profesor vigente, o null si todavÃ­a no hay ninguno.',
+})
 export class CodigoProfesorActualRespuesta {
   @ApiProperty({
     description:
@@ -59,6 +75,10 @@ export class CodigoProfesorActualRespuesta {
 }
 
 /** Elemento de la respuesta de GET /identidad/alumnos (RN-PLAN-13, US07). */
+@ApiSchema({
+  name: 'Respuesta.AlumnoDelProfesor',
+  description: 'Alumno vinculado al profesor.',
+})
 export class AlumnoDelProfesorRespuesta {
   @ApiProperty({
     description: 'Identificador del alumno vinculado al profesor.',
@@ -81,6 +101,10 @@ export class AlumnoDelProfesorRespuesta {
 }
 
 /** Datos del profesor que se devuelven al alumno al vincularse (RN-IDE-09). */
+@ApiSchema({
+  name: 'Respuesta.ProfesorVinculado',
+  description: 'Profesor con el que quedÃ³ vinculado el alumno.',
+})
 export class ProfesorVinculadoRespuesta {
   @ApiProperty({
     description: 'Nombre del profesor con el que quedó vinculado el alumno.',
@@ -96,6 +120,10 @@ export class ProfesorVinculadoRespuesta {
 }
 
 /** Respuesta de POST /identidad/alumnos/vinculo (RN-IDE-09, 10, 11). */
+@ApiSchema({
+  name: 'Respuesta.Vinculo',
+  description: 'Resultado del vÃ­nculo entre alumno y profesor.',
+})
 export class VinculoRespuesta {
   @ApiProperty({
     description:

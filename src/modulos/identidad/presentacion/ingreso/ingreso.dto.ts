@@ -1,7 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import { IsString, MaxLength } from 'class-validator';
 
 /** Sin IsEmail a propósito: RN-IDE-01 no dice qué dato falló, y un 400 por formato lo diría. */
+@ApiSchema({
+  name: 'Dto.Ingreso',
+  description: 'Credenciales con las que un usuario ingresa al sistema.',
+})
 export class IngresoDto {
   @ApiProperty({
     description:

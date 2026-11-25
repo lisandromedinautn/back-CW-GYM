@@ -1,7 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 /** Formato de entrada de US02. Las reglas (RN-IDE-04, 06, 13) las valida el dominio. */
+@ApiSchema({
+  name: 'Dto.AltaProfesor',
+  description: 'Datos para dar de alta a un profesor.',
+})
 export class AltaProfesorDto {
   @ApiProperty({
     description: 'Nombre del profesor.',
