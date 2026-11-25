@@ -1,6 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 
 /** Ejercicio tal como lo recibe el front (RN-CAT-01, 05, 09). */
+@ApiSchema({
+  name: 'Entidad.Ejercicio',
+  description: 'Forma pública de la entidad Ejercicio del catálogo, tal como la recibe el front.',
+})
 export class EjercicioRespuesta {
   @ApiProperty({
     description: 'Identificador único del ejercicio.',
@@ -80,6 +84,10 @@ export class EjercicioRespuesta {
 }
 
 /** Una página de la consulta de ejercicios. `pagina` arranca en 1. */
+@ApiSchema({
+  name: 'Respuesta.PaginaEjercicios',
+  description: 'Una página de resultados de la consulta paginada de ejercicios del catálogo.',
+})
 export class PaginaEjerciciosRespuesta {
   @ApiProperty({
     description: 'Ejercicios de la página solicitada.',

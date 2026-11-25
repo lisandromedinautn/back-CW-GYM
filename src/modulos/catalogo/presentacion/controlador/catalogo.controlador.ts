@@ -2,6 +2,7 @@ import { Controller, Get, Inject, Query } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiExtraModels,
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
@@ -35,6 +36,7 @@ const aRespuesta = (ejercicio: Ejercicio): EjercicioRespuesta => ({
 });
 
 /** Consulta del catálogo de ejercicios (RN-CAT-01 a 09). */
+@ApiExtraModels(ConsultarEjerciciosDto)
 @ApiTags('Catálogo')
 @Controller('catalogo')
 export class CatalogoControlador {
