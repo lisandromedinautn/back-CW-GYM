@@ -14,6 +14,19 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+  ApiUnauthorizedResponse,
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+} from '@nestjs/swagger';
 import { ConsultarRutinas } from '../../aplicacion/consultar-rutinas/consultar-rutinas.caso-uso.js';
 import {
   Roles,
@@ -21,6 +34,8 @@ import {
   type UsuarioAutenticado,
 } from '../../../../compartido/presentacion/guard-roles/guard-roles.js';
 import { PaginacionDto } from '../../../../compartido/presentacion/paginacion/paginacion.dto.js';
+import { ESQUEMA_JWT } from '../../../../compartido/presentacion/swagger/configurar-swagger.js';
+import { ErrorRespuesta } from '../../../../compartido/presentacion/error-respuesta/error-respuesta.js';
 import { RenombrarRutina } from '../../aplicacion/renombrar-rutina/renombrar-rutina.caso-uso.js';
 import { CrearRutina } from '../../aplicacion/crear-rutina/crear-rutina.caso-uso.js';
 import { EditarRutina } from '../../aplicacion/editar-rutina/editar-rutina.caso-uso.js';
@@ -49,61 +64,19 @@ import {
 import type { Rutina } from '../../dominio/rutina/rutina.entidad.js';
 import { CrearPlanDto } from '../crear-plan/crear-plan.dto.js';
 import { CrearRutinaDto, RenombrarRutinaDto } from '../crear-rutina/crear-rutina.dto.js';
-
-/** Rutina tal como la recibe el front. */
-export interface RutinaRespuesta {
-  id: string;
-  /** RN-PLAN-21. */
-  nombre: string;
-  tipo: string;
-  /** US10: `orden` es la posición del bloque o circuito en la rutina (1..N, RN-PLAN-01). */
-  bloques: {
-    orden: number;
-    ejercicioId: string;
-    series: number;
-    micropausaSegundos: number;
-    macropausaSegundos: number;
-    repeticiones: number | null;
-    segundos: number | null;
-    pesoKg: number | null;
-  }[];
-  /** US09. Un circuito no tiene micropausa (RN-PLAN-03). */
-  circuitos: {
-    orden: number;
-    vueltas: number;
-    macropausaSegundos: number;
-    ejercicios: {
-      ejercicioId: string;
-      repeticiones: number | null;
-      segundos: number | null;
-      pesoKg: number | null;
-    }[];
-  }[];
-}
-
-/** Una página de la consulta de rutinas. `pagina` arranca en 1. */
-export interface PaginaRutinasRespuesta {
-  items: RutinaRespuesta[];
-  total: number;
-  pagina: number;
-  tamanio: number;
-}
-
-/** Plan de Entrenamiento tal como lo recibe el front (US07). */
-export interface PlanRespuesta {
-  id: string;
-  /** RN-PLAN-09: fecha de fin calculada. */
-  fechaInicio: string;
-  fechaFin: string;
-  /** RN-PLAN-10, 11: cada día con su fecha; sin rutina es descanso. */
-  dias: {
-    numero: number;
-    fecha: string;
-    rutinaId: string | null;
-    esDescanso: boolean;
-  }[];
-  alumnoIds: string[];
-}
+import {
+  PaginaRutinasRespuesta,
+  RutinaDelDiaRespuesta,
+  RutinaRespuesta,
+} from '../respuestas/rutina.respuestas.js';
+import {
+  AlumnosDelPlanRespuesta,
+  DetallePlanRespuesta,
+  DiaEditadoRespuesta,
+  PaginaPlanesRespuesta,
+  PlanDelAlumnoRespuesta,
+  PlanRespuesta,
+} from '../respuestas/plan.respuestas.js';
 
 const aRespuestaPlan = (plan: Plan): PlanRespuesta => ({
   id: plan.id,
@@ -145,6 +118,20 @@ const aRespuesta = (rutina: Rutina): RutinaRespuesta => ({
   })),
 });
 
+const PARAMETRO_ID_UUID = {
+  name: 'id',
+  description: 'Id del recurso (UUID).',
+  schema: { type: 'string', format: 'uuid' },
+} as const;
+
+const PARAMETRO_NUMERO_DIA = {
+  name: 'numero',
+  description: 'Número del día dentro del plan (1..28).',
+  schema: { type: 'integer', minimum: 1, maximum: 28 },
+} as const;
+
+@ApiTags('Planificación')
+@ApiBearerAuth(ESQUEMA_JWT)
 @Controller('planificacion')
 export class PlanificacionControlador {
   constructor(
@@ -166,6 +153,10 @@ export class PlanificacionControlador {
   /** Solo Profesor (RN-IDE-03). T06: consulta paginada de sus propias rutinas (RN-PLAN-08). */
   @Get('rutinas')
   @Roles('Profesor')
+  @ApiOperation({ summary: 'Profesor: lista paginada de sus rutinas (RN-PLAN-08)' })
+  @ApiOkResponse({ type: PaginaRutinasRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
   async listar(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Query() paginacion: PaginacionDto,
@@ -181,6 +172,13 @@ export class PlanificacionControlador {
   /** Solo Profesor (RN-IDE-03). US06: RN-PLAN-01, 02, 04, 05, 06. US09: RN-PLAN-03, 20. US10: RN-PLAN-01. */
   @Post('rutinas')
   @Roles('Profesor')
+  @ApiOperation({
+    summary: 'Profesor: crea una rutina de bloques, circuitos o mixta (US06, US09, US10)',
+  })
+  @ApiCreatedResponse({ type: RutinaRespuesta })
+  @ApiBadRequestResponse({ type: ErrorRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
   async crear(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Body() datos: CrearRutinaDto,
@@ -191,6 +189,12 @@ export class PlanificacionControlador {
   /** Solo Profesor (RN-IDE-03). US06: detalle de una rutina propia (RN-PLAN-08). */
   @Get('rutinas/:id')
   @Roles('Profesor')
+  @ApiOperation({ summary: 'Profesor: detalle de una rutina propia (US06, RN-PLAN-08)' })
+  @ApiParam(PARAMETRO_ID_UUID)
+  @ApiOkResponse({ type: RutinaRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
+  @ApiNotFoundResponse({ type: ErrorRespuesta })
   async detalle(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Param('id', ParseUUIDPipe) id: string,
@@ -201,6 +205,15 @@ export class PlanificacionControlador {
   /** Solo Profesor (RN-IDE-03). US06: RN-PLAN-07 y 08; el contenido sigue las reglas de crear. */
   @Put('rutinas/:id')
   @Roles('Profesor')
+  @ApiOperation({
+    summary: 'Profesor: edita el contenido de una rutina propia (US06, RN-PLAN-07, 08)',
+  })
+  @ApiParam(PARAMETRO_ID_UUID)
+  @ApiOkResponse({ type: RutinaRespuesta })
+  @ApiBadRequestResponse({ type: ErrorRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
+  @ApiNotFoundResponse({ type: ErrorRespuesta })
   async editar(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Param('id', ParseUUIDPipe) id: string,
@@ -212,6 +225,14 @@ export class PlanificacionControlador {
   /** Solo Profesor (RN-IDE-03). T08: RN-PLAN-21 (nombre) y RN-PLAN-08 (solo sus rutinas). */
   @Patch('rutinas/:id/nombre')
   @Roles('Profesor')
+  @ApiOperation({ summary: 'Profesor: renombra una rutina propia (RN-PLAN-21, 08)' })
+  @ApiParam({ ...PARAMETRO_ID_UUID })
+  @ApiOkResponse({ type: RutinaRespuesta })
+  @ApiBadRequestResponse({ type: ErrorRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
+  @ApiNotFoundResponse({ type: ErrorRespuesta })
+  @ApiConflictResponse({ type: ErrorRespuesta })
   async renombrar(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Param('id') id: string,
@@ -223,6 +244,14 @@ export class PlanificacionControlador {
   /** RN-PLAN-08: copia independiente de una rutina propia. */
   @Post('rutinas/:id/importacion')
   @Roles('Profesor')
+  @ApiOperation({
+    summary: 'Profesor: importa una copia independiente de una rutina propia (US20, RN-PLAN-08)',
+  })
+  @ApiParam(PARAMETRO_ID_UUID)
+  @ApiCreatedResponse({ type: RutinaRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
+  @ApiNotFoundResponse({ type: ErrorRespuesta })
   async importar(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Param('id') id: string,
@@ -233,6 +262,16 @@ export class PlanificacionControlador {
   /** Solo Profesor (RN-IDE-03). US07: RN-PLAN-09 a 15 y 17. */
   @Post('planes')
   @Roles('Profesor')
+  @ApiOperation({
+    summary:
+      'Profesor: crea un Plan de Entrenamiento de 28 días con alumnos (US07, RN-PLAN-09 a 15, 17)',
+  })
+  @ApiCreatedResponse({ type: PlanRespuesta })
+  @ApiBadRequestResponse({ type: ErrorRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
+  @ApiNotFoundResponse({ type: ErrorRespuesta })
+  @ApiConflictResponse({ type: ErrorRespuesta })
   async crearPlanDeEntrenamiento(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Body() datos: CrearPlanDto,
@@ -248,6 +287,13 @@ export class PlanificacionControlador {
   /** Solo Profesor (RN-IDE-03). T13: RN-PLAN-22 (sus planes, filtros, orden) y RN-PLAN-15 (estado). */
   @Get('planes')
   @Roles('Profesor')
+  @ApiOperation({
+    summary: 'Profesor: lista paginada y filtrada de sus planes con estado (RN-PLAN-22, 15)',
+  })
+  @ApiOkResponse({ type: PaginaPlanesRespuesta })
+  @ApiBadRequestResponse({ type: ErrorRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
   async listarPlanes(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Query() consulta: ConsultarPlanesDto,
@@ -258,6 +304,12 @@ export class PlanificacionControlador {
   /** Solo Profesor (RN-IDE-03). US22: detalle de un plan propio con sus 28 días. */
   @Get('planes/:id')
   @Roles('Profesor')
+  @ApiOperation({ summary: 'Profesor: detalle de un plan propio con sus 28 días (US22)' })
+  @ApiParam(PARAMETRO_ID_UUID)
+  @ApiOkResponse({ type: DetallePlanRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
+  @ApiNotFoundResponse({ type: ErrorRespuesta })
   async detallePlan(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Param('id', ParseUUIDPipe) id: string,
@@ -268,6 +320,16 @@ export class PlanificacionControlador {
   /** Solo Profesor (RN-IDE-03). US22: RN-PLAN-23 (editar un día) y RN-PLAN-11. */
   @Put('planes/:id/dias/:numero')
   @Roles('Profesor')
+  @ApiOperation({
+    summary: 'Profesor: cambia la rutina de un día o lo pasa a descanso (US22, RN-PLAN-23, 11)',
+  })
+  @ApiParam(PARAMETRO_ID_UUID)
+  @ApiParam(PARAMETRO_NUMERO_DIA)
+  @ApiOkResponse({ type: DiaEditadoRespuesta })
+  @ApiBadRequestResponse({ type: ErrorRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
+  @ApiNotFoundResponse({ type: ErrorRespuesta })
   async editarDia(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Param('id', ParseUUIDPipe) id: string,
@@ -279,6 +341,12 @@ export class PlanificacionControlador {
 
   @Get('planes/:id/alumnos')
   @Roles('Profesor')
+  @ApiOperation({ summary: 'Profesor: ids de los alumnos asignados a un plan propio (US12)' })
+  @ApiParam(PARAMETRO_ID_UUID)
+  @ApiOkResponse({ type: AlumnosDelPlanRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
+  @ApiNotFoundResponse({ type: ErrorRespuesta })
   async alumnosDePlan(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Param('id', ParseUUIDPipe) id: string,
@@ -289,6 +357,16 @@ export class PlanificacionControlador {
 
   @Post('planes/:id/alumnos')
   @Roles('Profesor')
+  @ApiOperation({
+    summary: 'Profesor: agrega un alumno a un plan vigente (US12, RN-PLAN-13, 14, 16)',
+  })
+  @ApiParam(PARAMETRO_ID_UUID)
+  @ApiCreatedResponse({ description: 'Alumno agregado al plan.' })
+  @ApiBadRequestResponse({ type: ErrorRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
+  @ApiNotFoundResponse({ type: ErrorRespuesta })
+  @ApiConflictResponse({ type: ErrorRespuesta })
   async agregarAlumno(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Param('id', ParseUUIDPipe) id: string,
@@ -299,6 +377,17 @@ export class PlanificacionControlador {
 
   @Delete('planes/:id/alumnos/:alumnoId')
   @Roles('Profesor')
+  @ApiOperation({ summary: 'Profesor: quita un alumno de un plan vigente (US12, RN-PLAN-16)' })
+  @ApiParam(PARAMETRO_ID_UUID)
+  @ApiParam({
+    name: 'alumnoId',
+    description: 'Id del alumno (UUID).',
+    schema: { type: 'string', format: 'uuid' },
+  })
+  @ApiOkResponse({ description: 'Alumno quitado del plan.' })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
+  @ApiNotFoundResponse({ type: ErrorRespuesta })
   async quitarAlumno(
     @UsuarioActual() usuario: UsuarioAutenticado,
     @Param('id', ParseUUIDPipe) id: string,
@@ -310,6 +399,12 @@ export class PlanificacionControlador {
   /** Solo Alumno (RN-IDE-03). US08: RN-PLAN-11, 15 y 18. */
   @Get('mi-rutina-del-dia')
   @Roles('Alumno')
+  @ApiOperation({
+    summary: 'Alumno: rutina del día de su plan vigente, o descanso o sin plan (US08, RN-PLAN-18)',
+  })
+  @ApiOkResponse({ type: RutinaDelDiaRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
   async miRutinaDelDia(
     @UsuarioActual() usuario: UsuarioAutenticado,
   ): Promise<ResultadoRutinaDelDia> {
@@ -319,6 +414,10 @@ export class PlanificacionControlador {
   /** Solo Alumno (RN-IDE-03). US11: RN-PLAN-11, 15 y 19. */
   @Get('mi-plan')
   @Roles('Alumno')
+  @ApiOperation({ summary: 'Alumno: su plan vigente con los 28 días (US11, RN-PLAN-19)' })
+  @ApiOkResponse({ type: PlanDelAlumnoRespuesta })
+  @ApiUnauthorizedResponse({ type: ErrorRespuesta })
+  @ApiForbiddenResponse({ type: ErrorRespuesta })
   async miPlan(@UsuarioActual() usuario: UsuarioAutenticado): Promise<ResultadoPlanDelAlumno> {
     return this.consultarPlanDelAlumno.ejecutar(usuario.sub);
   }
