@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { configurarSwagger } from './compartido/presentacion/swagger/configurar-swagger.js';
 import { configurarAplicacion } from './configurar-aplicacion.js';
 import { ModuloRaiz } from './modulo-raiz.module.js';
 
@@ -9,6 +10,7 @@ async function arrancar(): Promise<void> {
   const config = app.get(ConfigService);
 
   app.enableCors({ origin: config.getOrThrow<string>('URL_FRONT') });
+  configurarSwagger(app, process.env.npm_package_version ?? '1.x');
 
   await app.listen(Number(config.get<string>('PUERTO') ?? 3000));
 }
